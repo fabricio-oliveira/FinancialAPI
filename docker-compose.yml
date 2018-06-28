@@ -1,0 +1,20 @@
+version: '3.2'
+services:
+  api:
+    container_name: api
+    build: .
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/app
+    links:
+      - sql-server
+  sql-server:
+    container_name: sql-server
+    image: microsoft/mssql-server-linux:2017-CU8
+    environment:
+      - DB=financial_db
+    ports:
+      - "1433:1433"
