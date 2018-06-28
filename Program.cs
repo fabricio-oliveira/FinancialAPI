@@ -1,16 +1,24 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 
-namespace financial_api
+namespace FinancialApi
 {
     public class Program
     {
         public static void Main(string[] args)
+        {
+            initDB();
+            initWebServer();
+        }
+
+        private static void initDB()
+        {
+            var db = new DataBaseContext();
+            db.Database.EnsureCreated();
+        }
+
+        private static void initWebServer()
         {
             var host = new WebHostBuilder()
                 .UseKestrel()
