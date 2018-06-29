@@ -11,7 +11,6 @@ namespace FinancialApi
        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
        {
            var connectionDatabase = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-           Console.WriteLine($"testestes:{connectionDatabase}");
            if (connectionDatabase == null)
               throw new System.ArgumentException("CONNECTION_STRING cannot be null", "original");
 

@@ -5,7 +5,7 @@ services:
     build: .
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - CONNECTION_STRING="Server=(sql-server)\mssqllocaldb;Database=MyDatabase;Trusted_Connection=True;"
+      - CONNECTION_STRING="Data Source=sql-server,1433;Initial Catalog=Database;User ID=sa;Password=@A1b2 C3d4"
     ports:
       - "8080:80"
     volumes:
@@ -14,9 +14,10 @@ services:
       - sql-server
   sql-server:
     container_name: sql-server
-    image: microsoft/mssql-server-linux:2017-CU8
+    image: microsoft/mssql-server-linux:latest
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=A1b2C3d4
+      - SA_PASSWORD=@A1b2 C3d4
+      - MSSQL_PID=Express
     ports:
       - "1433:1433"
