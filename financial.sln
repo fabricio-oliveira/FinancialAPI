@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialApi", "FinancialApi\FinancialApi.csproj", "{393ED0F1-24E4-41C3-AA70-2ADECE7EC2CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialApiTests", "FinancialApi.Tests\FinancialApiTests.csproj", "{859D75F4-B82F-42BF-A970-3C4E50116163}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,17 @@ Global
 		{393ED0F1-24E4-41C3-AA70-2ADECE7EC2CA}.Release|x64.Build.0 = Release|Any CPU
 		{393ED0F1-24E4-41C3-AA70-2ADECE7EC2CA}.Release|x86.ActiveCfg = Release|Any CPU
 		{393ED0F1-24E4-41C3-AA70-2ADECE7EC2CA}.Release|x86.Build.0 = Release|Any CPU
+		{859D75F4-B82F-42BF-A970-3C4E50116163}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{859D75F4-B82F-42BF-A970-3C4E50116163}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{859D75F4-B82F-42BF-A970-3C4E50116163}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{859D75F4-B82F-42BF-A970-3C4E50116163}.Debug|x64.Build.0 = Debug|Any CPU
+		{859D75F4-B82F-42BF-A970-3C4E50116163}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{859D75F4-B82F-42BF-A970-3C4E50116163}.Debug|x86.Build.0 = Debug|Any CPU
+		{859D75F4-B82F-42BF-A970-3C4E50116163}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{859D75F4-B82F-42BF-A970-3C4E50116163}.Release|Any CPU.Build.0 = Release|Any CPU
+		{859D75F4-B82F-42BF-A970-3C4E50116163}.Release|x64.ActiveCfg = Release|Any CPU
+		{859D75F4-B82F-42BF-A970-3C4E50116163}.Release|x64.Build.0 = Release|Any CPU
+		{859D75F4-B82F-42BF-A970-3C4E50116163}.Release|x86.ActiveCfg = Release|Any CPU
+		{859D75F4-B82F-42BF-A970-3C4E50116163}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

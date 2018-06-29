@@ -10,6 +10,9 @@
     <PackageReference Include="nunit" Version="3.10.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.2" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.108" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
+    
   </ItemGroup>
 
 </Project>
