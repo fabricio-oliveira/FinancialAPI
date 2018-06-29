@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "financial_api", "financial_api\financial_api.csproj", "{393ED0F1-24E4-41C3-AA70-2ADECE7EC2CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancialApi", "FinancialApi\FinancialApi.csproj", "{393ED0F1-24E4-41C3-AA70-2ADECE7EC2CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

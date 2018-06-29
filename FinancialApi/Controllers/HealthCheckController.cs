@@ -12,7 +12,7 @@ namespace FinancialApi.Controllers
         [HttpGet("ping")]
         public string Get(int id)
         {
-            return "financial_api";
+            return "FinancialApi";
         }
     }
 }
