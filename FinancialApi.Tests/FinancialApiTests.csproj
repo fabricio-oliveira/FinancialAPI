@@ -13,4 +13,7 @@
     <PackageReference Include="System.Data.SQLite" Version="1.0.108" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
 </Project>

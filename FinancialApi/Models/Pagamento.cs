@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Model
+namespace FinancialApi.Model
 {
      [Table("Pagamento")]
      public class Pagamento

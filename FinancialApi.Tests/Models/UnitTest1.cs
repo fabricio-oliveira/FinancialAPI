@@ -1,8 +1,9 @@
 using NUnit.Framework;
 
-namespace Tests
+namespace FinancialApi.UnitTests.Models
 {
-    public class Tests
+    [TestFixture]
+    public class Pagamento_validate
     {
         [SetUp]
         public void Setup()
