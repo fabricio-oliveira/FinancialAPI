@@ -4,8 +4,8 @@ using System;
 
 namespace FinancialApi.Model
 {
-    [Table("Lancamento")]
-    public class Lancamento
+    [Table("Entries")]
+    public class Entry
     {
         public int ID { get; set; }
 
@@ -13,6 +13,7 @@ namespace FinancialApi.Model
         public string Type { get; set; }
 
         [Required(ErrorMessage = "Description cant\' be blank")]
+        [StringLength(30, ErrorMessage = "Description cannot be longer than 30 characters.")]
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Destination account can\'t be blank")]

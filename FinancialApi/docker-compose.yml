@@ -5,7 +5,7 @@ services:
     build: .
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - CONNECTION_STRING="Data Source=sql-server,1433;Initial Catalog=Database;User ID=sa;Password=@A1b2 C3d4"
+      - CONNECTION_STRING=Data Source=mssql-server ,1433;Initial Catalog=Financial;User ID=sa;Password=@A1b2 C3d4
     ports:
       - "8080:80"
     volumes:

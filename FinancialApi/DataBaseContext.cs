@@ -1,24 +1,42 @@
 using Microsoft.EntityFrameworkCore;
 using System;
-using Model;
+using FinancialApi.Model;
 
 namespace FinancialApi
 {
 
-     public class DataBaseContext : DbContext
-     {
+    public class DataBaseContext : DbContext
+    {
 
-       protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-       {
-           var connectionDatabase = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-           if (connectionDatabase == null)
-              throw new System.ArgumentException("CONNECTION_STRING cannot be null", "original");
+        public DataBaseContext()
+        { }
 
-           optionsBuilder.UseSqlServer(@connectionDatabase);
-       }
+        public DataBaseContext(DbContextOptions<DataBaseContext> options)
+            : base(options)
+        { }
 
-       public DbSet<Pagamento> Pagamento { get; set; }
-       public DbSet<Recebimento> Recebimento { get; set; }
-       // public DbSet<FluxoDeCaixa> FluxoDeCaixa { get; set; }
-     }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (optionsBuilder.IsConfigured)
+                return;
+            
+            var connectionDatabase = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+            if (connectionDatabase == null)
+                throw new System.ArgumentException("CONNECTION_STRING cannot be null");
+
+            optionsBuilder.UseSqlServer(@connectionDatabase);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Entry>()
+                .HasDiscriminator<string>("Type")
+                        .HasValue<Payment>("payment")
+                        .HasValue<Receipt>("receipt");
+        }
+
+        //DataBase
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<Receipt> Receipts { get; set; }
+    }
 }
