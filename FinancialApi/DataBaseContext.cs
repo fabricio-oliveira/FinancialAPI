@@ -20,9 +20,9 @@ namespace FinancialApi
             if (optionsBuilder.IsConfigured)
                 return;
             
-            var connectionDatabase = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+            var connectionDatabase = Environment.GetEnvironmentVariable("DATABASE_CONNECTION");
             if (connectionDatabase == null)
-                throw new System.ArgumentException("CONNECTION_STRING cannot be null");
+                throw new System.ArgumentException("DATABASE_CONNECTION cannot be null");
 
             optionsBuilder.UseSqlServer(@connectionDatabase);
         }

@@ -5,13 +5,15 @@ services:
     build: .
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - CONNECTION_STRING=Data Source=mssql-server ,1433;Initial Catalog=Financial;User ID=sa;Password=@A1b2 C3d4
+      - DATABASE_CONNECTION=Data Source=mssql-server ,1433;Initial Catalog=Financial;User ID=sa;Password=@A1b2 C3d4
+      - QUEUE_CONNECTION=rabbitmq:5672;usermq;usermq
     ports:
       - "8080:80"
     volumes:
       - .:/app
     links:
       - sql-server
+      - rabbitmq
   sql-server:
     container_name: sql-server
     image: microsoft/mssql-server-linux:latest
@@ -21,3 +23,11 @@ services:
       - MSSQL_PID=Express
     ports:
       - "1433:1433"
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.7.6
+    environment:
+      - RABBITMQ_DEFAULT_USER=usermq
+      - RABBITMQ_DEFAULT_PASS=usermq
+    ports:
+      - "5672:5672"
