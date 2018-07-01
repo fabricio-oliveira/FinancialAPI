@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using FinancialApi.Services;
 
 namespace FinancialApi
 {
@@ -27,8 +28,12 @@ namespace FinancialApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddDbContext<DataBaseContext>();
             // Add framework services.
             services.AddMvc();
+            services.AddTransient<IPaymentService, PaymentService>();
+            services.AddTransient<IReceiptService, ReceiptService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
