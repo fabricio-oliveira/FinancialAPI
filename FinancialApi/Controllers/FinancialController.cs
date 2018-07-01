@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using FinancialApi.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinancialApi.Controllers
@@ -19,6 +18,13 @@ namespace FinancialApi.Controllers
         // Post payment
         [HttpPost("payment")]
         public string Payment(int id)
+        {
+            throw new NotImplementedException("Need implementation payment");
+        }
+
+        // Post payment
+        [HttpGet("cash_flow")]
+        public IEnumerable<Entry> CashFlow(int id)
         {
             throw new NotImplementedException("Need implementation payment");
         }

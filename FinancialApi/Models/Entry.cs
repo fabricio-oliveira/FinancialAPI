@@ -7,10 +7,24 @@ namespace FinancialApi.Model
     [Table("Entries")]
     public class Entry
     {
-        public int ID { get; set; }
 
-        [Required(ErrorMessage = "Type cant\' be blank")]
-        public string Type { get; set; }
+        public Entry(string Description, string DestinationAccount, string DestinationBank,
+                     string TypeAccount, string DestinationIdentity, decimal Value, decimal FinancialCharges,
+                     DateTime Date){
+            this.ID = ID;
+            this.Description = Description;
+            this.DestinationAccount = DestinationAccount;
+            this.DestinationBank = DestinationBank;
+            this.TypeAccount = TypeAccount;
+            this.DestinationIdentity = DestinationIdentity;
+            this.Value = Value;
+            this.FinancialCharges = FinancialCharges;
+            this.Date = Date;
+        }
+
+        public Entry(){}
+
+        public int ID { get; set; }
 
         [Required(ErrorMessage = "Description cant\' be blank")]
         [StringLength(30, ErrorMessage = "Description cannot be longer than 30 characters.")]
@@ -36,5 +50,8 @@ namespace FinancialApi.Model
 
         [Required(ErrorMessage = "Date charges can\'t be blank")]
         public DateTime Date { get; set; }
+
+        [Required(ErrorMessage = "Type cant\' be blank")]
+        public string Type { get; set; }
     }
 }
