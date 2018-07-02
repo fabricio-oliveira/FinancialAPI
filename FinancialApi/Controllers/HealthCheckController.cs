@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FinancialApi.Controllers
 {
-    [Route("api/healthchecks")]
+    [Route("healthchecks")]
     public class HealthCheckController : Controller
     {
         [HttpGet("ping")]

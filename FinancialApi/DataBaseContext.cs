@@ -1,19 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using System;
-using FinancialApi.Model;
+using FinancialApi.Models;
 
 namespace FinancialApi
 {
 
     public class DataBaseContext : DbContext
     {
-
-        public DataBaseContext()
-        { }
-
         public DataBaseContext(DbContextOptions<DataBaseContext> options)
             : base(options)
-        { }
+        {
+            Database.EnsureCreated();
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

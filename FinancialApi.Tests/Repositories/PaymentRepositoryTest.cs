@@ -1,7 +1,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using FinancialApi.Model;
+using FinancialApi.Models;
 using FinancialApi.Repositories;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;

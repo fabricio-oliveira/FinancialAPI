@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using FinancialApi.Services;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace FinancialApi
 {
@@ -30,10 +31,13 @@ namespace FinancialApi
         {
 
             services.AddDbContext<DataBaseContext>();
+
             // Add framework services.
             services.AddMvc();
-            services.AddTransient<IPaymentService, PaymentService>();
-            services.AddTransient<IReceiptService, ReceiptService>();
+            services.AddSingleton<QueueContext>(new QueueContext(Environment.GetEnvironmentVariable("QUEUE_CONNECTION")));
+
+            services.AddSingleton<IPaymentService, PaymentService>();
+            services.AddSingleton<IReceiptService, ReceiptService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

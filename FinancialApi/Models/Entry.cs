@@ -2,15 +2,15 @@
 using System.ComponentModel.DataAnnotations;
 using System;
 
-namespace FinancialApi.Model
+namespace FinancialApi.Models
 {
     [Table("Entries")]
-    public class Entry
+    public class Entry :Base
     {
 
         public Entry(string Description, string DestinationAccount, string DestinationBank,
                      string TypeAccount, string DestinationIdentity, decimal Value, decimal FinancialCharges,
-                     DateTime Date){
+                     DateTime Date):base(){
             this.ID = ID;
             this.Description = Description;
             this.DestinationAccount = DestinationAccount;
@@ -53,5 +53,6 @@ namespace FinancialApi.Model
 
         [Required(ErrorMessage = "Type cant\' be blank")]
         public string Type { get; set; }
+
     }
 }

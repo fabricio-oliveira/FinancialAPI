@@ -1,6 +1,4 @@
-using Microsoft.EntityFrameworkCore;
 using System;
-using FinancialApi.Model;
 using RabbitMQ.Client;
 
 namespace FinancialApi
@@ -8,31 +6,39 @@ namespace FinancialApi
 
     public class QueueContext
     {
-        private ConnectionFactory _factory = null;
+        public IModel channel { get; set; }
+
         public QueueContext(string StringConection)
         {
             var paramter = StringConection.Split(";");
-            _factory = new ConnectionFactory()
+
+            var factory = new ConnectionFactory()
             {
                 HostName = paramter[0],
                 UserName = paramter[1],
                 Password = paramter[2]
             };
-            using (var connection = _factory.CreateConnection())
-            using (var channel = connection.CreateModel())
-            {
-                channel.QueueDeclare(queue: "payment",
+
+            PaymentQueueName = "payment";
+            ReceiptQueueName = "receipt";
+
+            var connection = factory.CreateConnection();
+            channel = connection.CreateModel();
+            
+            channel.QueueDeclare(queue: PaymentQueueName,
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);
 
-                channel.QueueDeclare(queue: "receipt",
-                                 durable: false,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
-            }
+             channel.QueueDeclare(queue: ReceiptQueueName,
+                                  durable: false,
+                                  exclusive: false,
+                                  autoDelete: false,
+                                  arguments: null);
         }
+
+        public string PaymentQueueName { get; }
+        public string ReceiptQueueName { get; }
     }
 }

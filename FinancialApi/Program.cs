@@ -8,14 +8,7 @@ namespace FinancialApi
     {
         public static void Main(string[] args)
         {
-            initDB();
             initWebServer();
-        }
-
-        private static void initDB()
-        {
-            var db = new DataBaseContext();
-            db.Database.EnsureCreated();
         }
 
         private static void initWebServer()

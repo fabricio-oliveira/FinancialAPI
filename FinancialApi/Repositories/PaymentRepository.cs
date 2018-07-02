@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using FinancialApi.Model;
+using FinancialApi.Models;
 
 namespace FinancialApi.Repositories
 {
