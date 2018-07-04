@@ -31,33 +31,39 @@ namespace FinancialApi.Models.Entity
 
         public string UUID { get; }
 
-        [Required(ErrorMessage = "Description cant\' be blank")]
+        [Required(ErrorMessage = "cant\' be blank")]
         [StringLength(30, ErrorMessage = "Description cannot be longer than 30 characters.")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "Destination account can\'t be blank")]
+        [RegularExpression(@"^\d{5}-\d{1}$", ErrorMessage = "This field accept values format xxxxx-x")]
+        [Required(ErrorMessage = "can\'t be blank")]
         public string DestinationAccount { get; set; }
 
-        [Required(ErrorMessage = "Destination bank can\'t be blank")]
+        [RegularExpression(@"^\d{3}-\d{1}$", ErrorMessage = "This field accept values format xxx-x")]
+        [Required(ErrorMessage = "can\'t be blank")]
         public string DestinationBank { get; set; }
 
-        [Required(ErrorMessage = "Type account can\'t be blank")]
+        [Required(ErrorMessage = "can\'t be blank")]
+        [RegularExpression(@"^(corrente|poupança)$", ErrorMessage = "This field accept values \"corrente\" or \"poupança\"")]
         public string TypeAccount { get; set; }
 
-        [Required(ErrorMessage = "Destination identity can\'t be blank")]
+        [Required(ErrorMessage = "can\'t be blank")]
+        [RegularExpression(@"^((\d{3}\.\d{3}\.d{3}-\d{2})|(\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2})))$", ErrorMessage = "This field accept CPF or CNPJ number values")]
         public string DestinationIdentity { get; set; }
 
-        [Required(ErrorMessage = "Value can\'t be blank")]
+        [RegularExpression(@"^\$?\d+(\.(\d{2}))?$", ErrorMessage = "This field accept numeric values $xxxx.xx or xxxx.xx")]
+        [Required(ErrorMessage = "can\'t be blank")]
         public decimal Value { get; set; }
 
-        [Required(ErrorMessage = "Financial charges can\'t be blank")]
+        [RegularExpression(@"^\$?\d+(\.(\d{2}))?$", ErrorMessage = "This field accept numeric values $xxxx.xx or xxxx.xx")]
+        [Required(ErrorMessage = "can\'t be blank")]
         public decimal FinancialCharges { get; set; }
 
-        [Required(ErrorMessage = "Date charges can\'t be blank")]
+        [Required(ErrorMessage = "can\'t be blank")]
         public DateTime Date { get; set; }
 
-        [RegularExpression(@"^(payment|receipt)$")]
-        [Required(ErrorMessage = "Type cant\' be blank")]
+        [RegularExpression(@"^(payment|receipt)$", ErrorMessage = "This field accept values \"corrente\" or \"poupança\"")]
+        [Required(ErrorMessage = "cant\' be blank")]
         public string Type { get; set; }
 
     }

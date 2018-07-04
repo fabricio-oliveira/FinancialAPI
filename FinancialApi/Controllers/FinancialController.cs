@@ -5,6 +5,7 @@ using FinancialApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using FinancialApi.Models.Response;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using FinancialApi.Utils;
 
 namespace FinancialApi.Controllers
 {
@@ -12,17 +13,31 @@ namespace FinancialApi.Controllers
     public class FinancialController : Controller
     {
         private readonly IPaymentService _paymentService;
+        private readonly IReceiptService _receiptService;
 
-        public FinancialController(IPaymentService paymentService)
+        public FinancialController(IPaymentService paymentService,
+                                   IReceiptService receiptService)
         {
             this._paymentService = paymentService;
+            this._receiptService = receiptService;
         }
 
         // Post receipt
         [HttpPost("receipt")]
-        public IActionResult Receipt()
+        public IActionResult Receipt([FromBody]Receipt receipt)
         {
-            throw new NotImplementedException("Need implementation receipt");
+            if (!ModelState.IsValid)
+            {
+                var errors = ValidateErrors();
+                return new BadRequestObjectResult(errors);
+            }
+
+            var result = _receiptService.receive(receipt);
+
+            if (result is Errors)
+                return new BadRequestObjectResult(result);
+
+            return new OkObjectResult(result);
         }
 
         // Post payment
@@ -30,27 +45,33 @@ namespace FinancialApi.Controllers
         public IActionResult Payment([FromBody]Payment payment)
         {
             if (!ModelState.IsValid)
-                foreach (var key in ModelState.Keys)
-                {
-                Console.WriteLine("yyy" + key);
-                foreach (ModelError error in ModelState[key].Errors)
-                    {
+            {
+                var errors = ValidateErrors();
+                return new BadRequestObjectResult(errors);
+            }
 
-                    Console.WriteLine("xxx" + error.ErrorMessage);
-                    }
-                }
-               
             var result = _paymentService.Pay(payment);
 
-            if (result is Error)
+            if (result is Errors)
                 return new BadRequestObjectResult(result);
 
             return new OkObjectResult(result);
-            //return StatusCode(StatusCodes.Status200OK);
         }
 
         // Post payment
         [HttpGet("cash_flow")]
         public IEnumerable<Entry> CashFlow(int id) => throw new NotImplementedException("Need implementation payment");
+
+
+        private Errors ValidateErrors()
+        {
+            var errors = new Errors();
+
+            foreach (var key in ModelState.Keys)
+                foreach (ModelError error in ModelState[key].Errors)
+                    errors.Add(key.ToUnderScore(), error.ErrorMessage);
+
+            return errors;
+        }
     }
 }

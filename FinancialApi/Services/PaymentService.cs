@@ -29,7 +29,7 @@ namespace FinancialApi.Services
 
         // Private
 
-        Error Validate(Payment payment){
+        Errors Validate(Payment payment){
             return null;
         }
 

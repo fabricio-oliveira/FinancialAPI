@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.Serialization.Json;
 
 namespace FinancialApi.Models
@@ -20,5 +19,6 @@ namespace FinancialApi.Models
             _ser.WriteObject(_stream, this);
             return _stream.ToString();
         }
+
     }
 }
