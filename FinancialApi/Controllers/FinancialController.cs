@@ -9,11 +9,11 @@ namespace FinancialApi.Controllers
     [Route("api/v1/financial")]
     public class FinancialController : Controller
     {
-        private readonly IPaymentService _PaymentService;
+        private readonly IPaymentService _paymentService;
 
-        public FinancialController(IPaymentService PaymentService)
+        public FinancialController(IPaymentService paymentService)
         {
-            this._PaymentService = PaymentService;   
+            this._paymentService = paymentService;
         }
 
         // Post receipt
@@ -27,7 +27,7 @@ namespace FinancialApi.Controllers
         [HttpPost("payment")]
         public string Payment([FromBody]Payment payment)
         {
-            _PaymentService.Pay(payment);
+            _paymentService.Pay(payment);
             return "";
         }
 
