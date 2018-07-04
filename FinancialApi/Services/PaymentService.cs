@@ -1,28 +1,30 @@
 using System;
 using System.Text;
-using FinancialApi.Models;
+using FinancialApi.Models.Entity;
+using FinancialApi.Models.Response;
 using RabbitMQ.Client;
 
 namespace FinancialApi.Services 
 {
     public interface IPaymentService
     {
-        Error Pay(Payment payment);   
+        Base Pay(Payment payment);   
     }
 
     class PaymentService : IPaymentService
     {
 
-        private QueueContext _context;
+        private readonly QueueContext _context;
+
         public PaymentService(QueueContext context) => this._context = context;
 
-        public Error Pay(Payment payment)
+        public Base Pay(Payment payment)
         {
             var error = Validate(payment);
             if (error != null) return error;
 
             Enqueue(payment);
-            return null;
+            return new OK(payment.UUID);
         }
 
         // Private

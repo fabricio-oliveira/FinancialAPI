@@ -20,4 +20,9 @@
     <ProjectReference Include="..\FinancialApi\FinancialApi.csproj" />
     <ProjectReference Include="..\FinancialApi\FinancialApi.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="Models\Entity\" />
+    <Folder Include="Utils\" />
+  </ItemGroup>
 </Project>

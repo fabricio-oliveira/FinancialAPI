@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
-using FinancialApi.Models;
+using FinancialApi.Models.Entity;
 using FinancialApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using FinancialApi.Models.Response;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace FinancialApi.Controllers
 {
@@ -18,17 +20,33 @@ namespace FinancialApi.Controllers
 
         // Post receipt
         [HttpPost("receipt")]
-        public void Receipt()
+        public IActionResult Receipt()
         {
             throw new NotImplementedException("Need implementation receipt");
         }
 
         // Post payment
         [HttpPost("payment")]
-        public string Payment([FromBody]Payment payment)
+        public IActionResult Payment([FromBody]Payment payment)
         {
-            _paymentService.Pay(payment);
-            return "";
+            if (!ModelState.IsValid)
+                foreach (var key in ModelState.Keys)
+                {
+                Console.WriteLine("yyy" + key);
+                foreach (ModelError error in ModelState[key].Errors)
+                    {
+
+                    Console.WriteLine("xxx" + error.ErrorMessage);
+                    }
+                }
+               
+            var result = _paymentService.Pay(payment);
+
+            if (result is Error)
+                return new BadRequestObjectResult(result);
+
+            return new OkObjectResult(result);
+            //return StatusCode(StatusCodes.Status200OK);
         }
 
         // Post payment

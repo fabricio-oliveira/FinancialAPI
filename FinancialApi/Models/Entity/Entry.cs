@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System;
 
-namespace FinancialApi.Models
+namespace FinancialApi.Models.Entity
 {
     [Table("Entries")]
     public class Entry :Base
@@ -11,7 +11,7 @@ namespace FinancialApi.Models
         public Entry(string Description, string DestinationAccount, string DestinationBank,
                      string TypeAccount, string DestinationIdentity, decimal Value, decimal FinancialCharges,
                      DateTime Date):base(){
-            this.ID = ID;
+            this.UUID = Guid.NewGuid().ToString();
             this.Description = Description;
             this.DestinationAccount = DestinationAccount;
             this.DestinationBank = DestinationBank;
@@ -22,9 +22,14 @@ namespace FinancialApi.Models
             this.Date = Date;
         }
 
-        public Entry(){}
+        public Entry(){
+            this.UUID = Guid.NewGuid().ToString();
+        }
 
+        [Key]
         public int ID { get; set; }
+
+        public string UUID { get; }
 
         [Required(ErrorMessage = "Description cant\' be blank")]
         [StringLength(30, ErrorMessage = "Description cannot be longer than 30 characters.")]
@@ -51,6 +56,7 @@ namespace FinancialApi.Models
         [Required(ErrorMessage = "Date charges can\'t be blank")]
         public DateTime Date { get; set; }
 
+        [RegularExpression(@"^(payment|receipt)$")]
         [Required(ErrorMessage = "Type cant\' be blank")]
         public string Type { get; set; }
 

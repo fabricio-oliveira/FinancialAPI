@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System;
 
-namespace FinancialApi.Models
+namespace FinancialApi.Models.Entity
 {
     public class Payment :Entry
      {

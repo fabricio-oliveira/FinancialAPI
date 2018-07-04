@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System;
-using FinancialApi.Models;
+using FinancialApi.Models.Entity;
 
 namespace FinancialApi
 {
