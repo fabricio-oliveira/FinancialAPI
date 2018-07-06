@@ -8,7 +8,7 @@ namespace FinancialApi.Services
         Base receive(Receipt receipt);
     }
 
-    class ReceiptService : IReceiptService
+    public class ReceiptService : IReceiptService
     {
         public ReceiptService(QueueContext queue)
         {

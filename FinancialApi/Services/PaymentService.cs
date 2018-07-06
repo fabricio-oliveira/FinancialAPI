@@ -11,7 +11,7 @@ namespace FinancialApi.Services
         Base Pay(Payment payment);   
     }
 
-    class PaymentService : IPaymentService
+    public class PaymentService : IPaymentService
     {
 
         private readonly QueueContext _context;

@@ -272,3 +272,6 @@ __pycache__/
 #OSX
 */**.DS_Store
 .DS_Store
+
+#Coverage
+coverage.json

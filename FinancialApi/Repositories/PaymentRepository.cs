@@ -4,7 +4,14 @@ using FinancialApi.Models.Entity;
 
 namespace FinancialApi.Repositories
 {
-    public class PaymentRepository
+    public interface IPaymentRepository
+    {
+        void Save(Payment payment);
+        IEnumerable<Payment> List();
+    }
+
+
+    public class PaymentRepository: IPaymentRepository
     {
         private DataBaseContext _context;
 

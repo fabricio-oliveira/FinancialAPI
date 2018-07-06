@@ -1,9 +1,6 @@
 using System;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
 using FinancialApi.Models.Entity;
 using FinancialApi.Repositories;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
@@ -17,13 +14,8 @@ namespace FinancialApi.UnitTests.repositories
         [SetUp]
         public void Setup()
         {
-            // In-memory database only exists while the connection is open
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
-
             var options = new DbContextOptionsBuilder<DataBaseContext>()
-                    .UseSqlite(connection)
+                    .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
                     .Options;
 
             var context = new DataBaseContext(options);
