@@ -2,14 +2,15 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using FinancialApi.Models.Entity;
-using FinancialApi.Models.Response;
+using FinancialApi.Models.DTO;
 using RabbitMQ.Client;
+using FinancialApi.Utils;
 
 namespace FinancialApi.Services 
 {
     public interface IPaymentService
     {
-        Task<Base> Pay(Payment payment);   
+        Task<IBaseDTO> Pay(Payment payment);   
     }
 
     public class PaymentService : IPaymentService
@@ -19,18 +20,18 @@ namespace FinancialApi.Services
 
         public PaymentService(QueueContext context) => this._context = context;
 
-        public async Task<Base> Pay(Payment payment)
+        public async Task<IBaseDTO> Pay(Payment payment)
         {
             var error = Validate(payment);
             if (error != null) return await Task.FromResult(error);
 
             Enqueue(payment);
-            return new OK(payment.UUID);
+            return new OkDTO(payment.UUID);
         }
 
         // Private
 
-        Errors Validate(Payment payment){
+        ErrorsDTO Validate(Payment payment){
             return null;
         }
 

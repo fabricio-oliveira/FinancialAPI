@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using FinancialApi.Models.Entity;
 using FinancialApi.Services;
 using Microsoft.AspNetCore.Mvc;
-using FinancialApi.Models.Response;
+using FinancialApi.Models.DTO;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using FinancialApi.Utils;
 using System.Threading.Tasks;
@@ -35,7 +35,7 @@ namespace FinancialApi.Controllers
 
             var result = await _receiptService.Receive(receipt);
 
-            if (result is Errors)
+            if (result is ErrorsDTO)
                 return new BadRequestObjectResult(result);
 
             return new OkObjectResult(result);
@@ -53,7 +53,7 @@ namespace FinancialApi.Controllers
 
             var result =await  _paymentService.Pay(payment);
 
-            if (result is Errors)
+            if (result is ErrorsDTO)
                 return new BadRequestObjectResult(result);
 
             return new OkObjectResult(result);
@@ -64,9 +64,9 @@ namespace FinancialApi.Controllers
         public IEnumerable<Entry> CashFlow(int id) => throw new NotImplementedException("Need implementation payment");
 
 
-        private Errors ValidateErrors()
+        private ErrorsDTO ValidateErrors()
         {
-            var errors = new Errors();
+            var errors = new ErrorsDTO();
 
             foreach (var key in ModelState.Keys)
                 foreach (ModelError error in ModelState[key].Errors)

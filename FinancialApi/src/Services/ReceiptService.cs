@@ -1,4 +1,4 @@
-using FinancialApi.Models.Response;
+using FinancialApi.Models.DTO;
 using FinancialApi.Models.Entity;
 using System.Threading.Tasks;
 
@@ -6,7 +6,7 @@ namespace FinancialApi.Services
 {
     public interface IReceiptService
     {
-        Task<Base> Receive(Receipt receipt);
+        Task<IBaseDTO> Receive(Receipt receipt);
     }
 
     public class ReceiptService : IReceiptService
@@ -16,8 +16,8 @@ namespace FinancialApi.Services
             
         }
 
-        public async Task<Base> Receive(Receipt receipt){
-            return await Task.FromResult(new Errors());
+        public async Task<IBaseDTO> Receive(Receipt receipt){
+            return await Task.FromResult(new ErrorsDTO());
         }
     }
 

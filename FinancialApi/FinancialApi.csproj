@@ -18,4 +18,7 @@
   </ItemGroup>
 
 
+  <ItemGroup>
+    <Compile Remove="src\Models\Base.cs" />
+  </ItemGroup>
 </Project>

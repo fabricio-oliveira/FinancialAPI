@@ -27,5 +27,6 @@
     <Folder Include="src\Models\Entity\" />
     <Folder Include="src\Utils\" />
     <Folder Include="src\Factory\" />
+    <Folder Include="src\support\" />
   </ItemGroup>
 </Project>

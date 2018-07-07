@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 
-namespace FinancialApi.Models.Response
+namespace FinancialApi.Models.DTO
 {
-    public class Errors : Base
+    public class ErrorsDTO : IBaseDTO
     {
         public Dictionary<string,List<string>> Details { get; }
 
-        public Errors()
+        public ErrorsDTO()
         {
             this.Details = new Dictionary<string, List<string>>();
         }
 
-        public Errors(Dictionary<string, List<string>> errors)
+        public ErrorsDTO(Dictionary<string, List<string>> errors)
         {
             this.Details = errors;
         }

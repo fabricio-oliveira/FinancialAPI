@@ -5,7 +5,7 @@ using System;
 namespace FinancialApi.Models.Entity
 {
     [Table("Entries")]
-    public class Entry :Base
+    public class Entry
     {
 
         public Entry(string Description, string DestinationAccount, string DestinationBank,
