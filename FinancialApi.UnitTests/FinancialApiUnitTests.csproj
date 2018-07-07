@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" Version="11.0.50727.1" />
+    <PackageReference Include="Moq" Version="4.8.3" />
     <PackageReference Include="nunit" Version="3.10.1" />
     <PackageReference Include="NUnit.Console" Version="3.8.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
@@ -25,5 +26,6 @@
     <Folder Include="src\Models\" />
     <Folder Include="src\Models\Entity\" />
     <Folder Include="src\Utils\" />
+    <Folder Include="src\Factory\" />
   </ItemGroup>
 </Project>

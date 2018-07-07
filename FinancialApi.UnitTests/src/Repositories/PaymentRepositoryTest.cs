@@ -1,6 +1,7 @@
 using System;
 using FinancialApi.Models.Entity;
 using FinancialApi.Repositories;
+using FinancialApiUnitTests.src.Factory;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
@@ -23,15 +24,10 @@ namespace FinancialApi.UnitTests.repositories
             _repository = new PaymentRepository(context);
         }
 
-        private Payment FactoryPayment(){
-            return new Payment("Op Teste","1234567-8","0123-4","corrente","012.345.678-90",
-                               100.00m, 0.03m, DateTime.Now);
-        }
-
         [Test]
         public void TestSaveCorrectPaymentRepository()
         {
-            var payment = FactoryPayment();
+            var payment = PaymentFactory.Build();
             _repository.Save(payment);
             Assert.IsTrue(true, "Save data");
         }
@@ -40,7 +36,7 @@ namespace FinancialApi.UnitTests.repositories
         public void TestSaveEmptyDescriptionRepository()
         {
 
-            var payment = FactoryPayment();
+            var payment = PaymentFactory.Build();
             payment.Description = null;
             try {
                 _repository.Save(payment);
@@ -55,7 +51,7 @@ namespace FinancialApi.UnitTests.repositories
         public void TestSaveEmptyDestinationAccountRepository()
         {
 
-            var payment = FactoryPayment();
+            var payment = PaymentFactory.Build();
             payment.DestinationAccount = null;
             try
             {

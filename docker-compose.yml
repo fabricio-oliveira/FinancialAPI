@@ -11,6 +11,7 @@ services:
       - "8080:8080"
     volumes:
       - ./FinancialApi/:/app
+    command: ["./wait-for-it.sh", "sql-server:1433", "rabbitmq:5672","--", "./app.sh"]
     links:
       - sql-server
       - rabbitmq
@@ -32,8 +33,3 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:15672"]
-      interval: 30s
-      timeout: 10s
-      retries: 5

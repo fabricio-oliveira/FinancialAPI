@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using FinancialApi.Models.Entity;
 using FinancialApi.Models.Response;
 using RabbitMQ.Client;
@@ -8,7 +9,7 @@ namespace FinancialApi.Services
 {
     public interface IPaymentService
     {
-        Base Pay(Payment payment);   
+        Task<Base> Pay(Payment payment);   
     }
 
     public class PaymentService : IPaymentService
@@ -18,10 +19,10 @@ namespace FinancialApi.Services
 
         public PaymentService(QueueContext context) => this._context = context;
 
-        public Base Pay(Payment payment)
+        public async Task<Base> Pay(Payment payment)
         {
             var error = Validate(payment);
-            if (error != null) return error;
+            if (error != null) return await Task.FromResult(error);
 
             Enqueue(payment);
             return new OK(payment.UUID);

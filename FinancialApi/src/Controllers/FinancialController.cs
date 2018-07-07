@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using FinancialApi.Models.Response;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using FinancialApi.Utils;
+using System.Threading.Tasks;
 
 namespace FinancialApi.Controllers
 {
@@ -24,7 +25,7 @@ namespace FinancialApi.Controllers
 
         // Post receipt
         [HttpPost("receipt")]
-        public IActionResult Receipt([FromBody]Receipt receipt)
+        public async Task<IActionResult> Receipt([FromBody]Receipt receipt)
         {
             if (!ModelState.IsValid)
             {
@@ -32,7 +33,7 @@ namespace FinancialApi.Controllers
                 return new BadRequestObjectResult(errors);
             }
 
-            var result = _receiptService.receive(receipt);
+            var result = await _receiptService.Receive(receipt);
 
             if (result is Errors)
                 return new BadRequestObjectResult(result);
@@ -42,7 +43,7 @@ namespace FinancialApi.Controllers
 
         // Post payment
         [HttpPost("payment")]
-        public IActionResult Payment([FromBody]Payment payment)
+        public async Task<IActionResult> Payment([FromBody]Payment payment)
         {
             if (!ModelState.IsValid)
             {
@@ -50,7 +51,7 @@ namespace FinancialApi.Controllers
                 return new BadRequestObjectResult(errors);
             }
 
-            var result = _paymentService.Pay(payment);
+            var result =await  _paymentService.Pay(payment);
 
             if (result is Errors)
                 return new BadRequestObjectResult(result);
