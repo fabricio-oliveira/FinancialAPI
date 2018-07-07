@@ -2,7 +2,7 @@ version: '3.2'
 services:
   api:
     container_name: api
-    build: .
+    build: FinancialApi/
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - DATABASE_CONNECTION=Data Source=sql-server ,1433;Initial Catalog=Financial;User ID=sa;Password=@A1b2 C3d4

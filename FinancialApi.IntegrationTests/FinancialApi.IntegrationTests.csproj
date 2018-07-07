@@ -18,10 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Confs\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="FinancialControllerTest.cs" />
+    <Folder Include="src\Confs\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
