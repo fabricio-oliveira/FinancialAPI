@@ -1,7 +1,5 @@
-using System;
-using FinancialApi.Models.Entity;
 using FinancialApi.Repositories;
-using FinancialApiUnitTests.src.Factory;
+using FinancialApiUnitTests.Factory;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
@@ -10,7 +8,7 @@ namespace FinancialApi.UnitTests.repositories
     [TestFixture]
     public class PaymentRepositoryTest
     {
-        private PaymentRepository _repository = null;
+        private PaymentDBRepository _repository = null;
 
         [SetUp]
         public void Setup()
@@ -21,7 +19,7 @@ namespace FinancialApi.UnitTests.repositories
 
             var context = new DataBaseContext(options);
             context.Database.EnsureCreated();
-            _repository = new PaymentRepository(context);
+            _repository = new PaymentDBRepository(context);
         }
 
         [Test]

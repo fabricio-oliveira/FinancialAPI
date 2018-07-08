@@ -31,11 +31,11 @@ namespace FinancialApi
                                  autoDelete: false,
                                  arguments: null);
 
-             channel.QueueDeclare(queue: ReceiptQueueName,
-                                  durable: false,
-                                  exclusive: false,
-                                  autoDelete: false,
-                                  arguments: null);
+            channel.QueueDeclare(queue: ReceiptQueueName,
+                                 durable: false,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
         }
 
         public string PaymentQueueName { get; }

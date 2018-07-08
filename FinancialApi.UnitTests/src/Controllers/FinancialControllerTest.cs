@@ -3,17 +3,16 @@ using FinancialApi.Controllers;
 using FinancialApi.Models.Entity;
 using FinancialApi.Models.DTO;
 using FinancialApi.Services;
-using FinancialApiUnitTests.src.Factory;
+using FinancialApiUnitTests.Factory;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using FinancialApiUnitTests.src.support;
 
 namespace FinancialApi.UnitTests.Controllers
 {
     public class FinancialControllerTest
     {
-
+        
         private FinancialController mockController(IBaseDTO payResult = null, IBaseDTO receiveResult = null){
             if (payResult == null)
                 payResult = new OkDTO("x");
@@ -33,7 +32,7 @@ namespace FinancialApi.UnitTests.Controllers
                                                      mockReceiptService.Object);
         }
 
-
+        // Payment
         [Test]
         public async Task Pay_ReturnsAOkObjectResult_WithAUUID()
         {
@@ -44,7 +43,7 @@ namespace FinancialApi.UnitTests.Controllers
             // input (subject)
             var payment = PaymentFactory.Build();
 
-            // output (result)
+            // test (result)
             var result = await controller.Payment(payment);
 
             // Assert one
@@ -59,6 +58,34 @@ namespace FinancialApi.UnitTests.Controllers
             Assert.AreEqual("x", bodyResult.UUID);
         }
 
+
+        [Test]
+        public async Task Pay_ReturnsABadRequestObjectResult_WithFailBody()
+        {
+
+            // initializaController
+            var controller = mockController();
+            controller.ModelState.AddModelError("error", "some error");
+
+            // input (subject)
+            var payment = PaymentFactory.Build();
+
+            // test (result)
+            var result = await controller.Payment(payment);
+
+            // Assert one
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+
+            //Assert two
+            var ResponseResult = (BadRequestObjectResult)result;
+            Assert.IsInstanceOf<ErrorsDTO>(ResponseResult.Value);
+
+            //Assert three
+            var bodyResult = (ErrorsDTO)ResponseResult.Value;
+            Assert.AreEqual("some error", bodyResult.Details["error"][0]);
+        }
+
+        //Receipt
         [Test]
         public async Task Receipt_ReturnsAOkObjectResult_WithAUUID()
         {
@@ -69,7 +96,7 @@ namespace FinancialApi.UnitTests.Controllers
             // input (subject)
             var receipt = ReceiptFactory.Build();
 
-            // output (result)
+            // test (result)
             var result = await controller.Receipt(receipt);
 
             // Assert one
@@ -78,10 +105,9 @@ namespace FinancialApi.UnitTests.Controllers
             //Assert two
             var ResponseResult = (OkObjectResult)result;
             Assert.IsInstanceOf<OkDTO>(ResponseResult.Value);
-
+           
             //Assert three
             var bodyResult = (OkDTO)ResponseResult.Value;
-            Assert.AreEqual("y", bodyResult.UUID);
         }
     }
 }

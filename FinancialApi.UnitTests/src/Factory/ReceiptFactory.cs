@@ -1,7 +1,7 @@
 ﻿using System;
 using FinancialApi.Models.Entity;
 
-namespace FinancialApiUnitTests.src.Factory
+namespace FinancialApiUnitTests.Factory
 {
     public class ReceiptFactory
     {

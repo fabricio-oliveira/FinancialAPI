@@ -61,7 +61,7 @@ namespace FinancialApi.Controllers
 
         // Post payment
         [HttpGet("cash_flow")]
-        public IEnumerable<Entry> CashFlow(int id) => throw new NotImplementedException("Need implementation payment");
+        public IEnumerable<Models.Entity.Entry> CashFlow(int id) => throw new NotImplementedException("Need implementation payment");
 
 
         private ErrorsDTO ValidateErrors()
@@ -70,7 +70,7 @@ namespace FinancialApi.Controllers
 
             foreach (var key in ModelState.Keys)
                 foreach (ModelError error in ModelState[key].Errors)
-                    errors.Add(key.ToUnderScore(), error.ErrorMessage);
+                    errors.Add(key, error.ErrorMessage);
 
             return errors;
         }

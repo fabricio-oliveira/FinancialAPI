@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System;
+using Newtonsoft.Json;
 
 namespace FinancialApi.Models.Entity
 {
@@ -27,9 +28,10 @@ namespace FinancialApi.Models.Entity
         }
 
         [Key]
+        [JsonIgnore]
         public int ID { get; set; }
 
-        public string UUID { get; }
+        public string UUID { get; set; }
 
         [Required(AllowEmptyStrings = false,ErrorMessage = "cant\' be blank")]
         [StringLength(30, ErrorMessage = "Description cannot be longer than 30 characters.")]
