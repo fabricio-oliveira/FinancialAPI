@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FinancialApi.Models.DTO
+namespace FinancialApi.Models.DTO.Response
 {
     public class ErrorsDTO : IBaseDTO
     {

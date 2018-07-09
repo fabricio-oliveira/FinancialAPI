@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using FinancialApi.Utils;
 using Newtonsoft.Json;
 
 namespace FinancialApi.src.Utils
@@ -10,11 +11,13 @@ namespace FinancialApi.src.Utils
         public static string GetJSonFieldName(this Object obj, string name)
         {
             var modelType = obj.GetType();
-            return modelType.GetProperties()
+            var attr = modelType.GetProperties()
                             .Where(p => p.Name.Equals(name))
                             .Select(p => p.GetCustomAttribute<JsonPropertyAttribute>())
                             .Select(jp => jp.PropertyName)
                             .Last();
+
+            return attr ?? name.ToUnderScore();
          }
 
     }

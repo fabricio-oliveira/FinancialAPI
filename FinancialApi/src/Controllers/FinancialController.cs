@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using FinancialApi.Models.Entity;
+using FinancialApi.Models.DTO.Request;
 using FinancialApi.Services;
 using Microsoft.AspNetCore.Mvc;
-using FinancialApi.Models.DTO;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using FinancialApi.Utils;
 using System.Threading.Tasks;
+using FinancialApi.Models.DTO.Response;
+using FinancialApi.src.Utils;
 
 namespace FinancialApi.Controllers
 {
@@ -25,11 +25,11 @@ namespace FinancialApi.Controllers
 
         // Post receipt
         [HttpPost("receipt")]
-        public async Task<IActionResult> Receipt([FromBody]Receipt receipt)
+        public async Task<IActionResult> Receipt([FromBody]ReceiptDTO receipt)
         {
             if (!ModelState.IsValid)
             {
-                var errors = ValidateErrors();
+                var errors = ValidateErrors(receipt);
                 return new BadRequestObjectResult(errors);
             }
 
@@ -43,11 +43,11 @@ namespace FinancialApi.Controllers
 
         // Post payment
         [HttpPost("payment")]
-        public async Task<IActionResult> Payment([FromBody]Payment payment)
+        public async Task<IActionResult> Payment([FromBody]PaymentDTO payment)
         {
             if (!ModelState.IsValid)
             {
-                var errors = ValidateErrors();
+                var errors = ValidateErrors(payment);
                 return new BadRequestObjectResult(errors);
             }
 
@@ -61,16 +61,16 @@ namespace FinancialApi.Controllers
 
         // Post payment
         [HttpGet("cash_flow")]
-        public IEnumerable<Models.Entity.Entry> CashFlow(int id) => throw new NotImplementedException("Need implementation payment");
+        public IEnumerable<Models.DTO.Request.EntryDTO> CashFlow(int id) => throw new NotImplementedException("Need implementation payment");
 
 
-        private ErrorsDTO ValidateErrors()
+        private ErrorsDTO ValidateErrors(Object obj)
         {
             var errors = new ErrorsDTO();
 
             foreach (var key in ModelState.Keys)
                 foreach (ModelError error in ModelState[key].Errors)
-                    errors.Add(key.ToUnderScore(), error.ErrorMessage);
+                    errors.Add(obj.GetJSonFieldName(key), error.ErrorMessage);
 
             return errors;
         }

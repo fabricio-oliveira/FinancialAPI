@@ -8,7 +8,7 @@ namespace FinancialApi.UnitTests.repositories
     [TestFixture]
     public class PaymentRepositoryTest
     {
-        private PaymentDBRepository _repository = null;
+        private InputRepository _repository = null;
 
         [SetUp]
         public void Setup()
@@ -19,7 +19,7 @@ namespace FinancialApi.UnitTests.repositories
 
             var context = new DataBaseContext(options);
             context.Database.EnsureCreated();
-            _repository = new PaymentDBRepository(context);
+            _repository = new InputRepository(context);
         }
 
         [Test]

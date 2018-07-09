@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using FinancialApi.Controllers;
-using FinancialApi.Models.Entity;
-using FinancialApi.Models.DTO;
+using FinancialApi.Models.DTO.Request;
+using FinancialApi.Models.DTO.Request;
 using FinancialApi.Services;
 using FinancialApiUnitTests.Factory;
 using Microsoft.AspNetCore.Mvc;
@@ -22,11 +22,11 @@ namespace FinancialApi.UnitTests.Controllers
 
             // Mock
             var mockPaymentService = new Mock<IPaymentService>();
-            mockPaymentService.Setup(service => service.Pay(It.IsAny<Payment>())).Returns(Task.FromResult<IBaseDTO>(payResult));
+            mockPaymentService.Setup(service => service.Pay(It.IsAny<PaymentDTO>())).Returns(Task.FromResult<IBaseDTO>(payResult));
 
             // Mock
             var mockReceiptService = new Mock<IReceiptService>();
-            mockReceiptService.Setup(service => service.Receive(It.IsAny<Receipt>())).Returns(Task.FromResult<IBaseDTO>(receiveResult));
+            mockReceiptService.Setup(service => service.Receive(It.IsAny<ReceDTOipt>())).Returns(Task.FromResult<IBaseDTO>(receiveResult));
 
             return new FinancialController(mockPaymentService.Object,
                                                      mockReceiptService.Object);

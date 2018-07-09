@@ -1,31 +1,47 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using FinancialApi.Models.Entity;
-using FinancialApi.Models.DTO;
+using FinancialApi.Models.DTO.Request;
 using FinancialApi.Queue;
+using FinancialApi.Repositories;
+using FinancialApi.src.Utils;
+using FinancialApi.Models.DTO.Response;
 
 namespace FinancialApi.Services 
 {
     public interface IPaymentService
     {
-        Task<IBaseDTO> Pay(Payment payment);   
+        Task<IBaseDTO> Pay(PaymentDTO payment);   
     }
 
-    public class PaymentService : GenericService<Payment>, IPaymentService 
+    public class PaymentService : GenericService<PaymentDTO>, IPaymentService 
     {
 
-        private readonly PaymentQueue _queue;
-        //private readonly ;
+        private const decimal ESPECIAL_LIMIT = 20000m; 
 
-        public PaymentService(PaymentQueue queue)
+        private readonly PaymentQueue _queue;
+        private readonly CashFlowRepository _cashFlowRepository;
+        private readonly InputRepository _inputRepository;
+        private readonly OutputRepository _outputRepository;
+        private readonly ChargeRepository _chargesRepository;
+        private readonly AccountRepository _accountRepository;
+
+        public PaymentService(PaymentQueue queue, 
+                              CashFlowRepository cashFlowRepository,
+                              InputRepository inputRepository,
+                              OutputRepository outputRepository,
+                              ChargeRepository chargeRepository,
+                              AccountRepository accountRepository)
         {
             this._queue = queue;
-            this.
+            this._cashFlowRepository = cashFlowRepository;
+            this._inputRepository = inputRepository;
+            this._outputRepository = outputRepository;
+            this._chargesRepository = chargeRepository;
+            this._accountRepository = accountRepository;
         }
 
-
-        public async Task<IBaseDTO> Pay(Payment payment)
+        public async Task<IBaseDTO> Pay(PaymentDTO payment)
         {
             var error = Validate(payment);
             if (error.HasErrors()) 
@@ -36,13 +52,27 @@ namespace FinancialApi.Services
         }
 
 
-        private override ErrorsDTO Validate(Payment payment)
+        protected override ErrorsDTO Validate(PaymentDTO entry)
         {
-            var errors = base.Validate(payment);
+            var errors = base.Validate(entry);
 
-            if 
+            if (HasEspecialLimit(entry))
+                errors.Add(entry.GetJSonFieldName("Value"), "Account don't have especial limit");
 
             return errors;
+        }
+
+
+        private bool HasEspecialLimit(PaymentDTO entry)
+        {
+            var account = _accountRepository.FindOrCreate(number: entry.DestinationAccount, 
+                                                          bank: entry.DestinationBank,
+                                                          type: entry.TypeAccount,
+                                                          identity: entry.DestinationIdentity);
+
+            var flow =  _cashFlowRepository.LastCashFlow(account);
+
+            return (flow.Total - entry.Value - entry.FinancialCharges) <= ESPECIAL_LIMIT;
         }
     }
 

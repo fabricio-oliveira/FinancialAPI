@@ -2,13 +2,13 @@
 
 namespace FinancialApi.src.Models.Entity
 {
-    [Table("Inputs")]
-    public class Input : Entry
+    [Table("Charges")]
+    public class Charge : Entry
     {
         
-        public Input()
+        public Charge()
         {
-            this.Type = "input";
+            this.Type = "charge";
         }
     }
 }

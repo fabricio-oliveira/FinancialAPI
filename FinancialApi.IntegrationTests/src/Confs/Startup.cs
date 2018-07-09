@@ -26,7 +26,7 @@ namespace FinancialApi.IntegrationTests.Confs
         {
             if (env.IsDevelopment())
             {
-                var repository = app.ApplicationServices.GetService<PaymentRepository>();
+                var repository = app.ApplicationServices.GetService<InputRepository>();
 
                 InitializeDatabase(repository);
             }

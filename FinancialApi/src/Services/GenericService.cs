@@ -1,18 +1,18 @@
 using System;
-using FinancialApi.Models.Entity;
-using FinancialApi.Models.DTO;
+using FinancialApi.Models.DTO.Request;
+using FinancialApi.Models.DTO.Response;
 using FinancialApi.src.Utils;
 
 namespace FinancialApi.Services 
 {
-    public class GenericService<T> where T : Entry
+    public class GenericService<T> where T : EntryDTO
     {
 
-        protected ErrorsDTO Validate(T value){
+        protected virtual ErrorsDTO Validate(T entry){
             var errors = new ErrorsDTO();
 
-            if (value.Date < DateTime.Today)
-                errors.Add(value.GetJSonFieldName("Date"), "Date can\'t be less that current date");
+            if (entry.Date < DateTime.Today)
+                errors.Add(entry.GetJSonFieldName("Date"), "Date can\'t be less that current date");
             
             return errors;
         }

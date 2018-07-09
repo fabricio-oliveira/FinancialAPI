@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System;
-using FinancialApi.Models.Entity;
+using FinancialApi.Models.DTO.Request;
 using FinancialApi.src.Models.Entity;
 
 namespace FinancialApi
@@ -9,10 +9,7 @@ namespace FinancialApi
     public class DataBaseContext : DbContext
     {
         public DataBaseContext(DbContextOptions<DataBaseContext> options)
-            : base(options)
-        {
-            Database.EnsureCreated();
-        }
+            : base(options){}
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -24,25 +21,29 @@ namespace FinancialApi
                 throw new System.ArgumentException("DATABASE_CONNECTION cannot be null");
 
             optionsBuilder.UseSqlServer(@connectionDatabase);
+            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Entry>()
-                .HasDiscriminator<string>("Type")
-                        .HasValue<Payment>("pagamento")
-                        .HasValue<Receipt>("recebimento");
 
-            modelBuilder.Entity<ShortEntry>()
-                .HasDiscriminator<string>("Type")
-                        .HasValue<Input>("input")
-                        .HasValue<Output>("output")
-                        .HasValue<Charges>("charges");
+            modelBuilder.Entity<Input>();
+            modelBuilder.Entity<Output>();
+            modelBuilder.Entity<Charge>();
 
+            modelBuilder.Entity<Account>();
+
+            modelBuilder.Entity<CashFlow>();
+                
         }
 
         //DataBase
-        public DbSet<Payment> Payments { get; set; }
-        public DbSet<Receipt> Receipts { get; set; }
+        public DbSet<Account> Accounts { get; }
+
+        public DbSet<CashFlow> CashFlows { get; }
+
+        public DbSet<Input> Inputs { get; }
+        public DbSet<Output> Outputs { get; }
+        public DbSet<Charge> Charges { get; }
     }
 }

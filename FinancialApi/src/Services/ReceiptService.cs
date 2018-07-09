@@ -1,5 +1,5 @@
-using FinancialApi.Models.DTO;
-using FinancialApi.Models.Entity;
+using FinancialApi.Models.DTO.Request;
+using FinancialApi.Models.DTO.Response;
 using FinancialApi.Queue;
 using System.Threading.Tasks;
 
@@ -7,17 +7,17 @@ namespace FinancialApi.Services
 {
     public interface IReceiptService
     {
-        Task<IBaseDTO> Receive(Receipt receipt);
+        Task<IBaseDTO> Receive(ReceiptDTO receipt);
     }
 
-    public class ReceiptService : GenericService<Payment>, IReceiptService
+    public class ReceiptService : GenericService<PaymentDTO>, IReceiptService
     {
 
         private readonly ReceiptQueue _queue;
 
         public ReceiptService(ReceiptQueue queue) => this._queue = queue;
 
-        public async Task<IBaseDTO> Receive(Receipt receipt)
+        public async Task<IBaseDTO> Receive(ReceiptDTO receipt)
         {
             var error = Validate(receipt);
             if (error != null) return await Task.FromResult(error);
@@ -28,7 +28,7 @@ namespace FinancialApi.Services
 
         // Private
 
-        ErrorsDTO Validate(Receipt receipt)
+        ErrorsDTO Validate(ReceiptDTO receipt)
         {
             return null;
         }

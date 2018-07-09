@@ -7,6 +7,8 @@
   <ItemGroup>
     <Folder Include="src\" />
     <Folder Include="src\workers\" />
+    <Folder Include="src\Models\DTO\Request\" />
+    <Folder Include="src\Models\DTO\Response\" />
   </ItemGroup>
 
   <ItemGroup>

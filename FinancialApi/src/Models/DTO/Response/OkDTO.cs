@@ -1,5 +1,5 @@
 ﻿using System;
-namespace FinancialApi.Models.DTO
+namespace FinancialApi.Models.DTO.Response
 {
     public class OkDTO : IBaseDTO
     {

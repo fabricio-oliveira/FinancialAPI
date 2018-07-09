@@ -1,10 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinancialApi.src.Models.Entity
 {
-    public class Output : ShortEntry
+    [Table("Outputs")]
+    public class Output : Entry
     {
         
         public Output()

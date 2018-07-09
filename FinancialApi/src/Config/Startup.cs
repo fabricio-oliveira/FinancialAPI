@@ -8,8 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using FinancialApi.Services;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using FinancialApi.Queue;
+using FinancialApi.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinancialApi
 {
@@ -37,9 +38,18 @@ namespace FinancialApi
             services.AddMvc();
             services.AddSingleton<QueueContext>(new QueueContext(Environment.GetEnvironmentVariable("QUEUE_CONNECTION")));
 
+            //Queue
             services.AddSingleton<PaymentQueue, PaymentQueue>();
             services.AddSingleton<ReceiptQueue, ReceiptQueue>();
 
+            //Repository
+            services.AddSingleton<AccountRepository, AccountRepository>();
+            services.AddSingleton<CashFlowRepository, CashFlowRepository>();
+            services.AddSingleton<ChargeRepository, ChargeRepository>();
+            services.AddSingleton<InputRepository, InputRepository>();
+            services.AddSingleton<OutputRepository, OutputRepository>();
+
+            //Service
             services.AddSingleton<IPaymentService, PaymentService>();
             services.AddSingleton<IReceiptService, ReceiptService>();
         }

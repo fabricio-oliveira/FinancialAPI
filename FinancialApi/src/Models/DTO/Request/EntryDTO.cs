@@ -3,13 +3,12 @@ using System.ComponentModel.DataAnnotations;
 using System;
 using Newtonsoft.Json;
 
-namespace FinancialApi.Models.Entity
+namespace FinancialApi.Models.DTO.Request
 {
-    [Table("Entries")]
-    public class Entry
+    public class EntryDTO
     {
 
-        public Entry(string Description, string DestinationAccount, string DestinationBank,
+        public EntryDTO(string Description, string DestinationAccount, string DestinationBank,
                      string TypeAccount, string DestinationIdentity, decimal Value, decimal FinancialCharges,
                      DateTime Date):base(){
             this.UUID = Guid.NewGuid().ToString();
@@ -23,7 +22,7 @@ namespace FinancialApi.Models.Entity
             this.Date = Date;
         }
 
-        public Entry(){
+        public EntryDTO(){
             this.UUID = Guid.NewGuid().ToString();
         }
 
@@ -39,7 +38,7 @@ namespace FinancialApi.Models.Entity
         public string Description { get; set; }
 
         [Required(ErrorMessage = "can\'t be blank")]
-        [RegularExpression(@"^\d{5}-\d{1}$", ErrorMessage = "This field accept values format xxxxx-x")]
+        [RegularExpression(@"^\d{5}-\d{1}$",ErrorMessage = "This field accept values format xxxxx-x")]
         [JsonProperty(PropertyName = "conta_destino")]
         public string DestinationAccount { get; set; }
 

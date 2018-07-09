@@ -4,11 +4,10 @@ using Newtonsoft.Json;
 
 namespace FinancialApi.src.Models.Entity
 {
-    [Table("ShortEntries")]
-    public class ShortEntry
+    public class Entry
     {
         
-        public ShortEntry()
+        public Entry()
         {
         }
 
@@ -20,6 +19,8 @@ namespace FinancialApi.src.Models.Entity
 
         [JsonProperty(PropertyName = "valor")]
         public decimal Value { get; set; }
+
+        public CashFlow CashFlow { get; set; }
 
     }
 }

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using FinancialApi.Models.Entity;
+﻿using System.Collections.Generic;
+using FinancialApi.Models.DTO.Request;
+using FinancialApi.src.Models.Entity;
 
 namespace FinancialApi.Repositories
 {
-    public interface IRepository<Entry>
+    public interface IRepository<T>
     {
-        void Save(Entry entry);
-        IEnumerable<Entry> List();
+        void Save(T t);
+        IEnumerable<T> List();
     }
 }
