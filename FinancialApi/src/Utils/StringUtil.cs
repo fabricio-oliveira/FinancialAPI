@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Newtonsoft.Json;
 
 namespace FinancialApi.Utils
 {
-    public static class String
+    public static class StringUtil
     {
         public static string ToUnderScore(this System.String str) => string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
 

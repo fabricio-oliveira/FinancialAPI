@@ -38,7 +38,7 @@ namespace FinancialApi.Queue
             var data = _context.channel.BasicGet(_queueName, true);
 
             var body = data != null ? System.Text.Encoding.UTF8.GetString(data.Body) : null;
-            return Utils.String.FromJson<T>(body); 
+            return Utils.StringUtil.FromJson<T>(body); 
 
         }
     }

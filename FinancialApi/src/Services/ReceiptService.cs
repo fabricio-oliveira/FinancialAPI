@@ -10,7 +10,7 @@ namespace FinancialApi.Services
         Task<IBaseDTO> Receive(Receipt receipt);
     }
 
-    public class ReceiptService : IReceiptService
+    public class ReceiptService : GenericService<Payment>, IReceiptService
     {
 
         private readonly ReceiptQueue _queue;

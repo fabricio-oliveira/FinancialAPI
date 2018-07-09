@@ -12,28 +12,38 @@ namespace FinancialApi.Services
         Task<IBaseDTO> Pay(Payment payment);   
     }
 
-    public class PaymentService : IPaymentService
+    public class PaymentService : GenericService<Payment>, IPaymentService 
     {
 
         private readonly PaymentQueue _queue;
+        //private readonly ;
 
-        public PaymentService(PaymentQueue queue) => this._queue = queue;
+        public PaymentService(PaymentQueue queue)
+        {
+            this._queue = queue;
+            this.
+        }
+
 
         public async Task<IBaseDTO> Pay(Payment payment)
         {
             var error = Validate(payment);
-            if (error != null) return await Task.FromResult(error);
+            if (error.HasErrors()) 
+                return await Task.FromResult(error);
 
             _queue.Enqueue(payment);
             return new OkDTO(payment.UUID);
         }
 
-        // Private
 
-        ErrorsDTO Validate(Payment payment){
-            return null;
+        private override ErrorsDTO Validate(Payment payment)
+        {
+            var errors = base.Validate(payment);
+
+            if 
+
+            return errors;
         }
-
     }
 
 }

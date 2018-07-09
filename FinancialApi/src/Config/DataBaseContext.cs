@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using FinancialApi.Models.Entity;
+using FinancialApi.src.Models.Entity;
 
 namespace FinancialApi
 {
@@ -29,8 +30,15 @@ namespace FinancialApi
         {
             modelBuilder.Entity<Entry>()
                 .HasDiscriminator<string>("Type")
-                        .HasValue<Payment>("payment")
-                        .HasValue<Receipt>("receipt");
+                        .HasValue<Payment>("pagamento")
+                        .HasValue<Receipt>("recebimento");
+
+            modelBuilder.Entity<ShortEntry>()
+                .HasDiscriminator<string>("Type")
+                        .HasValue<Input>("input")
+                        .HasValue<Output>("output")
+                        .HasValue<Charges>("charges");
+
         }
 
         //DataBase

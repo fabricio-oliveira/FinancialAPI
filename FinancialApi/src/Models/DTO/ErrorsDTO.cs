@@ -23,5 +23,7 @@ namespace FinancialApi.Models.DTO
                     
             this.Details[attr].Add(error);
         }
+
+        public bool HasErrors() => this.Details.Count > 0;
     }
 }

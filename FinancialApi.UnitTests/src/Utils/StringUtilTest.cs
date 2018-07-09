@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using FinancialApi.Utils;
-using FinancialApiUnitTests.Factory;
 using NUnit.Framework;
 
 namespace FinancialApiTests.Utils

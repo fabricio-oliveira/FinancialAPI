@@ -70,7 +70,7 @@ namespace FinancialApi.Controllers
 
             foreach (var key in ModelState.Keys)
                 foreach (ModelError error in ModelState[key].Errors)
-                    errors.Add(key, error.ErrorMessage);
+                    errors.Add(key.ToUnderScore(), error.ErrorMessage);
 
             return errors;
         }

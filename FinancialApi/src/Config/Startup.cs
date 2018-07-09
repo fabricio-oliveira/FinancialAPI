@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using FinancialApi.Services;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using FinancialApi.Queue;
 
 namespace FinancialApi
 {
@@ -35,6 +36,9 @@ namespace FinancialApi
             // Add framework services.
             services.AddMvc();
             services.AddSingleton<QueueContext>(new QueueContext(Environment.GetEnvironmentVariable("QUEUE_CONNECTION")));
+
+            services.AddSingleton<PaymentQueue, PaymentQueue>();
+            services.AddSingleton<ReceiptQueue, ReceiptQueue>();
 
             services.AddSingleton<IPaymentService, PaymentService>();
             services.AddSingleton<IReceiptService, ReceiptService>();
