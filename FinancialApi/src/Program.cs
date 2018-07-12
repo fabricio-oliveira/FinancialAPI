@@ -1,4 +1,5 @@
 using System.IO;
+using FinancialApi.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 
@@ -8,12 +9,12 @@ namespace FinancialApi
     {
         public static void Main(string[] args)
         {
-            initWebServer();
+            InitWebServer();
         }
 
-        private static void initWebServer()
+        private static void InitWebServer()
         {
-            var host = new WebHostBuilder()
+             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()

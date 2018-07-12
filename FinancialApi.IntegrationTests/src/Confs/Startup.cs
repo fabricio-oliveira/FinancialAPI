@@ -1,3 +1,4 @@
+using FinancialApi.Config;
 using FinancialApi.Repositories;
 using FinancialApi.Services;
 using Microsoft.AspNetCore.Builder;
@@ -12,8 +13,8 @@ namespace FinancialApi.IntegrationTests.Confs
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataBaseContext>(
-                optionsBuilder => optionsBuilder.UseInMemoryDatabase("InMemoryDb"));
+            services.AddDbContextPool<DataBaseContext>(
+                optionsBuilder => optionsBuilder.UseInMemoryDatabase("InMemoryDb"),10);
             
             services.AddMvc();
             services.AddSingleton<IPaymentService, PaymentService>();
@@ -24,19 +25,8 @@ namespace FinancialApi.IntegrationTests.Confs
             IHostingEnvironment env,
             ILoggerFactory loggerFactory)
         {
-            if (env.IsDevelopment())
-            {
-                var repository = app.ApplicationServices.GetService<InputRepository>();
-
-                InitializeDatabase(repository);
-            }
-
             app.UseMvcWithDefaultRoute();
         }
-
-        public void InitializeDatabase(IPaymentRepository repo)
-        {
-            
-        }
+       
     }
 }

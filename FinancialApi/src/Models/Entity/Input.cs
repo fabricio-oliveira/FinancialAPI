@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinancialApi.src.Models.Entity
 {
@@ -7,6 +8,11 @@ namespace FinancialApi.src.Models.Entity
     {
         
         public Input()
+        {
+            this.Type = "input";
+        }
+
+        public Input(DateTime date, decimal value, CashFlow cashFlow):base(date, value, cashFlow)
         {
             this.Type = "input";
         }

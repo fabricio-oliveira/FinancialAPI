@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using FinancialApi.Controllers;
-using FinancialApi.Models.DTO.Request;
-using FinancialApi.Models.DTO.Request;
+using FinancialApi.Models.DTO.Request;  
+using FinancialApi.Models.DTO.Response;
 using FinancialApi.Services;
 using FinancialApiUnitTests.Factory;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +13,7 @@ namespace FinancialApi.UnitTests.Controllers
     public class FinancialControllerTest
     {
         
-        private FinancialController mockController(IBaseDTO payResult = null, IBaseDTO receiveResult = null){
+        private FinancialController MockController(IBaseDTO payResult = null, IBaseDTO receiveResult = null){
             if (payResult == null)
                 payResult = new OkDTO("x");
 
@@ -26,7 +26,7 @@ namespace FinancialApi.UnitTests.Controllers
 
             // Mock
             var mockReceiptService = new Mock<IReceiptService>();
-            mockReceiptService.Setup(service => service.Receive(It.IsAny<ReceDTOipt>())).Returns(Task.FromResult<IBaseDTO>(receiveResult));
+            mockReceiptService.Setup(service => service.Receive(It.IsAny<ReceiptDTO>())).Returns(Task.FromResult<IBaseDTO>(receiveResult));
 
             return new FinancialController(mockPaymentService.Object,
                                                      mockReceiptService.Object);
@@ -38,7 +38,7 @@ namespace FinancialApi.UnitTests.Controllers
         {
 
             // initializaController
-            var controller = mockController();
+            var controller = MockController();
 
             // input (subject)
             var payment = PaymentFactory.Build();
@@ -64,8 +64,8 @@ namespace FinancialApi.UnitTests.Controllers
         {
 
             // initializaController
-            var controller = mockController();
-            controller.ModelState.AddModelError("error", "some error");
+            var controller = MockController();
+            controller.ModelState.AddModelError("Description", "some error");
 
             // input (subject)
             var payment = PaymentFactory.Build();
@@ -82,7 +82,8 @@ namespace FinancialApi.UnitTests.Controllers
 
             //Assert three
             var bodyResult = (ErrorsDTO)ResponseResult.Value;
-            Assert.AreEqual("some error", bodyResult.Details["error"][0]);
+            Assert.AreEqual(1, bodyResult.Details.Keys.Count);
+            Assert.AreEqual("some error", bodyResult.Details["descricao"][0]);
         }
 
         //Receipt
@@ -91,7 +92,7 @@ namespace FinancialApi.UnitTests.Controllers
         {
 
             // initializaController
-            var controller = mockController();
+            var controller = MockController();
 
             // input (subject)
             var receipt = ReceiptFactory.Build();

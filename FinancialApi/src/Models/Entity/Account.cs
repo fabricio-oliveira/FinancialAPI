@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinancialApi.src.Models.Entity
 {
@@ -15,7 +17,8 @@ namespace FinancialApi.src.Models.Entity
             this.Identity = identity;
         }
 
-        public string ID { get; set; }
+        [Key]
+        public int ID { get; set; }
 
         public string Number { get; set; }
 
@@ -24,6 +27,9 @@ namespace FinancialApi.src.Models.Entity
         public string TypeAccount { get; set; }
 
         public string Identity { get; set; }
+
+        //RelationShip
+        public ICollection<CashFlow> CashFlows { get; set; }
 
     }
 }

@@ -17,7 +17,7 @@ namespace FinancialApi.Services
     public class PaymentService : GenericService<PaymentDTO>, IPaymentService 
     {
 
-        private const decimal ESPECIAL_LIMIT = 20000m; 
+        private const decimal ESPECIAL_LIMIT = -20.000m; 
 
         private readonly PaymentQueue _queue;
         private readonly CashFlowRepository _cashFlowRepository;
@@ -56,7 +56,7 @@ namespace FinancialApi.Services
         {
             var errors = base.Validate(entry);
 
-            if (HasEspecialLimit(entry))
+            if (!HasEspecialLimit(entry))
                 errors.Add(entry.GetJSonFieldName("Value"), "Account don't have especial limit");
 
             return errors;
@@ -72,7 +72,7 @@ namespace FinancialApi.Services
 
             var flow =  _cashFlowRepository.LastCashFlow(account);
 
-            return (flow.Total - entry.Value - entry.FinancialCharges) <= ESPECIAL_LIMIT;
+            return (flow.Total - entry.Value - entry.FinancialCharges) >= ESPECIAL_LIMIT;
         }
     }
 

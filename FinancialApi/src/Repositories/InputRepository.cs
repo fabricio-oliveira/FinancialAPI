@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FinancialApi.Models.DTO.Request;
+﻿using System.Collections.Generic;
+using FinancialApi.Config;
 using FinancialApi.src.Models.Entity;
 
 namespace FinancialApi.Repositories

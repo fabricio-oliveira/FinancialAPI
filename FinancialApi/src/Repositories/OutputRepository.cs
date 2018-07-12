@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FinancialApi.Config;
 using FinancialApi.src.Models.Entity;
 
 namespace FinancialApi.Repositories

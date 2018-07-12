@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -10,9 +6,11 @@ using Microsoft.Extensions.Logging;
 using FinancialApi.Services;
 using FinancialApi.Queue;
 using FinancialApi.Repositories;
+using System;
 using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Swagger;
 
-namespace FinancialApi
+namespace FinancialApi.Config
 {
     public class Startup
     {
@@ -31,36 +29,72 @@ namespace FinancialApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionDatabase = Environment.GetEnvironmentVariable("DATABASE_CONNECTION");
+            if (connectionDatabase == null)
+                throw new System.ArgumentException("DATABASE_CONNECTION cannot be null");
 
-            services.AddDbContext<DataBaseContext>();
+            services.AddDbContextPool<DataBaseContext>(options => options.UseSqlServer(connectionDatabase), 10);
 
             // Add framework services.
-            services.AddMvc();
-            services.AddSingleton<QueueContext>(new QueueContext(Environment.GetEnvironmentVariable("QUEUE_CONNECTION")));
+            services.AddMvc()
+                    .AddJsonOptions(options =>
+                    {
+                        options.SerializerSettings.DateFormatString = "dd-MM-yyyy";
+                    });
+
+            services.AddSwaggerGen(options =>
+           {
+               options.SwaggerDoc("v1",
+                            new Info
+                            {
+                                Title = "Api de Finanças",
+                                Version = "v1",
+                                Description = "API REST de lançamentos Financeiros",
+                                Contact = new Contact
+                                {
+                                    Name = "Fabricio Oliveira",
+                                    Url = "https://github.com/fabricio.oliveira"
+                                }
+                            });
+           });
+
+
+            var connectionQueue = Environment.GetEnvironmentVariable("QUEUE_CONNECTION");
+            if (connectionQueue == null)
+                throw new System.ArgumentException("QUEUE_CONNECTION cannot be null");
+
+            services.AddSingleton<QueueContext>(
+                new QueueContext(connectionQueue)
+            );
 
             //Queue
-            services.AddSingleton<PaymentQueue, PaymentQueue>();
-            services.AddSingleton<ReceiptQueue, ReceiptQueue>();
+            services.AddSingleton<PaymentQueue>();
+            services.AddSingleton<ReceiptQueue>();
 
             //Repository
-            services.AddSingleton<AccountRepository, AccountRepository>();
-            services.AddSingleton<CashFlowRepository, CashFlowRepository>();
-            services.AddSingleton<ChargeRepository, ChargeRepository>();
-            services.AddSingleton<InputRepository, InputRepository>();
-            services.AddSingleton<OutputRepository, OutputRepository>();
+            services.AddTransient<AccountRepository>();
+            services.AddTransient<CashFlowRepository>();
+            services.AddTransient<ChargeRepository>();
+            services.AddTransient<InputRepository>();
+            services.AddTransient<OutputRepository>();
 
             //Service
             services.AddSingleton<IPaymentService, PaymentService>();
             services.AddSingleton<IReceiptService, ReceiptService>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Financial API V1");
+            });
         }
     }
 }

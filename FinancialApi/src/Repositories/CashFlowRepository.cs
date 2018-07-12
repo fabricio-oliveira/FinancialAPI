@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FinancialApi.Models.DTO.Request;
+using FinancialApi.Config;
 using FinancialApi.src.Models.Entity;
 
 namespace FinancialApi.Repositories
@@ -28,10 +28,12 @@ namespace FinancialApi.Repositories
 
         public CashFlow LastCashFlow(Account account)
         {
-            var cashFlow =  _context.CashFlows
-                                    .Where(x => x.Account == account)
-                                    .OrderByDescending(x => x.Date)?
-                                    .Last();
+            var cashFlow = _context.CashFlows
+                                   .Where(x => x.Account == account)
+                                   .OrderByDescending(x => x.Date)
+                                   .FirstOrDefault();
+            
+
 
             return cashFlow ?? new CashFlow(DateTime.Today.AddDays(-1), null, null, null, 0.0m, 0.0m,account);
         }

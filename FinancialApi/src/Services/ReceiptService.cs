@@ -10,7 +10,7 @@ namespace FinancialApi.Services
         Task<IBaseDTO> Receive(ReceiptDTO receipt);
     }
 
-    public class ReceiptService : GenericService<PaymentDTO>, IReceiptService
+    public class ReceiptService : GenericService<ReceiptDTO>, IReceiptService
     {
 
         private readonly ReceiptQueue _queue;
@@ -28,9 +28,11 @@ namespace FinancialApi.Services
 
         // Private
 
-        ErrorsDTO Validate(ReceiptDTO receipt)
+        protected override ErrorsDTO Validate(ReceiptDTO entry)
         {
-            return null;
+            var errors = base.Validate(entry);
+
+            return errors;
         }
 
     }

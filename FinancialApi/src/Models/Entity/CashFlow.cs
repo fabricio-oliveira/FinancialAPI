@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using FinancialApi.Models.DTO.Request;
 using Newtonsoft.Json;
@@ -27,8 +28,22 @@ namespace FinancialApi.src.Models.Entity
             this.Account = account;
         }
 
+        [Key]
+        [JsonIgnore]
+        public int? ID { get; set; }
+
         [JsonProperty(PropertyName = "data")]
         public DateTime Date { get; set; }
+
+        [Column("total")]
+        [JsonProperty(PropertyName = "total")]
+        public decimal Total { get; set; }
+
+        [Column("day_position")]
+        [JsonProperty(PropertyName = "posicao_do_dia")]
+        public decimal DayPosition { get; set; }
+
+        //RelationShips
 
         [JsonProperty(PropertyName = "entradas")]
         public ICollection<Input> Inputs { get; set;  }
@@ -39,13 +54,12 @@ namespace FinancialApi.src.Models.Entity
         [JsonProperty(PropertyName = "encargos")]
         public ICollection<Charge> Charges { get; set; }
 
-        [JsonProperty(PropertyName = "total")]
-        public decimal Total { get; set; }
-
-        [JsonProperty(PropertyName = "posicao_do_dia")]
-        public decimal DayPosition { get; set; }
+        [JsonIgnore]
+        [ForeignKey("AccountId")]
+        public Account Account { get; set; }
 
         [JsonIgnore]
-        public Account Account { get; set; }
+        public int? AccountId { get; set; }
+
     }
 }

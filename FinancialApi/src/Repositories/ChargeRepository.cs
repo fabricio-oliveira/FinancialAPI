@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FinancialApi.Config;
 using FinancialApi.Models.DTO.Request;
 using FinancialApi.src.Models.Entity;
 

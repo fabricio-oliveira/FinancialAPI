@@ -15,7 +15,7 @@ namespace FinancialApi.src.Utils
                             .Where(p => p.Name.Equals(name))
                             .Select(p => p.GetCustomAttribute<JsonPropertyAttribute>())
                             .Select(jp => jp.PropertyName)
-                            .Last();
+                            .FirstOrDefault();
 
             return attr ?? name.ToUnderScore();
          }
