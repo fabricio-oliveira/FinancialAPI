@@ -5,7 +5,8 @@ namespace FinancialApi.Repositories
 {
     public interface IRepository<T>
     {
+        T Find(long id);
         void Save(T t);
-        IEnumerable<T> List();
+        void Update(T t);
     }
 }

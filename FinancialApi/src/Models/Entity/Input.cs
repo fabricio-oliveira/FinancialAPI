@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FinancialApi.src.Models.Entity
+namespace FinancialApi.Models.Entity
 {
     [Table("Inputs")]
     public class Input : Entry
@@ -12,7 +12,7 @@ namespace FinancialApi.src.Models.Entity
             this.Type = "input";
         }
 
-        public Input(DateTime date, decimal value, CashFlow cashFlow):base(date, value, cashFlow)
+        public Input(DateTime date, decimal value, Balance balance):base(date, value, balance)
         {
             this.Type = "input";
         }

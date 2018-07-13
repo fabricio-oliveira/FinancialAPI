@@ -7,6 +7,7 @@ namespace FinancialApi.Services
 {
     public interface IReceiptService
     {
+        Task<IBaseDTO> EnqueueToReceive(ReceiptDTO receipt);
         Task<IBaseDTO> Receive(ReceiptDTO receipt);
     }
 
@@ -17,13 +18,18 @@ namespace FinancialApi.Services
 
         public ReceiptService(ReceiptQueue queue) => this._queue = queue;
 
-        public async Task<IBaseDTO> Receive(ReceiptDTO receipt)
+        public async Task<IBaseDTO> EnqueueToReceive(ReceiptDTO receipt)
         {
             var error = Validate(receipt);
             if (error != null) return await Task.FromResult(error);
 
             _queue.Enqueue(receipt);
             return new OkDTO(receipt.UUID);
+        }
+
+        public Task<IBaseDTO> Receive(ReceiptDTO receipt)
+        {
+            throw new System.NotImplementedException();
         }
 
         // Private

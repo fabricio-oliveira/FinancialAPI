@@ -6,8 +6,8 @@ using RabbitMQ.Client.Events;
 
 namespace FinancialApi.Queue
 {
-    public class EntryQueue :GenericQueue<PaymentDTO>
+    public class PaymentQueue :GenericQueue<PaymentDTO>
     {
-        public EntryQueue(QueueContext context):base(context, context.PaymentQueueName) {}
+        public PaymentQueue(QueueContext context):base(context, context.PaymentQueueName) {}
     }
 }

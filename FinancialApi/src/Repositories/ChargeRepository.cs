@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using FinancialApi.Config;
 using FinancialApi.Models.DTO.Request;
-using FinancialApi.src.Models.Entity;
+using FinancialApi.Models.Entity;
 
 namespace FinancialApi.Repositories
 {
@@ -21,9 +21,14 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
-        public IEnumerable<Charge> List()
+        public void Update(Charge charge){
+            _context.Charges.Update(charge);
+            _context.SaveChanges();
+        }
+
+        public Charge Find(long id)
         {
-            return _context.Charges;
+           return  _context.Charges.Find(id);
         }
     }
 }

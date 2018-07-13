@@ -1,5 +1,5 @@
 ﻿using System;
-using FinancialApi.src.Models.Entity;
+using FinancialApi.Models.Entity;
 
 namespace FinancialApiUnitTests.Factory
 {
@@ -7,7 +7,7 @@ namespace FinancialApiUnitTests.Factory
     {
         public static Input Build(Action<Input> pred = null)
         {
-            var input = new Input(DateTime.Now, 100.00m,new CashFlow());
+            var input = new Input(DateTime.Now, 100.00m,new Balance());
 
             pred?.Invoke(input);
             return input;

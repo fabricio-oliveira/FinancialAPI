@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using FinancialApi.Config;
-using FinancialApi.src.Models.Entity;
+using FinancialApi.Models.Entity;
 
 namespace FinancialApi.Repositories
 {
@@ -19,10 +19,20 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
-        public IEnumerable<Input> List()
+        public void Update(Input input)
         {
-            return _context.Inputs;
+            _context.Inputs.Update(input);
+            _context.SaveChanges();
         }
 
+        public Input Find(long id)
+        {
+            return _context.Inputs.Find(id);
+        }
+
+        public void Get(Input t)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

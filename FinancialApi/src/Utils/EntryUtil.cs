@@ -4,7 +4,7 @@ using System.Reflection;
 using FinancialApi.Utils;
 using Newtonsoft.Json;
 
-namespace FinancialApi.src.Utils
+namespace FinancialApi.Utils
 {
     public static class EntryUtil
     {

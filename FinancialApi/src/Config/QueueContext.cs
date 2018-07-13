@@ -20,6 +20,7 @@ namespace FinancialApi
 
             PaymentQueueName = "payment";
             ReceiptQueueName = "receipt";
+            EntryQueueName = "entry";
 
             var connection = factory.CreateConnection();
             channel = connection.CreateModel();
@@ -35,9 +36,16 @@ namespace FinancialApi
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);
+
+            channel.QueueDeclare(queue: EntryQueueName,
+                                 durable: false,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
         }
 
         public string PaymentQueueName { get; }
         public string ReceiptQueueName { get; }
+        public string EntryQueueName { get; }
     }
 }

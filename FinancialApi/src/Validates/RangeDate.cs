@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FinancialApi.src.validate {
+namespace FinancialApi.validate {
     public class RangeDate : RangeAttribute {
 
         private const string format = "dd-MM-yyyy";

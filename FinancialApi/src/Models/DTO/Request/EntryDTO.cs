@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System;
 using Newtonsoft.Json;
-using FinancialApi.src.validate;
+using FinancialApi.validate;
 
 namespace FinancialApi.Models.DTO.Request
 {

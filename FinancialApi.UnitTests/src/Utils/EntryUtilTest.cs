@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using FinancialApi.src.Utils;
+using FinancialApi..Utils;
 using FinancialApi.Utils;
 using FinancialApiUnitTests.Factory;
 using Newtonsoft.Json;

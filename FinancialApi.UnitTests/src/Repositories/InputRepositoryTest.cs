@@ -2,6 +2,7 @@ using System;
 using FinancialApi.Config;
 using FinancialApi.Repositories;
 using FinancialApiUnitTests.Factory;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
@@ -15,9 +16,12 @@ namespace FinancialApi.UnitTests.repositories
         [SetUp]
         public void Setup()
         {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
             var options = new DbContextOptionsBuilder<DataBaseContext>()
-                    .UseInMemoryDatabase(databaseName: "Add_writes_to_database")
-                    .Options;
+                .UseSqlite(connection)
+                 .Options;
 
             var context = new DataBaseContext(options);
             context.Database.EnsureCreated();
@@ -32,6 +36,29 @@ namespace FinancialApi.UnitTests.repositories
             _repository.Save(input);
             Assert.IsTrue(true, "Save data");
         }
+
+
+        [Test]
+        public void TestSaveConcurrency()
+        {
+            var input = InputFactory.Build();
+            _repository.Save(input);
+
+
+            var result1 = _repository.Find(input.Id.GetValueOrDefault());
+            var result2 = _repository.Find(input.Id.GetValueOrDefault());
+
+            result1.Value = 100.00m;
+            _repository.Update(result1);
+
+
+            result2.Value = 100.01m;
+            _repository.Update(result2);
+
+            Assert.IsNull(result2.RowVersion);
+        }
+
+
 
         //[Test]
         //public void TestSaveEmptyDescriptionRepository()

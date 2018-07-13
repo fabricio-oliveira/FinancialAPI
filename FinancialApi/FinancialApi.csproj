@@ -31,6 +31,7 @@
   <ItemGroup>
     <Compile Remove="src\Models\Base.cs" />
     <Compile Remove="src\Repositories\IReceiptRepository.cs" />
+    <Compile Remove="src\workers\ConsolidateEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="src\Repositories\.gitkeep" />

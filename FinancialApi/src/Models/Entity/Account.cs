@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FinancialApi.src.Models.Entity
+namespace FinancialApi.Models.Entity
 {
     [Table("Account")]
     public class Account
@@ -18,7 +18,7 @@ namespace FinancialApi.src.Models.Entity
         }
 
         [Key]
-        public int ID { get; set; }
+        public long? ID { get; set; }
 
         public string Number { get; set; }
 
@@ -28,8 +28,11 @@ namespace FinancialApi.src.Models.Entity
 
         public string Identity { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         //RelationShip
-        public ICollection<CashFlow> CashFlows { get; set; }
+        public ICollection<Balance> Balances { get; set; }
 
     }
 }

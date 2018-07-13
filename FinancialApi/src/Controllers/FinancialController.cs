@@ -1,12 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using FinancialApi.Models.DTO.Request;
+using FinancialApi.Models.Entity;
 using FinancialApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Threading.Tasks;
 using FinancialApi.Models.DTO.Response;
-using FinancialApi.src.Utils;
+using FinancialApi.Utils;
 
 namespace FinancialApi.Controllers
 {
@@ -33,7 +34,7 @@ namespace FinancialApi.Controllers
                 return new BadRequestObjectResult(errors);
             }
 
-            var result = await _receiptService.Receive(receipt);
+            var result = await _receiptService.EnqueueToReceive(receipt);
 
             if (result is ErrorsDTO)
                 return new BadRequestObjectResult(result);
@@ -51,7 +52,7 @@ namespace FinancialApi.Controllers
                 return new BadRequestObjectResult(errors);
             }
 
-            var result =await  _paymentService.Pay(payment);
+            var result =await  _paymentService.EnqueueToPay(payment);
 
             if (result is ErrorsDTO)
                 return new BadRequestObjectResult(result);
@@ -61,7 +62,9 @@ namespace FinancialApi.Controllers
 
         // Post payment
         [HttpGet("cash_flow")]
-        public IEnumerable<Models.DTO.Request.EntryDTO> CashFlow(int id) => throw new NotImplementedException("Need implementation payment");
+        public IEnumerable<EntryDTO> CashFlow([FromBody] Account account){
+            throw new NotImplementedException("Need implementation payment");  
+        } 
 
 
         private ErrorsDTO ValidateErrors(Object obj)

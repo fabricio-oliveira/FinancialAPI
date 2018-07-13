@@ -1,5 +1,5 @@
 ﻿using System;
-namespace FinancialApi.src.workers
+namespace FinancialApi..workers
 {
     public class ConsolidateEntry
     {

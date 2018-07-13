@@ -3,24 +3,24 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
-namespace FinancialApi.src.Models.Entity
+namespace FinancialApi.Models.Entity
 {
     public class Entry
     {
 
-        public Entry(DateTime date, decimal value, CashFlow cashFlow)
+        public Entry(DateTime date, decimal value, Balance balance)
         {
             this.Date = date;
             this.Value = value;
-            this.CashFlow = cashFlow;
-            this.CashFlowId = cashFlow?.ID;
+            this.Balance = balance;
+            this.BalanceId = balance?.Id;
         }
 
         public Entry(){}
 
         [JsonIgnore]
         [Key]
-        public int Id { get; set; }
+        public long? Id { get; set; }
 
         [JsonIgnore]
         public string Type { get; set; }
@@ -32,12 +32,15 @@ namespace FinancialApi.src.Models.Entity
         [Column("value")]
         public decimal Value { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         //RelationShips
 
-        public int? CashFlowId { get; set; }
+        public long? BalanceId { get; set; }
 
-        [ForeignKey("CashFlowId")]
-        public CashFlow CashFlow { get; set; }
+        [ForeignKey("BalanceId")]
+        public Balance Balance { get; set; }
 
     }
 }

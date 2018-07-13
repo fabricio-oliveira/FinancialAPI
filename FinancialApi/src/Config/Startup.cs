@@ -73,7 +73,7 @@ namespace FinancialApi.Config
 
             //Repository
             services.AddTransient<AccountRepository>();
-            services.AddTransient<CashFlowRepository>();
+            services.AddTransient<BalanceRepository>();
             services.AddTransient<ChargeRepository>();
             services.AddTransient<InputRepository>();
             services.AddTransient<OutputRepository>();

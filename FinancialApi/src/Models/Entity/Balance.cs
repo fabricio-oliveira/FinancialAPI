@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using FinancialApi.Models.DTO.Request;
 using Newtonsoft.Json;
 
-namespace FinancialApi.src.Models.Entity
+namespace FinancialApi.Models.Entity
 {
-    [Table("CashFlow")]
-    public class CashFlow
+    [Table("Balance")]
+    public class Balance
     {
-        public CashFlow()
+        public Balance()
         {
         }
 
 
-        public CashFlow(DateTime date, ICollection<Input> inputs, ICollection<Output> outputs,
+        public Balance(DateTime date, ICollection<Input> inputs, ICollection<Output> outputs,
                         ICollection<Charge> charges, decimal total, decimal dayPosition,
                         Account account)
         {
@@ -30,7 +29,7 @@ namespace FinancialApi.src.Models.Entity
 
         [Key]
         [JsonIgnore]
-        public int? ID { get; set; }
+        public long? Id { get; set; }
 
         [JsonProperty(PropertyName = "data")]
         public DateTime Date { get; set; }
@@ -42,6 +41,9 @@ namespace FinancialApi.src.Models.Entity
         [Column("day_position")]
         [JsonProperty(PropertyName = "posicao_do_dia")]
         public decimal DayPosition { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         //RelationShips
 
@@ -59,7 +61,7 @@ namespace FinancialApi.src.Models.Entity
         public Account Account { get; set; }
 
         [JsonIgnore]
-        public int? AccountId { get; set; }
+        public long? AccountId { get; set; }
 
     }
 }
