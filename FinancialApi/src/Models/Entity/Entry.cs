@@ -6,10 +6,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinancialApi.Models.Entity
 {
-    [Table("Entry")]
+    [Table("Entries")]
     public class Entry
     {
-        public Entry(string description, string destinationAccount, string destinationBank,
+        public Entry(string type, string description, string destinationAccount, string destinationBank,
                      string typeAccount, string destinationIdentity, decimal value, decimal financialCharges,
                      DateTime dateToPay) : this()
         {
@@ -21,6 +21,7 @@ namespace FinancialApi.Models.Entity
             this.Value = value;
             this.FinancialCharges = financialCharges;
             this.DateToPay = dateToPay;
+            this.Type = type;
         }
 
         public Entry()
@@ -85,9 +86,9 @@ namespace FinancialApi.Models.Entity
 
 
         // method check
-        public bool IsReceipt() => Type.Equals("recebimento");
+        public bool IsReceipt() => Type == null ? false : Type.Equals("recebimento");
 
-        public bool IsPayment() => Type.Equals("payment");
+        public bool IsPayment() => Type == null ? false : Type.Equals("payment");
 
     }
 }

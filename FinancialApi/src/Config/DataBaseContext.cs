@@ -9,6 +9,7 @@ namespace FinancialApi.Config
         public DataBaseContext(DbContextOptions<DataBaseContext> options)
             : base(options)
         {
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -30,8 +31,8 @@ namespace FinancialApi.Config
                         .HasForeignKey(c => c.AccountId)
                         .OnDelete(DeleteBehavior.Restrict);
 
-            //modelBuilder.Entity<Account>().Property(p => p.RowVersion).IsRowVersion();
-            //modelBuilder.Entity<Balance>().Property(p => p.RowVersion).IsRowVersion();
+            modelBuilder.Entity<Account>();
+            modelBuilder.Entity<Balance>().Property(p => p.RowVersion).IsRowVersion();
             modelBuilder.Entity<Interest>();
 
         }

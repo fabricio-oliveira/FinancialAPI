@@ -5,6 +5,7 @@ using FinancialApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using FinancialApi.Models.DTO.Response;
+using FinancialApi.Utils;
 using System.Linq;
 
 namespace FinancialApi.Controllers
@@ -34,6 +35,7 @@ namespace FinancialApi.Controllers
 
             IBaseDTO result;
 
+
             if (entry.IsReceipt())
                 result = await _receiptService.EnqueueToReceive(entry);
             else
@@ -59,7 +61,7 @@ namespace FinancialApi.Controllers
             var errors = ModelState
                 .Where(x => x.Value.Errors.Count > 0)
                 .ToDictionary(
-                    kvp => kvp.Key,
+                    kvp => obj.GetJSonFieldName(kvp.Key),
                     kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToList()
                 );
 

@@ -43,7 +43,7 @@ namespace FinancialApi.Services
         public async Task<IBaseDTO> EnqueueToReceive(Entry entry)
         {
             var error = Validate(entry);
-            if (error != null) return await Task.FromResult(error);
+            if (error.HasErrors()) return await Task.FromResult(error);
 
             _mainQueue.Enqueue(entry);
             return new OkDTO(entry.UUID);
@@ -74,10 +74,10 @@ namespace FinancialApi.Services
 
                     var balance = this._balanceRepository.FindOrCreateBy(account, DateTime.Today);
 
-                    balance.Inputs.Add(new EntryDTO(entry.DateEntry.GetValueOrDefault(),
+                    balance.Inputs.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
                                                     entry.Value.GetValueOrDefault()));
 
-                    balance.Charges.Add(new EntryDTO(entry.DateEntry.GetValueOrDefault(),
+                    balance.Charges.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
                                                      entry.FinancialCharges.GetValueOrDefault()));
 
                     this._balanceRepository.Update(balance);

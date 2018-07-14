@@ -3,20 +3,20 @@ using Newtonsoft.Json;
 
 namespace FinancialApi.Models.DTO
 {
-    public class EntryDTO
+    public class ShortEntryDTO
     {
         private Func<DateTime> getValueOrDefault;
         private decimal? value;
 
-        public EntryDTO(DateTime date, decimal value)
+        public ShortEntryDTO(DateTime date, decimal value)
         {
             this.Date = date;
             this.Value = value;
         }
 
-        public EntryDTO() { }
+        public ShortEntryDTO() { }
 
-        public EntryDTO(Func<DateTime> getValueOrDefault, decimal? value)
+        public ShortEntryDTO(Func<DateTime> getValueOrDefault, decimal? value)
         {
             this.getValueOrDefault = getValueOrDefault;
             this.value = value;

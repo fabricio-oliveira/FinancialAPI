@@ -7,7 +7,7 @@ using FinancialApi.Models.DTO;
 
 namespace FinancialApi.Models.Entity
 {
-    [Table("Balance")]
+    [Table("Balances")]
     public class Balance
     {
         public Balance()
@@ -15,8 +15,8 @@ namespace FinancialApi.Models.Entity
         }
 
 
-        public Balance(DateTime date, ICollection<EntryDTO> inputs, ICollection<EntryDTO> outputs,
-                       ICollection<EntryDTO> charges, decimal total, decimal dayPosition,
+        public Balance(DateTime date, ICollection<ShortEntryDTO> inputs, ICollection<ShortEntryDTO> outputs,
+                       ICollection<ShortEntryDTO> charges, decimal total, decimal dayPosition,
                         Account account)
         {
             this.Date = date;
@@ -62,23 +62,23 @@ namespace FinancialApi.Models.Entity
 
         //hasMany
         [NotMapped]
-        public ICollection<EntryDTO> Inputs
+        public ICollection<ShortEntryDTO> Inputs
         {
-            get { return _Inputs == null ? null : JsonConvert.DeserializeObject<List<EntryDTO>>(_Inputs); }
+            get { return _Inputs == null ? null : JsonConvert.DeserializeObject<List<ShortEntryDTO>>(_Inputs); }
             set { _Inputs = JsonConvert.SerializeObject(value); }
         }
 
         [NotMapped]
-        public ICollection<EntryDTO> Outputs
+        public ICollection<ShortEntryDTO> Outputs
         {
-            get { return _Outputs == null ? null : JsonConvert.DeserializeObject<List<EntryDTO>>(_Outputs); }
+            get { return _Outputs == null ? null : JsonConvert.DeserializeObject<List<ShortEntryDTO>>(_Outputs); }
             set { _Outputs = JsonConvert.SerializeObject(value); }
         }
 
         [NotMapped]
-        public ICollection<EntryDTO> Charges
+        public ICollection<ShortEntryDTO> Charges
         {
-            get { return _Charges == null ? null : JsonConvert.DeserializeObject<List<EntryDTO>>(_Charges); }
+            get { return _Charges == null ? null : JsonConvert.DeserializeObject<List<ShortEntryDTO>>(_Charges); }
             set { _Charges = JsonConvert.SerializeObject(value); }
         }
 

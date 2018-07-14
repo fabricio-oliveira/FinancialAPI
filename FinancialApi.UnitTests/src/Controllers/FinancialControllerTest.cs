@@ -23,11 +23,11 @@ namespace FinancialApi.UnitTests.Controllers
 
             // Mock
             var mockPaymentService = new Mock<IPaymentService>();
-            mockPaymentService.Setup(service => service.EnqueueToPay(It.IsAny<Payment>())).Returns(Task.FromResult<IBaseDTO>(payResult));
+            mockPaymentService.Setup(service => service.EnqueueToPay(It.IsAny<Entry>())).Returns(Task.FromResult<IBaseDTO>(payResult));
 
             // Mock
             var mockReceiptService = new Mock<IReceiptService>();
-            mockReceiptService.Setup(service => service.EnqueueToReceive(It.IsAny<Receipt>())).Returns(Task.FromResult<IBaseDTO>(receiveResult));
+            mockReceiptService.Setup(service => service.EnqueueToReceive(It.IsAny<Entry>())).Returns(Task.FromResult<IBaseDTO>(receiveResult));
 
             return new FinancialController(mockPaymentService.Object,
                                                      mockReceiptService.Object);
@@ -42,7 +42,7 @@ namespace FinancialApi.UnitTests.Controllers
             var controller = MockController();
 
             // input (subject)
-            var payment = PaymentFactory.Build();
+            var payment = EntryFactory.Build();
 
             // test (result)
             var result = await controller.Entry(payment);
@@ -69,7 +69,7 @@ namespace FinancialApi.UnitTests.Controllers
             controller.ModelState.AddModelError("Description", "some error");
 
             // input (subject)
-            var payment = PaymentFactory.Build();
+            var payment = EntryFactory.Build();
 
             // test (result)
             var result = await controller.Entry(payment);
@@ -84,6 +84,7 @@ namespace FinancialApi.UnitTests.Controllers
             //Assert three
             var bodyResult = (ErrorsDTO)ResponseResult.Value;
             Assert.AreEqual(1, bodyResult.Details.Keys.Count);
+
             Assert.AreEqual("some error", bodyResult.Details["descricao"][0]);
         }
 
@@ -96,7 +97,7 @@ namespace FinancialApi.UnitTests.Controllers
             var controller = MockController();
 
             // input (subject)
-            var receipt = ReceiptFactory.Build();
+            var receipt = EntryFactory.Build();
 
             // test (result)
             var result = await controller.Entry(receipt);

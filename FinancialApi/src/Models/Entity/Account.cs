@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinancialApi.Models.Entity
 {
-    [Table("Account")]
+    [Table("Accounts")]
     public class Account
     {
         public Account() { }
@@ -13,7 +13,7 @@ namespace FinancialApi.Models.Entity
         {
             this.Number = number;
             this.Bank = bank;
-            this.Type = type;
+            this.TypeA = type;
             this.Identity = identity;
         }
 
@@ -24,9 +24,12 @@ namespace FinancialApi.Models.Entity
 
         public string Bank { get; set; }
 
-        public string Type { get; set; }
+        public string TypeA { get; set; }
 
         public string Identity { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         //[Timestamp]
         //public byte[] RowVersion { get; set; }

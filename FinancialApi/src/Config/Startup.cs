@@ -9,6 +9,8 @@ using FinancialApi.Repositories;
 using System;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Swagger;
+using FinancialApi.workers;
+using Microsoft.AspNetCore.Hosting.Internal;
 
 namespace FinancialApi.Config
 {
@@ -63,7 +65,7 @@ namespace FinancialApi.Config
             if (connectionQueue == null)
                 throw new System.ArgumentException("QUEUE_CONNECTION cannot be null");
 
-            services.AddSingleton<QueueContext>(
+            services.AddSingleton(
                 new QueueContext(connectionQueue)
             );
 
@@ -81,6 +83,9 @@ namespace FinancialApi.Config
             //Service
             services.AddSingleton<IPaymentService, PaymentService>();
             services.AddSingleton<IReceiptService, ReceiptService>();
+
+            //Workers
+            services.AddSingleton<ConsolidateEntry>();
         }
 
 

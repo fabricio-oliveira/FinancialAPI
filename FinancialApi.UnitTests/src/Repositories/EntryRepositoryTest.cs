@@ -22,7 +22,7 @@ namespace FinancialApi.UnitTests.repositories
         [Test]
         public void TestSaveCorrectPaymentRepository()
         {
-            var entry = PaymentFactory.Build();
+            var entry = EntryFactory.Build();
 
             _repository.Save(entry);
             Assert.IsTrue(true, "Save data");

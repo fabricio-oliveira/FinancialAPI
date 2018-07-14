@@ -13,6 +13,7 @@ namespace FinancialApi.UnitTests
                .Options;
 
             var context = new DataBaseContext(options);
+            context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
             return context;
         }

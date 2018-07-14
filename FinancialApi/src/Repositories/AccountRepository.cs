@@ -9,7 +9,7 @@ namespace FinancialApi.Repositories
     {
         private readonly DataBaseContext _context;
 
-        public AccountRepository(DataBaseContext context):base(context)
+        public AccountRepository(DataBaseContext context) : base(context)
         {
             this._context = context;
         }
@@ -36,14 +36,14 @@ namespace FinancialApi.Repositories
             var account = _context.Accounts.Where(x => x.Number == number
                                                   && x.Bank == bank
                                                   && x.Identity == identity
-                                                  && x.Type == type)
+                                                  && x.TypeA == type)
                                                  .FirstOrDefault();
 
             if (account == null)
             {
-               account = new Account(number, bank, type, identity);
-               _context.Accounts.Add(account);
-               _context.SaveChanges();
+                account = new Account(number, bank, type, identity);
+                _context.Accounts.Add(account);
+                _context.SaveChanges();
             }
 
             return account;

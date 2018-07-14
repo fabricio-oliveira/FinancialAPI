@@ -7,6 +7,7 @@ using FinancialApi.Models.DTO;
 using FinancialApi.Models.Entity;
 using System;
 using Microsoft.EntityFrameworkCore;
+using RabbitMQ.Client.Events;
 
 namespace FinancialApi.Services
 {
@@ -40,6 +41,7 @@ namespace FinancialApi.Services
             this._balanceRepository = balanceRepository;
             this._accountRepository = accountRepository;
             this._entryRepository = entryRepository;
+            //this._mainQueue.SetConsumer = Pay;
         }
 
         public async Task<IBaseDTO> EnqueueToPay(Entry entry)
@@ -50,7 +52,6 @@ namespace FinancialApi.Services
             _mainQueue.Enqueue(entry);
             return new OkDTO(entry.UUID);
         }
-
 
         public async Task<IBaseDTO> Pay(Entry entry)
         {
@@ -80,10 +81,10 @@ namespace FinancialApi.Services
 
                     var balance = this._balanceRepository.FindOrCreateBy(account, DateTime.Today);
 
-                    balance.Outputs.Add(new EntryDTO(entry.DateEntry.GetValueOrDefault(),
+                    balance.Outputs.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
                                                      entry.Value.GetValueOrDefault()));
 
-                    balance.Charges.Add(new EntryDTO(entry.DateEntry.GetValueOrDefault(),
+                    balance.Charges.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
                                                      entry.FinancialCharges.GetValueOrDefault()));
 
                     this._balanceRepository.Update(balance);
