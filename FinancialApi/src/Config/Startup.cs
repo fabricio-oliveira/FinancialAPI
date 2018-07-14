@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Swagger;
 using FinancialApi.workers;
 using Microsoft.AspNetCore.Hosting.Internal;
+using Hangfire;
+using System.Diagnostics;
 
 namespace FinancialApi.Config
 {
@@ -36,6 +38,8 @@ namespace FinancialApi.Config
                 throw new System.ArgumentException("DATABASE_CONNECTION cannot be null");
 
             services.AddDbContextPool<DataBaseContext>(options => options.UseSqlServer(connectionDatabase), 10);
+            services.AddHangfire(x => x.UseSqlServerStorage(connectionDatabase));
+
 
             // Add framework services.
             services.AddMvc()
@@ -85,21 +89,32 @@ namespace FinancialApi.Config
             services.AddSingleton<IReceiptService, ReceiptService>();
 
             //Workers
-            services.AddSingleton<ConsolidateEntry>();
+            services.AddSingleton<ConsolidateEntryWorker>();
         }
 
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+                              IServiceProvider serviceProvider)
         {
+            //Log
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+
+            //DotNetServer
             app.UseMvc();
+
+            //Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Financial API V1");
             });
+
+            //HangFire Control job
+            GlobalConfiguration.Configuration.UseActivator(new HangfireActivator(serviceProvider));
+            app.UseHangfireServer();
+            app.UseHangfireDashboard("/hangfire");
         }
     }
 }

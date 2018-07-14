@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using FinancialApi.Models.Entity;
 using FinancialApi.Queue;
 using FinancialApi.Services;
+using Hangfire;
 using RabbitMQ.Client.Events;
 
 namespace FinancialApi.workers
 {
-    public class ConsolidateEntry
+    public class ConsolidateEntryWorker
     {
         private readonly PaymentQueue _paymentQueue;
         private readonly PaymentService _paymentService;
@@ -15,15 +16,25 @@ namespace FinancialApi.workers
         private readonly ReceiptQueue _receiptQueue;
         private readonly ReceiptService _receiptService;
 
-        public ConsolidateEntry(PaymentService paymentService, PaymentQueue paymentQueue,
-                                ReceiptService receiptService, ReceiptQueue receiptQueue)
+        public ConsolidateEntryWorker(PaymentService paymentService, PaymentQueue paymentQueue,
+                                      ReceiptService receiptService, ReceiptQueue receiptQueue)
         {
             this._paymentQueue = paymentQueue;
             this._paymentService = paymentService;
-            this._paymentQueue.SetConsumer(WrapperPay);
+
 
             this._receiptQueue = receiptQueue;
             this._receiptService = receiptService;
+        }
+
+        public void StartPayConsolidate()
+        {
+            this._paymentQueue.SetConsumer(WrapperPay);
+        }
+
+
+        public void StartReceiptConsolidate()
+        {
             this._receiptQueue.SetConsumer(WrappeReceive);
         }
 
