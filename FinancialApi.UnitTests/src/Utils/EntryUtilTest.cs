@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using FinancialApi..Utils;
 using FinancialApi.Utils;
-using FinancialApiUnitTests.Factory;
 using Newtonsoft.Json;
 using NUnit.Framework;
 

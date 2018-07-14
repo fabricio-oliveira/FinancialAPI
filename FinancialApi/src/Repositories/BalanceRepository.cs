@@ -42,7 +42,7 @@ namespace FinancialApi.Repositories
                                     .ToList();
         }
 
-        public Balance GetBy(Account account, DateTime date)
+        public Balance FindOrCreateBy(Account account, DateTime date, bool commit = true)
         {
             var balance = _context.Balances
                                    .Where(x => x.Account == account
@@ -52,18 +52,25 @@ namespace FinancialApi.Repositories
 
             if (balance != null) return balance;
 
-                
             var lastBalance = LastBy(account);
             if (lastBalance != null)
             {
                 balance = new Balance(date, null, null, null, lastBalance.Total, lastBalance.DayPosition, account);
                 _context.Balances.Add(balance);
+                if (commit) _context.SaveChanges();
                 return balance;
             }
 
             balance = new Balance(date, null, null, null, 0, 0, account);
             _context.Balances.Add(balance);
+            if(commit) _context.SaveChanges();
             return balance;
+        }
+
+        public Balance LastByOrDefault(Account account)
+        {
+            var balance = LastBy(account);
+            return  balance ?? new Balance(DateTime.Today.AddDays(-1), null, null, null, 0.0m, 0.0m,account);
         }
 
         public Balance LastBy(Account account)
@@ -72,14 +79,8 @@ namespace FinancialApi.Repositories
                                    .Where(x => x.Account == account)
                                    .OrderByDescending(x => x.Date)
                                    .FirstOrDefault();
-            
-            return balance;
-        }
 
-        public Balance LastByOrDefault(Account account)
-        {
-            var balance = LastBy(account);
-            return  balance ?? new Balance(DateTime.Today.AddDays(-1), null, null, null, 0.0m, 0.0m,account);
+            return balance;
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using FinancialApi.Models.DTO.Request;
+using FinancialApi.Models.Entity;
 
 namespace FinancialApiUnitTests.Factory
 {

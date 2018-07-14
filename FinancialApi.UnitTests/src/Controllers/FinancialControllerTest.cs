@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using FinancialApi.Controllers;
-using FinancialApi.Models.DTO.Request;  
 using FinancialApi.Models.DTO.Response;
+using FinancialApi.Models.Entity;
 using FinancialApi.Services;
 using FinancialApiUnitTests.Factory;
 using Microsoft.AspNetCore.Mvc;

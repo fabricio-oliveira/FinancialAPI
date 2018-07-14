@@ -2,6 +2,7 @@
 using System.Linq;
 using FinancialApi.Config;
 using FinancialApi.Models.Entity;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace FinancialApi.Repositories
 {
@@ -14,9 +15,9 @@ namespace FinancialApi.Repositories
             this._databaseContext = databaseContext;
         }
 
-        public void BeginTransaction()
+        public IDbContextTransaction BeginTransaction()
         {
-            this._databaseContext.Database.BeginTransaction();
+            return this._databaseContext.Database.BeginTransaction();
         }
 
         public void Commit()

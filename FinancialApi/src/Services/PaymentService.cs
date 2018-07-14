@@ -64,25 +64,25 @@ namespace FinancialApi.Services
 
         private void updateBalance(Payment payment)
         {
-            //TODO add transaction context
-            this._entryRepository.Save(payment);
+            using (this._entryRepository.BeginTransaction())
+            {
+                this._entryRepository.Save(payment,false);
 
-            var account = this._accountRepository.FindOrCreate(payment.DestinationAccount,
+                var account = this._accountRepository.FindOrCreate(payment.DestinationAccount,
                                                                payment.DestinationBank,
                                                                payment.TypeAccount,
                                                                payment.DestinationIdentity);
 
-            var balance = this._balanceRepository.GetBy(account, DateTime.Today);
+                var balance = this._balanceRepository.FindOrCreateBy(account, DateTime.Today);
 
-            balance.Outputs.Add(new EntryDTO(payment.DateEntry.GetValueOrDefault(),
+                balance.Outputs.Add(new EntryDTO(payment.DateEntry.GetValueOrDefault(),
                                             payment.Value.GetValueOrDefault()));
 
-            balance.Charges.Add(new EntryDTO(payment.DateEntry.GetValueOrDefault(),
+                balance.Charges.Add(new EntryDTO(payment.DateEntry.GetValueOrDefault(),
                                              payment.FinancialCharges.GetValueOrDefault()));
-
-
-            this._balanceRepository.Update(balance);
-                                                        
+                
+                this._balanceRepository.Update(balance,false);
+            }                                           
         }
 
 

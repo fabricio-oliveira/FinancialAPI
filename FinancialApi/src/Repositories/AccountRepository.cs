@@ -31,10 +31,8 @@ namespace FinancialApi.Repositories
             return _context.Accounts.Find(id);
         }
 
-        public Account FindOrCreate(string number, string bank, string type, string identity)
+        public Account FindOrCreate(string number, string bank, string type, string identity, bool commit = true)
         {
-
-
             var account = _context.Accounts.Where(x => x.Number == number
                                                   && x.Bank == bank
                                                   && x.Identity == identity
@@ -44,9 +42,9 @@ namespace FinancialApi.Repositories
             if (account == null)
             {
                account = new Account(number, bank, type, identity);
-                _context.Accounts.Add(account);
+               _context.Accounts.Add(account);
+               if(commit) _context.SaveChanges();
             }
-
 
             return account;
         }

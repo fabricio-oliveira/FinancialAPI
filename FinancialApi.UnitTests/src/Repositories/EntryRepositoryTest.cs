@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace FinancialApi.UnitTests.repositories
 {
     [TestFixture]
-    public class InputRepositoryTest
+    public class EntryRepositoryTest
     {
         private EntryRepository _repository = null;
 
@@ -21,7 +21,7 @@ namespace FinancialApi.UnitTests.repositories
 
             var options = new DbContextOptionsBuilder<DataBaseContext>()
                 .UseSqlite(connection)
-                 .Options;
+                .Options;
 
             var context = new DataBaseContext(options);
             context.Database.EnsureCreated();
@@ -32,31 +32,31 @@ namespace FinancialApi.UnitTests.repositories
         [Test]
         public void TestSaveCorrectPaymentRepository()
         {
-            var input = InputFactory.Build();
-            _repository.Save(input);
+            var entry = PaymentFactory.Build();
+            _repository.Save(entry);
             Assert.IsTrue(true, "Save data");
         }
 
 
-        [Test]
-        public void TestSaveConcurrency()
-        {
-            var input = InputFactory.Build();
-            _repository.Save(input);
+        //[Test]
+        //public void TestSaveConcurrency()
+        //{
+        //    var entry = PaymentFactory.Build();
+        //    _repository.Save(entry);
 
 
-            var result1 = _repository.Find(input.Id.GetValueOrDefault());
-            var result2 = _repository.Find(input.Id.GetValueOrDefault());
+        //    var result1 = _repository.Find(entry.Id.GetValueOrDefault());
+        //    var result2 = _repository.Find(entry.Id.GetValueOrDefault());
 
-            result1.Value = 100.00m;
-            _repository.Update(result1);
+        //    result1.Value = 100.00m;
+        //    _repository.Update(result1);
 
 
-            result2.Value = 100.01m;
-            _repository.Update(result2);
+        //    result2.Value = 100.01m;
+        //    _repository.Update(result2);
 
-            Assert.IsNull(result2.RowVersion);
-        }
+        //    Assert.IsNull(result2.RowVersion);
+        //}
 
 
 

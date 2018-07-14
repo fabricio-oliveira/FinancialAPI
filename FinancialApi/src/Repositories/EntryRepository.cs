@@ -29,10 +29,5 @@ namespace FinancialApi.Repositories
         {
             return _context.Entrys.Find(id);
         }
-
-        public void Get(Entry entry)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
