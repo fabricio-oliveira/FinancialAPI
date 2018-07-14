@@ -13,16 +13,16 @@ namespace FinancialApi.Repositories
             _context = context;
         }
 
-        public void Save(Entry entry, bool commit = true)
+        public void Save(Entry entry)
         {
             _context.Entrys.Add(entry);
-            if (commit) _context.SaveChanges();
+            _context.SaveChanges();
         }
 
-        public void Update(Entry entry, bool commit = true)
+        public void Update(Entry entry)
         {
             _context.Entrys.Update(entry);
-            if (commit) _context.SaveChanges();
+            _context.SaveChanges();
         }
 
         public Entry Find(long id)

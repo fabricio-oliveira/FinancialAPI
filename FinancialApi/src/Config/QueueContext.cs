@@ -54,5 +54,6 @@ namespace FinancialApi
         public string ReceiptQueueName { get; }
         public string EntryQueueName { get; }
         public string InterestQueueName { get; }
+        public string ErrorQueueName { get; }
     }
 }

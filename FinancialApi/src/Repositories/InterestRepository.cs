@@ -12,15 +12,15 @@ namespace FinancialApi.Repositories
             _context = context;
         }
 
-        public void Save(Interest interest, bool commit = true)
+        public void Save(Interest interest)
         {
             _context.Interests.Add(interest);
-            if(commit) _context.SaveChanges();
+            _context.SaveChanges();
         }
 
-        public void Update(Interest interest, bool commit = true){
+        public void Update(Interest interest){
             _context.Interests.Update(interest);
-            if(commit) _context.SaveChanges();
+            _context.SaveChanges();
         }
 
         public Interest Find(long id)

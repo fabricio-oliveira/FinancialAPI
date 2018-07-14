@@ -16,16 +16,16 @@ namespace FinancialApi.Repositories
             _context = context;
         }
 
-        public void Save(Balance balance, bool commit = true)
+        public void Save(Balance balance)
         {
             _context.Balances.Add(balance);
-            if (commit) _context.SaveChanges();
+            _context.SaveChanges();
         }
 
-        public void Update(Balance balance, bool commit = true)
+        public void Update(Balance balance)
         {
             _context.Balances.Update(balance);
-            if (commit) _context.SaveChanges();
+            _context.SaveChanges();
         }
 
         public Balance Find(long id)
@@ -42,7 +42,7 @@ namespace FinancialApi.Repositories
                                     .ToList();
         }
 
-        public Balance FindOrCreateBy(Account account, DateTime date, bool commit = true)
+        public Balance FindOrCreateBy(Account account, DateTime date)
         {
             var balance = _context.Balances
                                    .Where(x => x.Account == account
@@ -57,13 +57,13 @@ namespace FinancialApi.Repositories
             {
                 balance = new Balance(date, null, null, null, lastBalance.Total, lastBalance.DayPosition, account);
                 _context.Balances.Add(balance);
-                if (commit) _context.SaveChanges();
+                _context.SaveChanges();
                 return balance;
             }
 
             balance = new Balance(date, null, null, null, 0, 0, account);
             _context.Balances.Add(balance);
-            if(commit) _context.SaveChanges();
+            _context.SaveChanges();
             return balance;
         }
 

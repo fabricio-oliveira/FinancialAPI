@@ -14,16 +14,16 @@ namespace FinancialApi.Repositories
             this._context = context;
         }
 
-        public void Save(Account account, bool commit = true)
+        public void Save(Account account)
         {
             _context.Accounts.Add(account);
-            if (commit) _context.SaveChanges();
+            _context.SaveChanges();
         }
 
-        public void Update(Account account, bool commit = true)
+        public void Update(Account account)
         {
             _context.Accounts.Update(account);
-            if (commit) _context.SaveChanges();
+            _context.SaveChanges();
         }
 
         public Account Find(long id)
@@ -31,7 +31,7 @@ namespace FinancialApi.Repositories
             return _context.Accounts.Find(id);
         }
 
-        public Account FindOrCreate(string number, string bank, string type, string identity, bool commit = true)
+        public Account FindOrCreate(string number, string bank, string type, string identity)
         {
             var account = _context.Accounts.Where(x => x.Number == number
                                                   && x.Bank == bank
@@ -43,7 +43,7 @@ namespace FinancialApi.Repositories
             {
                account = new Account(number, bank, type, identity);
                _context.Accounts.Add(account);
-               if(commit) _context.SaveChanges();
+               _context.SaveChanges();
             }
 
             return account;

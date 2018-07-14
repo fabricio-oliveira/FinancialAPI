@@ -2,6 +2,7 @@
 using RabbitMQ.Client;
 using FinancialApi.Utils;
 using RabbitMQ.Client.Events;
+using System.Collections.Generic;
 
 namespace FinancialApi.Queue
 {
@@ -23,12 +24,12 @@ namespace FinancialApi.Queue
             this._consumer.Received += consumer;   
         }
 
-        public void Enqueue(T t)
+        public void Enqueue(T t,int? delay = null)
         {
             var body = Encoding.UTF8.GetBytes(t.ToJson());
             _context.channel.BasicPublish(exchange: "",
                                           routingKey: _queueName,
-                                          basicProperties: null,
+                                          basicProperties: properties(delay),
                                           body: body);
         }
 
@@ -39,6 +40,18 @@ namespace FinancialApi.Queue
             var body = data != null ? System.Text.Encoding.UTF8.GetString(data.Body) : null;
             return Utils.StringUtil.FromJson<T>(body); 
 
+        }
+
+        private IBasicProperties properties(int? val)
+        {
+            if (val == null) return null;
+
+            var props = _context.channel.CreateBasicProperties();
+            var headers = new Dictionary<string, object>();
+
+            headers.Add("x-delay", val);
+            props.Headers = headers;
+            return props;
         }
     }
 }
