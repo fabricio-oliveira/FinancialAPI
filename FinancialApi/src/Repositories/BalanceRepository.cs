@@ -7,25 +7,25 @@ using FinancialApi.Utils;
 
 namespace FinancialApi.Repositories
 {
-    public class BalanceRepository: IRepository<Balance>
+    public class BalanceRepository: GenericRepository, IRepository<Balance>
     {
         private DataBaseContext _context;
 
-        public BalanceRepository(DataBaseContext context)
+        public BalanceRepository(DataBaseContext context):base(context)
         {
             _context = context;
         }
 
-        public void Save(Balance balance)
+        public void Save(Balance balance, bool commit = true)
         {
             _context.Balances.Add(balance);
-            _context.SaveChanges();
+            if (commit) _context.SaveChanges();
         }
 
-        public void Update(Balance balance)
+        public void Update(Balance balance, bool commit = true)
         {
             _context.Balances.Update(balance);
-            _context.SaveChanges();
+            if (commit) _context.SaveChanges();
         }
 
         public Balance Find(long id)

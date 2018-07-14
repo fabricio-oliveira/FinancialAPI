@@ -3,22 +3,22 @@ using FinancialApi.Models.Entity;
 
 namespace FinancialApi.Repositories
 {
-    public class ChargeRepository: IRepository<Interest>
+    public class ChargeRepository: GenericRepository, IRepository<Interest>
     {
         private DataBaseContext _context;
 
-        public ChargeRepository(DataBaseContext context)
+        public ChargeRepository(DataBaseContext context):base(context)
         {
             _context = context;
         }
 
-        public void Save(Interest interest)
+        public void Save(Interest interest, bool commit = true)
         {
             _context.Interests.Add(interest);
             _context.SaveChanges();
         }
 
-        public void Update(Interest interest){
+        public void Update(Interest interest, bool commit = true){
             _context.Interests.Update(interest);
             _context.SaveChanges();
         }

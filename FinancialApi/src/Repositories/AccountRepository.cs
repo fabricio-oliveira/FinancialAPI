@@ -5,25 +5,25 @@ using FinancialApi.Models.Entity;
 
 namespace FinancialApi.Repositories
 {
-    public class AccountRepository : IRepository<Account>
+    public class AccountRepository : GenericRepository, IRepository<Account>
     {
         private readonly DataBaseContext _context;
 
-        public AccountRepository(DataBaseContext context)
+        public AccountRepository(DataBaseContext context):base(context)
         {
             this._context = context;
         }
 
-        public void Save(Account account)
+        public void Save(Account account, bool commit = true)
         {
             _context.Accounts.Add(account);
-            _context.SaveChanges();
+            if (commit) _context.SaveChanges();
         }
 
-        public void Update(Account account)
+        public void Update(Account account, bool commit = true)
         {
             _context.Accounts.Update(account);
-            _context.SaveChanges();
+            if (commit) _context.SaveChanges();
         }
 
         public Account Find(long id)
