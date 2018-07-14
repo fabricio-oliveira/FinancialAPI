@@ -20,7 +20,8 @@ namespace FinancialApi
 
             PaymentQueueName = "payment";
             ReceiptQueueName = "receipt";
-            EntryQueueName = "entry";
+            //EntryQueueName = "entry";
+            InterestQueueName = "entry";
 
             var connection = factory.CreateConnection();
             channel = connection.CreateModel();
@@ -37,7 +38,12 @@ namespace FinancialApi
                                  autoDelete: false,
                                  arguments: null);
 
-            channel.QueueDeclare(queue: EntryQueueName,
+            //channel.QueueDeclare(queue: EntryQueueName,
+                                 //durable: false,
+                                 //exclusive: false,
+                                 //autoDelete: false,
+                                 //arguments: null);
+            channel.QueueDeclare(queue: InterestQueueName,
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
@@ -47,5 +53,6 @@ namespace FinancialApi
         public string PaymentQueueName { get; }
         public string ReceiptQueueName { get; }
         public string EntryQueueName { get; }
+        public string InterestQueueName { get; }
     }
 }

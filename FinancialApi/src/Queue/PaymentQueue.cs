@@ -1,13 +1,9 @@
-﻿using System.Text;
-using FinancialApi.Models.DTO.Request;
-using RabbitMQ.Client;
-using FinancialApi.Utils;
-using RabbitMQ.Client.Events;
+﻿using FinancialApi.Models.Entity;
 
 namespace FinancialApi.Queue
 {
-    public class EntryQueue :GenericQueue<PaymentDTO>
+    public class PaymentQueue :GenericQueue<Payment>
     {
-        public EntryQueue(QueueContext context):base(context, context.PaymentQueueName) {}
+        public PaymentQueue(QueueContext context):base(context, context.PaymentQueueName) {}
     }
 }

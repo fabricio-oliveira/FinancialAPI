@@ -3,28 +3,33 @@ using System;
 using Newtonsoft.Json;
 using FinancialApi.validate;
 
-namespace FinancialApi.Models.DTO.Request
+namespace FinancialApi.Models.Entity
 {
-    public abstract class EntryDTO
+    public abstract class Entry
     {
 
-        public EntryDTO(string Description, string DestinationAccount, string DestinationBank,
-                     string TypeAccount, string DestinationIdentity, decimal Value, decimal FinancialCharges,
-                     DateTime Date):base(){
+        public Entry(string description, string destinationAccount, string destinationBank,
+                     string typeAccount, string destinationIdentity, decimal value, decimal financialCharges,
+                     DateTime dateToPay):base(){
             this.UUID = Guid.NewGuid().ToString();
-            this.Description = Description;
-            this.DestinationAccount = DestinationAccount;
-            this.DestinationBank = DestinationBank;
-            this.TypeAccount = TypeAccount;
-            this.DestinationIdentity = DestinationIdentity;
-            this.Value = Value;
-            this.FinancialCharges = FinancialCharges;
-            this.Date = Date;
+            this.Description = description;
+            this.DestinationAccount = destinationAccount;
+            this.DestinationBank = destinationBank;
+            this.TypeAccount = typeAccount;
+            this.DestinationIdentity = destinationIdentity;
+            this.Value = value;
+            this.FinancialCharges = financialCharges;
+            this.DateToPay = dateToPay;
+            this.DateEntry = DateTime.Today;
         }
 
-        public EntryDTO(){
+        public Entry(){
             this.UUID = Guid.NewGuid().ToString();
         }
+
+        [Key]
+        [JsonIgnore]
+        public long? Id { get; set; }
 
         public string UUID { get; set; }
 
@@ -58,11 +63,14 @@ namespace FinancialApi.Models.DTO.Request
 
         [Required(ErrorMessage = "can\'t be blank"), RangeDate(ErrorMessage = "this field needs to be a valid date between now and one year ahead.")]
         [JsonProperty(PropertyName = "data_de_lancamento")]
-        public DateTime? Date { get; set; }
+        public DateTime? DateToPay { get; set; }
 
         [Required(ErrorMessage = "cant\' be blank"),RegularExpression(@"^(pagamento|recebimento)$", ErrorMessage = @"This field accept values 'pagamento' or 'recebimento'")]
         [JsonProperty(PropertyName = "tipo_da_lancamento")]
         public string Type { get; set; }
+
+        [JsonIgnore]
+        public DateTime? DateEntry { get; set; }
 
     }
 }

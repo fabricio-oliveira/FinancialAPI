@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using FinancialApi.Models.DTO.Request;
 using FinancialApi.Models.Entity;
 using FinancialApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +25,7 @@ namespace FinancialApi.Controllers
 
         // Post receipt
         [HttpPost("receipt")]
-        public async Task<IActionResult> Receipt([FromBody]ReceiptDTO receipt)
+        public async Task<IActionResult> Receipt([FromBody]Receipt receipt)
         {
             if (!ModelState.IsValid)
             {
@@ -44,7 +43,7 @@ namespace FinancialApi.Controllers
 
         // Post payment
         [HttpPost("payment")]
-        public async Task<IActionResult> Payment([FromBody]PaymentDTO payment)
+        public async Task<IActionResult> Payment([FromBody]Payment payment)
         {
             if (!ModelState.IsValid)
             {
@@ -62,7 +61,7 @@ namespace FinancialApi.Controllers
 
         // Post payment
         [HttpGet("cash_flow")]
-        public IEnumerable<EntryDTO> CashFlow([FromBody] Account account){
+        public IEnumerable<Entry> CashFlow([FromBody] Account account){
             throw new NotImplementedException("Need implementation payment");  
         } 
 

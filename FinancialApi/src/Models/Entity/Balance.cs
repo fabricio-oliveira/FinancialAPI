@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
+using FinancialApi.Models.DTO;
 
 namespace FinancialApi.Models.Entity
 {
@@ -14,13 +15,13 @@ namespace FinancialApi.Models.Entity
         }
 
 
-        public Balance(DateTime date, ICollection<Input> inputs, ICollection<Output> outputs,
-                        ICollection<Charge> charges, decimal total, decimal dayPosition,
+        public Balance(DateTime date, ICollection<EntryDTO> inputs, ICollection<EntryDTO> outputs,
+                       ICollection<EntryDTO> charges, decimal total, decimal dayPosition,
                         Account account)
         {
             this.Date = date;
             this.Inputs = inputs;
-            this.Outpus = outputs;
+            this.Outputs = outputs;
             this.Charges = charges;
             this.Total = total;
             this.DayPosition = dayPosition;
@@ -45,17 +46,40 @@ namespace FinancialApi.Models.Entity
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
-        //RelationShips
-
         [JsonProperty(PropertyName = "entradas")]
-        public ICollection<Input> Inputs { get; set;  }
-        
+        internal string _Inputs { get; set; }
+
         [JsonProperty(PropertyName = "saidas")]
-        public ICollection<Output> Outpus { get; set; }
+        internal string _Outputs { get; set; }
 
         [JsonProperty(PropertyName = "encargos")]
-        public ICollection<Charge> Charges { get; set; }
+        internal string _Charges { get; set; }
 
+        //RelationShips
+
+        //hasMany
+        [Column(TypeName = "nvarchar(max)")]
+        public ICollection<EntryDTO> Inputs
+        {
+            get { return _Inputs == null ? null : JsonConvert.DeserializeObject<List<EntryDTO>>(_Inputs); }
+            set { _Inputs = JsonConvert.SerializeObject(value); }
+        }
+
+        [Column(TypeName = "nvarchar(max)")]
+        public ICollection<EntryDTO> Outputs
+        {
+            get { return _Outputs == null ? null : JsonConvert.DeserializeObject<List<EntryDTO>>(_Outputs); }
+            set { _Outputs = JsonConvert.SerializeObject(value); }
+        }
+
+        [Column(TypeName = "nvarchar(max)")]
+        public ICollection<EntryDTO> Charges 
+        { 
+            get { return _Charges == null ? null : JsonConvert.DeserializeObject<List<EntryDTO>>(_Charges); }
+            set { _Charges = JsonConvert.SerializeObject(value); }
+        }
+
+        //Belongs
         [JsonIgnore]
         [ForeignKey("AccountId")]
         public Account Account { get; set; }

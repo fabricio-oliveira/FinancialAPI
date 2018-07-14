@@ -1,16 +1,16 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 using System;
 
-namespace FinancialApi.Models.DTO.Request
+namespace FinancialApi.Models.Entity
 {
-    public class PaymentDTO :EntryDTO
+    [Table("Payment")]
+    public class Payment :Entry
      {
-        public PaymentDTO(){
+        public Payment(){
             this.Type = "payment";
         }
 
-        public PaymentDTO(string Description, string DestinationAccount, string DestinationBank,
+        public Payment(string Description, string DestinationAccount, string DestinationBank,
                        string TypeAccount, string DestinationIdentity, decimal Value, 
                        decimal FinancialCharges, DateTime Date):
                 base(Description, DestinationAccount, DestinationBank, TypeAccount, DestinationIdentity, 

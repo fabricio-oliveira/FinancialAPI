@@ -23,24 +23,11 @@ namespace FinancialApi.Config
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<Balance>()
-                        .HasMany(c => c.Inputs)
-                        .WithOne(i => i.Balance)
-                        .HasForeignKey(c => c.BalanceId)
-                        .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Balance>()
-                        .HasMany(c => c.Outpus)
-                        .WithOne(i => i.Balance)
-                        .HasForeignKey(c => c.BalanceId)
-                        .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Balance>()
-                        .HasMany(c => c.Charges)
-                        .WithOne(i => i.Balance)
-                        .HasForeignKey(c => c.BalanceId)
-                        .OnDelete(DeleteBehavior.Restrict);
-
+            modelBuilder.Entity<Entry>()
+                        .HasDiscriminator<string>("type")
+                        .HasValue<Payment>("payment")
+                        .HasValue<Receipt>("receipt");
+            
             modelBuilder.Entity<Balance>()
                         .HasOne(c => c.Account)
                         .WithMany(a => a.Balances)
@@ -49,21 +36,14 @@ namespace FinancialApi.Config
 
             modelBuilder.Entity<Account>().Property(p => p.RowVersion).IsRowVersion();
             modelBuilder.Entity<Balance>().Property(p => p.RowVersion).IsRowVersion();
-            modelBuilder.Entity<Charge>().Property(p => p.RowVersion).IsRowVersion();
-            modelBuilder.Entity<Input>().Property(p => p.RowVersion).IsRowVersion();
-            modelBuilder.Entity<Output>().Property(p => p.RowVersion).IsRowVersion();
-
-            //base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Interest>();
                 
         }
 
         //DataBase
         public DbSet<Account> Accounts { get; set; }
-
         public DbSet<Balance> Balances { get; set; }
-
-        public DbSet<Input> Inputs { get; set;  }
-        public DbSet<Output> Outputs { get; set; }
-        public DbSet<Charge> Charges { get; set; }
+        public DbSet<Entry> Entrys { get; set;  }
+        public DbSet<Interest> Interests { get; set; }
     }
 }

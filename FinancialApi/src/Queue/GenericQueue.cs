@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using FinancialApi.Models.DTO.Request;
 using RabbitMQ.Client;
 using FinancialApi.Utils;
 using RabbitMQ.Client.Events;

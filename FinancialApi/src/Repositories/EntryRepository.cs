@@ -4,33 +4,33 @@ using FinancialApi.Models.Entity;
 
 namespace FinancialApi.Repositories
 {
-    public class InputRepository: IRepository<Input>
+    public class EntryRepository: IRepository<Entry>
     {
         private DataBaseContext _context;
 
-        public InputRepository(DataBaseContext context)
+        public EntryRepository(DataBaseContext context)
         {
             _context = context;
         }
 
-        public void Save(Input input)
+        public void Save(Entry entry)
         {
-            _context.Inputs.Add(input);
+            _context.Entrys.Add(entry);
             _context.SaveChanges();
         }
 
-        public void Update(Input input)
+        public void Update(Entry entry)
         {
-            _context.Inputs.Update(input);
+            _context.Entrys.Update(entry);
             _context.SaveChanges();
         }
 
-        public Input Find(long id)
+        public Entry Find(long id)
         {
-            return _context.Inputs.Find(id);
+            return _context.Entrys.Find(id);
         }
 
-        public void Get(Input t)
+        public void Get(Entry entry)
         {
             throw new System.NotImplementedException();
         }

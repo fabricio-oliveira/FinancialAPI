@@ -7,7 +7,6 @@
   <ItemGroup>
     <Folder Include="src\" />
     <Folder Include="src\workers\" />
-    <Folder Include="src\Models\DTO\Request\" />
     <Folder Include="src\Models\DTO\Response\" />
     <Folder Include="src\Validates\" />
   </ItemGroup>
@@ -32,6 +31,8 @@
     <Compile Remove="src\Models\Base.cs" />
     <Compile Remove="src\Repositories\IReceiptRepository.cs" />
     <Compile Remove="src\workers\ConsolidateEntry.cs" />
+    <Compile Remove="src\Models\Entity\Input.cs" />
+    <Compile Remove="src\Models\Entity\Output.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="src\Repositories\.gitkeep" />

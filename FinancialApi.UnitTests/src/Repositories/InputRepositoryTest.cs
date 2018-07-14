@@ -11,7 +11,7 @@ namespace FinancialApi.UnitTests.repositories
     [TestFixture]
     public class InputRepositoryTest
     {
-        private InputRepository _repository = null;
+        private EntryRepository _repository = null;
 
         [SetUp]
         public void Setup()
@@ -26,7 +26,7 @@ namespace FinancialApi.UnitTests.repositories
             var context = new DataBaseContext(options);
             context.Database.EnsureCreated();
 
-            _repository = new InputRepository(context);
+            _repository = new EntryRepository(context);
         }
 
         [Test]

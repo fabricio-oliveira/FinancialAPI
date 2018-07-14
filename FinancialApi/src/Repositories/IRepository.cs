@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-
+﻿
 namespace FinancialApi.Repositories
 {
     public interface IRepository<T>

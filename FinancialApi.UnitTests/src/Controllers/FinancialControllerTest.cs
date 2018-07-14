@@ -22,11 +22,11 @@ namespace FinancialApi.UnitTests.Controllers
 
             // Mock
             var mockPaymentService = new Mock<IPaymentService>();
-            mockPaymentService.Setup(service => service.EnqueueToPay(It.IsAny<PaymentDTO>())).Returns(Task.FromResult<IBaseDTO>(payResult));
+            mockPaymentService.Setup(service => service.EnqueueToPay(It.IsAny<Payment>())).Returns(Task.FromResult<IBaseDTO>(payResult));
 
             // Mock
             var mockReceiptService = new Mock<IReceiptService>();
-            mockReceiptService.Setup(service => service.EnqueueToReceive(It.IsAny<ReceiptDTO>())).Returns(Task.FromResult<IBaseDTO>(receiveResult));
+            mockReceiptService.Setup(service => service.EnqueueToReceive(It.IsAny<Receipt>())).Returns(Task.FromResult<IBaseDTO>(receiveResult));
 
             return new FinancialController(mockPaymentService.Object,
                                                      mockReceiptService.Object);
