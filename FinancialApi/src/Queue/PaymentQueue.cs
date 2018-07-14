@@ -2,8 +2,8 @@
 
 namespace FinancialApi.Queue
 {
-    public class PaymentQueue :GenericQueue<Payment>
+    public class PaymentQueue : GenericQueue<Entry>
     {
-        public PaymentQueue(QueueContext context):base(context, context.PaymentQueueName) {}
+        public PaymentQueue(QueueContext context) : base(context, context.PaymentQueueName) { }
     }
 }

@@ -7,13 +7,13 @@ namespace FinancialApi.Models.Entity
     [Table("Account")]
     public class Account
     {
-        public Account() {}
+        public Account() { }
 
-        public Account(string number, string bank, string identity, string type) 
+        public Account(string number, string bank, string identity, string type)
         {
             this.Number = number;
             this.Bank = bank;
-            this.TypeAccount = type;
+            this.Type = type;
             this.Identity = identity;
         }
 
@@ -24,14 +24,14 @@ namespace FinancialApi.Models.Entity
 
         public string Bank { get; set; }
 
-        public string TypeAccount { get; set; }
+        public string Type { get; set; }
 
         public string Identity { get; set; }
 
-        [Timestamp]
-        public byte[] RowVersion { get; set; }
+        //[Timestamp]
+        //public byte[] RowVersion { get; set; }
 
-        //RelationShip
+        //RelationShipx1
         public ICollection<Balance> Balances { get; set; }
 
     }

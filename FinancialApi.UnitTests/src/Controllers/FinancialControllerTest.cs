@@ -12,8 +12,9 @@ namespace FinancialApi.UnitTests.Controllers
 {
     public class FinancialControllerTest
     {
-        
-        private FinancialController MockController(IBaseDTO payResult = null, IBaseDTO receiveResult = null){
+
+        private FinancialController MockController(IBaseDTO payResult = null, IBaseDTO receiveResult = null)
+        {
             if (payResult == null)
                 payResult = new OkDTO("x");
 
@@ -44,7 +45,7 @@ namespace FinancialApi.UnitTests.Controllers
             var payment = PaymentFactory.Build();
 
             // test (result)
-            var result = await controller.Payment(payment);
+            var result = await controller.Entry(payment);
 
             // Assert one
             Assert.IsInstanceOf<OkObjectResult>(result);
@@ -54,7 +55,7 @@ namespace FinancialApi.UnitTests.Controllers
             Assert.IsInstanceOf<OkDTO>(ResponseResult.Value);
 
             //Assert three
-            var bodyResult = (OkDTO) ResponseResult.Value;
+            var bodyResult = (OkDTO)ResponseResult.Value;
             Assert.AreEqual("x", bodyResult.UUID);
         }
 
@@ -71,7 +72,7 @@ namespace FinancialApi.UnitTests.Controllers
             var payment = PaymentFactory.Build();
 
             // test (result)
-            var result = await controller.Payment(payment);
+            var result = await controller.Entry(payment);
 
             // Assert one
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
@@ -98,7 +99,7 @@ namespace FinancialApi.UnitTests.Controllers
             var receipt = ReceiptFactory.Build();
 
             // test (result)
-            var result = await controller.Receipt(receipt);
+            var result = await controller.Entry(receipt);
 
             // Assert one
             Assert.IsInstanceOf<OkObjectResult>(result);
@@ -106,7 +107,7 @@ namespace FinancialApi.UnitTests.Controllers
             //Assert two
             var ResponseResult = (OkObjectResult)result;
             Assert.IsInstanceOf<OkDTO>(ResponseResult.Value);
-           
+
             //Assert three
             var bodyResult = (OkDTO)ResponseResult.Value;
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace FinancialApi.Models.DTO.Response
 {
@@ -25,5 +26,10 @@ namespace FinancialApi.Models.DTO.Response
         }
 
         public bool HasErrors() => this.Details.Count > 0;
+
+        internal void Add(string key, object attemptedValue)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

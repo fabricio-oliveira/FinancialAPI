@@ -20,12 +20,11 @@ namespace FinancialApi
 
             PaymentQueueName = "payment";
             ReceiptQueueName = "receipt";
-            //EntryQueueName = "entry";
-            InterestQueueName = "entry";
+            InterestQueueName = "interst";
 
             var connection = factory.CreateConnection();
             channel = connection.CreateModel();
-            
+
             channel.QueueDeclare(queue: PaymentQueueName,
                                  durable: false,
                                  exclusive: false,
@@ -39,10 +38,10 @@ namespace FinancialApi
                                  arguments: null);
 
             //channel.QueueDeclare(queue: EntryQueueName,
-                                 //durable: false,
-                                 //exclusive: false,
-                                 //autoDelete: false,
-                                 //arguments: null);
+            //durable: false,
+            //exclusive: false,
+            //autoDelete: false,
+            //arguments: null);
             channel.QueueDeclare(queue: InterestQueueName,
                                  durable: false,
                                  exclusive: false,

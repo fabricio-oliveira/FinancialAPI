@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using FinancialApi.Models.Entity;
 using FinancialApi.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Threading.Tasks;
 using FinancialApi.Models.DTO.Response;
-using FinancialApi.Utils;
+using System.Linq;
 
 namespace FinancialApi.Controllers
 {
@@ -23,17 +22,23 @@ namespace FinancialApi.Controllers
             this._receiptService = receiptService;
         }
 
-        // Post receipt
-        [HttpPost("receipt")]
-        public async Task<IActionResult> Receipt([FromBody]Receipt receipt)
+        // Post entry
+        [HttpPost("entry")]
+        public async Task<IActionResult> Entry([FromBody]Entry entry)
         {
             if (!ModelState.IsValid)
             {
-                var errors = ValidateErrors(receipt);
+                var errors = ValidateErrors(entry);
                 return new BadRequestObjectResult(errors);
             }
 
-            var result = await _receiptService.EnqueueToReceive(receipt);
+            IBaseDTO result;
+
+            if (entry.IsReceipt())
+                result = await _receiptService.EnqueueToReceive(entry);
+            else
+                result = await _paymentService.EnqueueToPay(entry);
+
 
             if (result is ErrorsDTO)
                 return new BadRequestObjectResult(result);
@@ -41,40 +46,24 @@ namespace FinancialApi.Controllers
             return new OkObjectResult(result);
         }
 
-        // Post payment
-        [HttpPost("payment")]
-        public async Task<IActionResult> Payment([FromBody]Payment payment)
-        {
-            if (!ModelState.IsValid)
-            {
-                var errors = ValidateErrors(payment);
-                return new BadRequestObjectResult(errors);
-            }
 
-            var result =await  _paymentService.EnqueueToPay(payment);
-
-            if (result is ErrorsDTO)
-                return new BadRequestObjectResult(result);
-
-            return new OkObjectResult(result);
-        }
-
-        // Post payment
         [HttpGet("cash_flow")]
-        public IEnumerable<Entry> CashFlow([FromBody] Account account){
-            throw new NotImplementedException("Need implementation payment");  
-        } 
+        public IEnumerable<Entry> CashFlow([FromQuery] Account account)
+        {
+            throw new NotImplementedException("Need implementation payment");
+        }
 
 
         private ErrorsDTO ValidateErrors(Object obj)
         {
-            var errors = new ErrorsDTO();
+            var errors = ModelState
+                .Where(x => x.Value.Errors.Count > 0)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                );
 
-            foreach (var key in ModelState.Keys)
-                foreach (ModelError error in ModelState[key].Errors)
-                    errors.Add(obj.GetJSonFieldName(key), error.ErrorMessage);
-
-            return errors;
+            return new ErrorsDTO(errors);
         }
     }
 }

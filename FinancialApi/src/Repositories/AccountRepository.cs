@@ -36,7 +36,7 @@ namespace FinancialApi.Repositories
             var account = _context.Accounts.Where(x => x.Number == number
                                                   && x.Bank == bank
                                                   && x.Identity == identity
-                                                  && x.TypeAccount == type)
+                                                  && x.Type == type)
                                                  .FirstOrDefault();
 
             if (account == null)

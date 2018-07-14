@@ -6,9 +6,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinancialApi.Models.Entity
 {
-    public abstract class Entry
+    [Table("Entry")]
+    public class Entry
     {
-
         public Entry(string description, string destinationAccount, string destinationBank,
                      string typeAccount, string destinationIdentity, decimal value, decimal financialCharges,
                      DateTime dateToPay) : this()
@@ -27,7 +27,7 @@ namespace FinancialApi.Models.Entity
         {
             this.UUID = Guid.NewGuid().ToString();
             this.DateEntry = DateTime.Today;
-            this.attempts = 0;
+            this.Attempts = 0;
         }
 
         [Key]
@@ -77,11 +77,17 @@ namespace FinancialApi.Models.Entity
 
         [JsonIgnore]
         [NotMapped]
-        public int attempts { get; set; }
+        public int Attempts { get; set; }
 
         [JsonIgnore]
         [NotMapped]
-        public string errors { get; set; }
+        public string Errors { get; set; }
+
+
+        // method check
+        public bool IsReceipt() => Type.Equals("recebimento");
+
+        public bool IsPayment() => Type.Equals("payment");
 
     }
 }

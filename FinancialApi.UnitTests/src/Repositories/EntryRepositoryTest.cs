@@ -2,7 +2,6 @@ using System;
 using FinancialApi.Config;
 using FinancialApi.Repositories;
 using FinancialApiUnitTests.Factory;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
@@ -16,16 +15,7 @@ namespace FinancialApi.UnitTests.repositories
         [SetUp]
         public void Setup()
         {
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
-            var options = new DbContextOptionsBuilder<DataBaseContext>()
-                .UseSqlite(connection)
-                .Options;
-
-            var context = new DataBaseContext(options);
-            context.Database.EnsureCreated();
-
+            var context = DbHelper.Connection();
             _repository = new EntryRepository(context);
         }
 
@@ -33,6 +23,7 @@ namespace FinancialApi.UnitTests.repositories
         public void TestSaveCorrectPaymentRepository()
         {
             var entry = PaymentFactory.Build();
+
             _repository.Save(entry);
             Assert.IsTrue(true, "Save data");
         }

@@ -15,19 +15,19 @@ namespace FinancialApi.Repositories
 
         public void Save(Entry entry)
         {
-            _context.Entrys.Add(entry);
+            _context.Entries.Add(entry);
             _context.SaveChanges();
         }
 
         public void Update(Entry entry)
         {
-            _context.Entrys.Update(entry);
+            _context.Entries.Update(entry);
             _context.SaveChanges();
         }
 
         public Entry Find(long id)
         {
-            return _context.Entrys.Find(id);
+            return _context.Entries.Find(id);
         }
     }
 }

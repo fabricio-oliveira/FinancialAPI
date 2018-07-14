@@ -12,11 +12,11 @@ namespace FinancialApi.Services
 {
     public interface IPaymentService
     {
-        Task<IBaseDTO> EnqueueToPay(Payment payment);
-        Task<IBaseDTO> Pay(Payment payment);
+        Task<IBaseDTO> EnqueueToPay(Entry entry);
+        Task<IBaseDTO> Pay(Entry entry);
     }
 
-    public class PaymentService : EntryService<Payment>, IPaymentService
+    public class PaymentService : EntryService, IPaymentService
     {
 
         private const decimal ESPECIAL_LIMIT = -20.000m;
@@ -42,49 +42,49 @@ namespace FinancialApi.Services
             this._entryRepository = entryRepository;
         }
 
-        public async Task<IBaseDTO> EnqueueToPay(Payment payment)
+        public async Task<IBaseDTO> EnqueueToPay(Entry entry)
         {
-            var error = Validate(payment);
+            var error = Validate(entry);
             if (error.HasErrors()) return await Task.FromResult(error);
 
-            _mainQueue.Enqueue(payment);
-            return new OkDTO(payment.UUID);
+            _mainQueue.Enqueue(entry);
+            return new OkDTO(entry.UUID);
         }
 
 
-        public async Task<IBaseDTO> Pay(Payment payment)
+        public async Task<IBaseDTO> Pay(Entry entry)
         {
-            var error = Validate(payment);
+            var error = Validate(entry);
             if (error.HasErrors()) return await Task.FromResult(error);
 
-            updateBalance(payment);
+            UpdateBalance(entry);
 
-            return new OkDTO(payment.UUID);
+            return new OkDTO(entry.UUID);
         }
 
 
         //Private or protected methods
 
-        private void updateBalance(Payment payment)
+        private void UpdateBalance(Entry entry)
         {
             try
             {
                 using (this._entryRepository.BeginTransaction())
                 {
-                    this._entryRepository.Save(payment);
+                    this._entryRepository.Save(entry);
 
-                    var account = this._accountRepository.FindOrCreate(payment.DestinationAccount,
-                                                                   payment.DestinationBank,
-                                                                   payment.TypeAccount,
-                                                                   payment.DestinationIdentity);
+                    var account = this._accountRepository.FindOrCreate(entry.DestinationAccount,
+                                                                       entry.DestinationBank,
+                                                                       entry.TypeAccount,
+                                                                       entry.DestinationIdentity);
 
                     var balance = this._balanceRepository.FindOrCreateBy(account, DateTime.Today);
 
-                    balance.Outputs.Add(new EntryDTO(payment.DateEntry.GetValueOrDefault(),
-                                                payment.Value.GetValueOrDefault()));
+                    balance.Outputs.Add(new EntryDTO(entry.DateEntry.GetValueOrDefault(),
+                                                     entry.Value.GetValueOrDefault()));
 
-                    balance.Charges.Add(new EntryDTO(payment.DateEntry.GetValueOrDefault(),
-                                                 payment.FinancialCharges.GetValueOrDefault()));
+                    balance.Charges.Add(new EntryDTO(entry.DateEntry.GetValueOrDefault(),
+                                                     entry.FinancialCharges.GetValueOrDefault()));
 
                     this._balanceRepository.Update(balance);
                     this._entryRepository.Commit();
@@ -92,22 +92,22 @@ namespace FinancialApi.Services
             }
             catch (DbUpdateConcurrencyException)
             {
-                this._mainQueue.Enqueue(payment, 4000); //4 seconds
+                this._mainQueue.Enqueue(entry, 4000); //4 seconds
             }
             catch (Exception e)
             {
-                if (payment.attempts > MAX_RETRY)
-                    this._errorQueue.Enqueue(payment);
+                if (entry.Attempts > MAX_RETRY)
+                    this._errorQueue.Enqueue(entry);
                 else
                 {
-                    payment.errors = e.Message;
-                    this._mainQueue.Enqueue(payment, 3 * 60000); //3 minutes
+                    entry.Errors = e.Message;
+                    this._mainQueue.Enqueue(entry, 3 * 60000); //3 minutes
                 }
             }
         }
 
 
-        protected override ErrorsDTO Validate(Payment entry)
+        protected override ErrorsDTO Validate(Entry entry)
         {
             var errors = base.Validate(entry);
 
@@ -118,7 +118,7 @@ namespace FinancialApi.Services
         }
 
 
-        private bool HasLimit(Payment entry)
+        private bool HasLimit(Entry entry)
         {
             var account = _accountRepository.FindOrCreate(number: entry.DestinationAccount,
                                                           bank: entry.DestinationBank,

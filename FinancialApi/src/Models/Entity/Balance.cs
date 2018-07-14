@@ -46,35 +46,38 @@ namespace FinancialApi.Models.Entity
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
+        [Column(TypeName = "nvarchar(max)")]
         [JsonProperty(PropertyName = "entradas")]
         internal string _Inputs { get; set; }
 
+        [Column(TypeName = "nvarchar(max)")]
         [JsonProperty(PropertyName = "saidas")]
         internal string _Outputs { get; set; }
 
+        [Column(TypeName = "nvarchar(max)")]
         [JsonProperty(PropertyName = "encargos")]
         internal string _Charges { get; set; }
 
         //RelationShips
 
         //hasMany
-        [Column(TypeName = "nvarchar(max)")]
+        [NotMapped]
         public ICollection<EntryDTO> Inputs
         {
             get { return _Inputs == null ? null : JsonConvert.DeserializeObject<List<EntryDTO>>(_Inputs); }
             set { _Inputs = JsonConvert.SerializeObject(value); }
         }
 
-        [Column(TypeName = "nvarchar(max)")]
+        [NotMapped]
         public ICollection<EntryDTO> Outputs
         {
             get { return _Outputs == null ? null : JsonConvert.DeserializeObject<List<EntryDTO>>(_Outputs); }
             set { _Outputs = JsonConvert.SerializeObject(value); }
         }
 
-        [Column(TypeName = "nvarchar(max)")]
-        public ICollection<EntryDTO> Charges 
-        { 
+        [NotMapped]
+        public ICollection<EntryDTO> Charges
+        {
             get { return _Charges == null ? null : JsonConvert.DeserializeObject<List<EntryDTO>>(_Charges); }
             set { _Charges = JsonConvert.SerializeObject(value); }
         }

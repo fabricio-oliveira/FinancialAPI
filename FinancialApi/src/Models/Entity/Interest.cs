@@ -1,22 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System;
-using Newtonsoft.Json;
-using FinancialApi.validate;
 
 namespace FinancialApi.Models.Entity
 {
-    public abstract class Interest
+    public class Interest
     {
 
-        public Interest(string Description, string DestinationAccount, string DestinationBank,
-                     string TypeAccount, string DestinationIdentity, decimal Value, decimal FinancialCharges,
-                     DateTime Date):base(){
-            this.UUID = Guid.NewGuid().ToString();
+        public Interest(decimal Value,
+                        DateTime Date) : this()
+        {
             this.Value = Value;
             this.Date = Date;
         }
 
-        public Interest(){
+        public Interest()
+        {
             this.UUID = Guid.NewGuid().ToString();
         }
 

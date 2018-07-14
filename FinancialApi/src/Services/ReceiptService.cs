@@ -11,11 +11,11 @@ namespace FinancialApi.Services
 {
     public interface IReceiptService
     {
-        Task<IBaseDTO> EnqueueToReceive(Receipt receipt);
-        Task<IBaseDTO> Receive(Receipt receipt);
+        Task<IBaseDTO> EnqueueToReceive(Entry receipt);
+        Task<IBaseDTO> Receive(Entry receipt);
     }
 
-    public class ReceiptService : EntryService<Receipt>, IReceiptService
+    public class ReceiptService : EntryService, IReceiptService
     {
 
         private const int MAX_RETRY = 3;
@@ -40,45 +40,45 @@ namespace FinancialApi.Services
             this._balanceRepository = balanceRepository;
         }
 
-        public async Task<IBaseDTO> EnqueueToReceive(Receipt receipt)
+        public async Task<IBaseDTO> EnqueueToReceive(Entry entry)
         {
-            var error = Validate(receipt);
+            var error = Validate(entry);
             if (error != null) return await Task.FromResult(error);
 
-            _mainQueue.Enqueue(receipt);
-            return new OkDTO(receipt.UUID);
+            _mainQueue.Enqueue(entry);
+            return new OkDTO(entry.UUID);
         }
 
-        public async Task<IBaseDTO> Receive(Receipt receipt)
+        public async Task<IBaseDTO> Receive(Entry entry)
         {
-            var error = Validate(receipt);
+            var error = Validate(entry);
             if (error.HasErrors()) return await Task.FromResult(error);
 
-            updateBalance(receipt);
+            UpdateBalance(entry);
 
-            return new OkDTO(receipt.UUID);
+            return new OkDTO(entry.UUID);
         }
 
-        private void updateBalance(Receipt receipt)
+        private void UpdateBalance(Entry entry)
         {
             try
             {
                 using (this._entryRepository.BeginTransaction())
                 {
-                    this._entryRepository.Save(receipt);
+                    this._entryRepository.Save(entry);
 
-                    var account = this._accountRepository.FindOrCreate(receipt.DestinationAccount,
-                                                                       receipt.DestinationBank,
-                                                                       receipt.TypeAccount,
-                                                                       receipt.DestinationIdentity);
+                    var account = this._accountRepository.FindOrCreate(entry.DestinationAccount,
+                                                                       entry.DestinationBank,
+                                                                       entry.TypeAccount,
+                                                                       entry.DestinationIdentity);
 
                     var balance = this._balanceRepository.FindOrCreateBy(account, DateTime.Today);
 
-                    balance.Inputs.Add(new EntryDTO(receipt.DateEntry.GetValueOrDefault(),
-                                                     receipt.Value.GetValueOrDefault()));
+                    balance.Inputs.Add(new EntryDTO(entry.DateEntry.GetValueOrDefault(),
+                                                    entry.Value.GetValueOrDefault()));
 
-                    balance.Charges.Add(new EntryDTO(receipt.DateEntry.GetValueOrDefault(),
-                                                     receipt.FinancialCharges.GetValueOrDefault()));
+                    balance.Charges.Add(new EntryDTO(entry.DateEntry.GetValueOrDefault(),
+                                                     entry.FinancialCharges.GetValueOrDefault()));
 
                     this._balanceRepository.Update(balance);
                     this._entryRepository.Commit();
@@ -86,23 +86,23 @@ namespace FinancialApi.Services
             }
             catch (DbUpdateConcurrencyException)
             {
-                this._mainQueue.Enqueue(receipt, 4000); //4 seconds
+                this._mainQueue.Enqueue(entry, 4000); //4 seconds
             }
             catch (Exception e)
             {
-                if (receipt.attempts > MAX_RETRY)
-                    this._errorQueue.Enqueue(receipt);
+                if (entry.Attempts > MAX_RETRY)
+                    this._errorQueue.Enqueue(entry);
                 else
                 {
-                    receipt.errors = e.Message;
-                    this._mainQueue.Enqueue(receipt, 3 * 60000); //3 minutes
+                    entry.Errors = e.Message;
+                    this._mainQueue.Enqueue(entry, 3 * 60000); //3 minutes
                 }
             }
         }
 
         // Private
 
-        protected override ErrorsDTO Validate(Receipt entry)
+        protected override ErrorsDTO Validate(Entry entry)
         {
             var errors = base.Validate(entry);
 

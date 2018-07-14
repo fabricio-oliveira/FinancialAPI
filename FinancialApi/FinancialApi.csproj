@@ -33,6 +33,7 @@
     <Compile Remove="src\workers\ConsolidateEntry.cs" />
     <Compile Remove="src\Models\Entity\Input.cs" />
     <Compile Remove="src\Models\Entity\Output.cs" />
+    <Compile Remove="src\Models\Entity\Payment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="src\Repositories\.gitkeep" />

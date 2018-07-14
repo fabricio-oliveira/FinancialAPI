@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace FinancialApi.Models.DTO
@@ -16,7 +14,7 @@ namespace FinancialApi.Models.DTO
             this.Value = value;
         }
 
-        public EntryDTO(){}
+        public EntryDTO() { }
 
         public EntryDTO(Func<DateTime> getValueOrDefault, decimal? value)
         {

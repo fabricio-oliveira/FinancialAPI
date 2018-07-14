@@ -2,9 +2,9 @@
 
 namespace FinancialApi.Queue
 {
-    public class ReceiptQueue : GenericQueue<Receipt>
+    public class ReceiptQueue : GenericQueue<Entry>
     {
-        public ReceiptQueue(QueueContext context):base(context, context.ReceiptQueueName) {}
+        public ReceiptQueue(QueueContext context) : base(context, context.ReceiptQueueName) { }
 
     }
 }
