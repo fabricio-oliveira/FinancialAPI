@@ -14,6 +14,7 @@ namespace FinancialApi.UnitTests.repositories
         public void Setup()
         {
             var context = DbHelper.Connection();
+            //DbHelper.Cleaner();
             _repository = new AccountRepository(context);
         }
 

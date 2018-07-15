@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using FinancialApi.Config;
+using FinancialApi.Models.DTO;
 using FinancialApi.Models.Entity;
 using FinancialApi.UnitTests;
 
@@ -17,7 +19,11 @@ namespace FinancialApiUnitTests.Factory
 
         public static Balance Build(Action<Balance> pred = null)
         {
-            var balance = new Balance(DateTime.Today, null, null, null, 130.00m, 0.7m, new Account());
+            var balance = new Balance(DateTime.Today,
+                                      new List<ShortEntryDTO>(),
+                                      new List<ShortEntryDTO>(),
+                                      new List<ShortEntryDTO>(),
+                                      130.00m, 0.7m, new Account());
 
             pred?.Invoke(balance);
             return balance;

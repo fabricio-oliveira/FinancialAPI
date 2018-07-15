@@ -20,23 +20,20 @@ namespace FinancialApi.Services
     {
 
         private const decimal ESPECIAL_LIMIT = -20000.00m;
-        private const int MAX_RETRY = 3;
 
         private readonly IPaymentQueue _mainQueue;
-        private readonly IErrorQueue _errorQueue;
 
         private readonly IBalanceRepository _balanceRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly IEntryRepository _entryRepository;
 
         public PaymentService(IPaymentQueue mainQueue,
-                              IErrorQueue errorQueue,
                               IBalanceRepository balanceRepository,
                               IAccountRepository accountRepository,
                               IEntryRepository entryRepository)
         {
             this._mainQueue = mainQueue;
-            this._errorQueue = errorQueue;
+
             this._balanceRepository = balanceRepository;
             this._accountRepository = accountRepository;
             this._entryRepository = entryRepository;
@@ -66,45 +63,31 @@ namespace FinancialApi.Services
 
         private void UpdateBalance(Entry entry)
         {
-            try
+            using (this._entryRepository.BeginTransaction())
             {
-                using (this._entryRepository.BeginTransaction())
-                {
-                    this._entryRepository.Save(entry);
+                this._entryRepository.Save(entry);
 
-                    var account = this._accountRepository.FindOrCreate(entry.DestinationAccount,
-                                                                       entry.DestinationBank,
-                                                                       entry.TypeAccount,
-                                                                       entry.DestinationIdentity);
+                var account = this._accountRepository.FindOrCreate(entry.DestinationAccount,
+                                                                   entry.DestinationBank,
+                                                                   entry.TypeAccount,
+                                                                   entry.DestinationIdentity);
 
-                    var balance = this._balanceRepository.FindOrCreateBy(account, DateTime.Today);
+                var balance = this._balanceRepository.FindOrCreateBy(account, entry.DateToPay.GetValueOrDefault());
 
-                    balance.Outputs.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
-                                                     entry.Value.GetValueOrDefault()));
+                balance.Outputs.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
+                                                 entry.Value.GetValueOrDefault()));
 
-                    balance.Charges.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
-                                                     entry.FinancialCharges.GetValueOrDefault()));
+                Console.WriteLine("xxx" + balance.Outputs.Count);
 
-                    this._balanceRepository.Update(balance);
-                    this._entryRepository.Commit();
-                }
+                balance.Charges.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
+                                                 entry.FinancialCharges.GetValueOrDefault()));
+
+                this._balanceRepository.Update(balance);
+                this._entryRepository.Commit();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                this._mainQueue.Enqueue(entry, 4000); //4 seconds
-            }
-            catch (Exception e)
-            {
-                if (entry.Attempts > MAX_RETRY)
-                    this._errorQueue.Enqueue(entry);
-                else
-                {
-                    entry.Errors = e.Message;
-                    this._mainQueue.Enqueue(entry, 3 * 60000); //3 minutes
-                }
-            }
+            //SQL Server has auto rollback when exception as throw
+
         }
-
 
         protected override ErrorsDTO Validate(Entry entry)
         {
@@ -125,6 +108,7 @@ namespace FinancialApi.Services
                                                           identity: entry.DestinationIdentity);
 
             var flow = _balanceRepository.LastByOrDefault(account);
+
 
             return (flow.Total - entry.Value - entry.FinancialCharges) >= ESPECIAL_LIMIT;
         }

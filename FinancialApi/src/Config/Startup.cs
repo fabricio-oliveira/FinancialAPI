@@ -130,7 +130,8 @@ namespace FinancialApi.Config
             var consolidateEntry = new ConsolidateEntryWorker(serviceProvider.GetService<PaymentService>(),
                                                               serviceProvider.GetService<PaymentQueue>(),
                                                               serviceProvider.GetService<ReceiptService>(),
-                                                              serviceProvider.GetService<ReceiptQueue>());
+                                                              serviceProvider.GetService<ReceiptQueue>(),
+                                                              serviceProvider.GetService<ErrorQueue>());
 
         }
     }

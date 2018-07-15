@@ -45,39 +45,59 @@ namespace FinancialApi.Models.Entity
 
         [Column(TypeName = "nvarchar(max)")]
         [JsonProperty(PropertyName = "entradas")]
-        internal string _Inputs { get; set; }
+        internal string _Inputs
+        {
+            get { return Inputs == null ? null : JsonConvert.SerializeObject(Inputs); }
+            set
+            {
+                if (value == null)
+                    Inputs = null;
+
+                Inputs = JsonConvert.DeserializeObject<List<ShortEntryDTO>>(value);
+            }
+        }
 
         [Column(TypeName = "nvarchar(max)")]
         [JsonProperty(PropertyName = "saidas")]
-        internal string _Outputs { get; set; }
+        internal string _Outputs
+        {
+            get { return Outputs == null ? null : JsonConvert.SerializeObject(Outputs); }
+            set
+            {
+                if (value == null)
+                    Outputs = null;
+
+                Outputs = JsonConvert.DeserializeObject<List<ShortEntryDTO>>(value);
+            }
+
+        }
 
         [Column(TypeName = "nvarchar(max)")]
         [JsonProperty(PropertyName = "encargos")]
-        internal string _Charges { get; set; }
+        internal string _Charges
+        {
+            get { return Charges == null ? null : JsonConvert.SerializeObject(Charges); }
+            set
+            {
+                if (value == null)
+                    Charges = null;
+
+                Charges = JsonConvert.DeserializeObject<List<ShortEntryDTO>>(value);
+            }
+        }
 
         //RelationShips
 
         //hasMany
         [NotMapped]
-        public ICollection<ShortEntryDTO> Inputs
-        {
-            get { return _Inputs == null ? null : JsonConvert.DeserializeObject<List<ShortEntryDTO>>(_Inputs); }
-            set { _Inputs = JsonConvert.SerializeObject(value); }
-        }
+        public ICollection<ShortEntryDTO> Inputs { get; set; }
 
         [NotMapped]
-        public ICollection<ShortEntryDTO> Outputs
-        {
-            get { return _Outputs == null ? null : JsonConvert.DeserializeObject<List<ShortEntryDTO>>(_Outputs); }
-            set { _Outputs = JsonConvert.SerializeObject(value); }
-        }
+        public ICollection<ShortEntryDTO> Outputs { get; set; }
 
         [NotMapped]
-        public ICollection<ShortEntryDTO> Charges
-        {
-            get { return _Charges == null ? null : JsonConvert.DeserializeObject<List<ShortEntryDTO>>(_Charges); }
-            set { _Charges = JsonConvert.SerializeObject(value); }
-        }
+        public ICollection<ShortEntryDTO> Charges { get; set; }
+
 
         //Belongs
         [JsonIgnore]
@@ -86,7 +106,6 @@ namespace FinancialApi.Models.Entity
 
         [JsonIgnore]
         public long? AccountId { get; set; }
-
 
         // optimistic lock
         [Timestamp]

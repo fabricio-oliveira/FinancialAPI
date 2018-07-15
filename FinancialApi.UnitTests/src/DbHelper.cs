@@ -1,3 +1,4 @@
+using System;
 using FinancialApi.Config;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,8 @@ namespace FinancialApi.UnitTests
             if (_context != null)
                 return _context;
 
+            Console.WriteLine("XXXXXXXXXXXXXXX Open Conection XXXXXXXXXXXXXXX");
+
             var connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
 
@@ -26,6 +29,25 @@ namespace FinancialApi.UnitTests
 
             return _context;
         }
+
+
+        //public static void Cleaner()
+        //{
+        //    if (_context == null)
+        //        throw new Exception("Database Context not Initialize");
+
+        //    try
+        //    {
+        //        _context.Database.RollbackTransaction();
+        //    }
+        //    catch (InvalidOperationException)
+        //    {
+
+        //    }
+
+
+        //    _context.Database.BeginTransaction();
+        //}
 
     }
 }
