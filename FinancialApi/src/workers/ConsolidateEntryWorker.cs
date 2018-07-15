@@ -21,20 +21,10 @@ namespace FinancialApi.workers
         {
             this._paymentQueue = paymentQueue;
             this._paymentService = paymentService;
-
+            this._paymentQueue.SetConsumer(WrapperPay);
 
             this._receiptQueue = receiptQueue;
             this._receiptService = receiptService;
-        }
-
-        public void StartPayConsolidate()
-        {
-            this._paymentQueue.SetConsumer(WrapperPay);
-        }
-
-
-        public void StartReceiptConsolidate()
-        {
             this._receiptQueue.SetConsumer(WrappeReceive);
         }
 
@@ -48,6 +38,8 @@ namespace FinancialApi.workers
         }
 
 
+
+
         public async Task WrappeReceive(object sender, BasicDeliverEventArgs @event)
         {
             var body = System.Text.Encoding.UTF8.GetString(@event.Body);
@@ -55,7 +47,8 @@ namespace FinancialApi.workers
 
             var result = _receiptService.Receive(entry);
             await Task.Delay(250);
-            Console.WriteLine("teste", result);
+            Info.WriteLine("teste", result);
         }
+
     }
 }

@@ -1,4 +1,7 @@
-﻿using FinancialApi.Models.Entity;
+﻿using System;
+using System.Threading.Tasks;
+using FinancialApi.Models.Entity;
+using RabbitMQ.Client.Events;
 
 namespace FinancialApi.Queue
 {

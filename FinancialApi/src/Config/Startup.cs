@@ -10,10 +10,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Swagger;
 using FinancialApi.workers;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Hangfire;
-using System.Diagnostics;
-using Microsoft.AspNetCore.Builder.Internal;
 
 namespace FinancialApi.Config
 {
@@ -124,6 +121,17 @@ namespace FinancialApi.Config
                 var dbContext = serviceScope.ServiceProvider.GetService<DataBaseContext>();
                 dbContext.Database.EnsureCreated();
             }
+
+            EternalJob(serviceProvider);
+        }
+
+        void EternalJob(IServiceProvider serviceProvider)
+        {
+            var consolidateEntry = new ConsolidateEntryWorker(serviceProvider.GetService<PaymentService>(),
+                                                              serviceProvider.GetService<PaymentQueue>(),
+                                                              serviceProvider.GetService<ReceiptService>(),
+                                                              serviceProvider.GetService<ReceiptQueue>());
+
         }
     }
 }

@@ -35,6 +35,7 @@
     <Compile Remove="src\Models\Entity\Input.cs" />
     <Compile Remove="src\Models\Entity\Output.cs" />
     <Compile Remove="src\Models\Entity\Payment.cs" />
+    <Compile Remove="src\workers\SchedulerWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="src\Repositories\.gitkeep" />

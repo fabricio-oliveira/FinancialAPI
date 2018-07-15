@@ -34,7 +34,7 @@ namespace FinancialApi.UnitTests.repositories
         }
 
         [Test]
-        public void TestFindExistentEntity()
+        public void TestFindExistentAccount()
         {
             var created = AccountFactory.Create();
             var finded = _repository.Find(created.Id.GetValueOrDefault());

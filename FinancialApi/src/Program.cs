@@ -14,14 +14,6 @@ namespace FinancialApi
         public static void Main(string[] args)
         {
             InitWebServer();
-            EternalJob();
-
-        }
-
-        public static void EternalJob()
-        {
-            var jobFireForget = BackgroundJob.Enqueue<ConsolidateEntryWorker>(c => c.StartPayConsolidate());
-
         }
 
         private static void InitWebServer()

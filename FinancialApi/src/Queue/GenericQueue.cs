@@ -3,16 +3,17 @@ using RabbitMQ.Client;
 using FinancialApi.Utils;
 using RabbitMQ.Client.Events;
 using System.Collections.Generic;
+using System;
 
 namespace FinancialApi.Queue
 {
     public abstract class GenericQueue<T>
     {
-        private readonly QueueContext _context;
-        private readonly string _queueName;
-        private AsyncEventingBasicConsumer _consumer;
+        readonly QueueContext _context;
+        readonly string _queueName;
+        AsyncEventingBasicConsumer _consumer;
 
-        public GenericQueue(QueueContext context, string queueName)
+        protected GenericQueue(QueueContext context, string queueName)
         {
             this._context = context;
             this._queueName = queueName;
@@ -22,6 +23,9 @@ namespace FinancialApi.Queue
         {
             this._consumer = new AsyncEventingBasicConsumer(_context.channel);
             this._consumer.Received += consumer;
+            this._context.channel.BasicConsume(queue: _queueName,
+                                               autoAck: true,
+                                               consumer: this._consumer);
         }
 
         public void Enqueue(T t, int? delay = null)
@@ -29,7 +33,7 @@ namespace FinancialApi.Queue
             var body = Encoding.UTF8.GetBytes(t.ToJson());
             _context.channel.BasicPublish(exchange: "",
                                           routingKey: _queueName,
-                                          basicProperties: properties(delay),
+                                          basicProperties: Properties(delay),
                                           body: body);
         }
 
@@ -42,7 +46,7 @@ namespace FinancialApi.Queue
 
         }
 
-        private IBasicProperties properties(int? val)
+        IBasicProperties Properties(int? val)
         {
             if (val == null) return null;
 
