@@ -1,17 +1,19 @@
 ﻿using System.Collections.Generic;
 using FinancialApi.Config;
 using FinancialApi.Models.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinancialApi.Repositories
 {
-    public class EntryRepository: GenericRepository, IRepository<Entry>
+    public class EntryRepository : GenericRepository, IRepository<Entry>
     {
-        private DataBaseContext _context;
+        readonly DataBaseContext _context;
 
-        public EntryRepository(DataBaseContext context):base(context)
+        public EntryRepository(DataBaseContext context) : base(context)
         {
             _context = context;
         }
+
 
         public void Save(Entry entry)
         {

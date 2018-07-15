@@ -1,4 +1,5 @@
 using FinancialApi.Config;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinancialApi.UnitTests
@@ -6,16 +7,24 @@ namespace FinancialApi.UnitTests
 
     public static class DbHelper
     {
+        static DataBaseContext _context = null;
         public static DataBaseContext Connection()
         {
-            var options = new DbContextOptionsBuilder<DataBaseContext>()
-               .UseSqlServer("Data Source=127.0.0.1,1433;Initial Catalog=Financial;User ID=sa;Password=@A1b2 C3d4")
-               .Options;
+            if (_context != null)
+                return _context;
 
-            var context = new DataBaseContext(options);
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
-            return context;
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
+            var options = new DbContextOptionsBuilder<DataBaseContext>()
+                .UseSqlite(connection)
+                .Options;
+
+            _context = new DataBaseContext(options);
+            _context.Database.EnsureDeleted();
+            _context.Database.EnsureCreated();
+
+            return _context;
         }
 
     }

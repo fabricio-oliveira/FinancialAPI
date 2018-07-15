@@ -27,5 +27,9 @@ namespace FinancialApi.Models.Entity
 
         public DateTime? Date { get; set; }
 
+        // optimistic lock
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
     }
 }

@@ -43,9 +43,6 @@ namespace FinancialApi.Models.Entity
         [JsonProperty(PropertyName = "posicao_do_dia")]
         public decimal DayPosition { get; set; }
 
-        [Timestamp]
-        public byte[] RowVersion { get; set; }
-
         [Column(TypeName = "nvarchar(max)")]
         [JsonProperty(PropertyName = "entradas")]
         internal string _Inputs { get; set; }
@@ -90,5 +87,9 @@ namespace FinancialApi.Models.Entity
         [JsonIgnore]
         public long? AccountId { get; set; }
 
+
+        // optimistic lock
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

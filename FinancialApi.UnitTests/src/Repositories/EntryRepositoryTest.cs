@@ -1,8 +1,7 @@
 using System;
-using FinancialApi.Config;
+using System.Diagnostics;
 using FinancialApi.Repositories;
 using FinancialApiUnitTests.Factory;
-using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
 namespace FinancialApi.UnitTests.repositories
@@ -20,66 +19,41 @@ namespace FinancialApi.UnitTests.repositories
         }
 
         [Test]
-        public void TestSaveCorrectPaymentRepository()
+        public void TestSave()
         {
             var entry = EntryFactory.Build();
 
             _repository.Save(entry);
-            Assert.IsTrue(true, "Save data");
+            Assert.IsNotNull(entry.Id);
         }
 
+        [Test]
+        public void TestFindEntityNotFound()
+        {
+            var entry = _repository.Find(1);
+            Assert.IsNull(entry);
+        }
 
-        //[Test]
-        //public void TestSaveConcurrency()
-        //{
-        //    var entry = PaymentFactory.Build();
-        //    _repository.Save(entry);
+        [Test]
+        public void TestFindExistentEntity()
+        {
+            var created = EntryFactory.Create();
+            var finded = _repository.Find(created.Id.GetValueOrDefault());
+            Assert.AreEqual(created.Id, finded.Id);
+        }
 
+        [Test]
+        public void TestUpdatedEntityd()
+        {
+            var created = EntryFactory.Create();
 
-        //    var result1 = _repository.Find(entry.Id.GetValueOrDefault());
-        //    var result2 = _repository.Find(entry.Id.GetValueOrDefault());
+            //update value
+            created.Value += 2;
+            _repository.Update(created);
 
-        //    result1.Value = 100.00m;
-        //    _repository.Update(result1);
-
-
-        //    result2.Value = 100.01m;
-        //    _repository.Update(result2);
-
-        //    Assert.IsNull(result2.RowVersion);
-        //}
-
-
-
-        //[Test]
-        //public void TestSaveEmptyDescriptionRepository()
-        //{
-
-        //    var input = InputFactory.Build();
-        //    input.Date = null;
-        //    try {
-        //        _repository.Save(input);
-        //    } 
-        //    catch(DbUpdateException)
-        //    {   
-        //        Assert.IsTrue(true, "Check fail null description");
-        //    }
-        //}
-
-        //[Test]
-        //public void TestSaveEmptyDestinationAccountRepository()
-        //{
-
-        //    var payment = PaymentFactory.Build();
-        //    payment.DestinationAccount = null;
-        //    try
-        //    {
-        //        _repository.Save(payment);
-        //    }
-        //    catch (DbUpdateException)
-        //    {
-        //        Assert.IsTrue(true, "Check Fail null DestinationAccount");
-        //    }
-        //}
+            //check
+            var finded = _repository.Find(created.Id.GetValueOrDefault());
+            Assert.AreEqual(created.Value, finded.Value);
+        }
     }
 }

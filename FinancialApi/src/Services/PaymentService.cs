@@ -41,7 +41,6 @@ namespace FinancialApi.Services
             this._balanceRepository = balanceRepository;
             this._accountRepository = accountRepository;
             this._entryRepository = entryRepository;
-            //this._mainQueue.SetConsumer = Pay;
         }
 
         public async Task<IBaseDTO> EnqueueToPay(Entry entry)

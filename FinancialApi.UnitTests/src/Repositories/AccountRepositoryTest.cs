@@ -18,12 +18,27 @@ namespace FinancialApi.UnitTests.repositories
         }
 
         [Test]
-        public void TestSaveCorrectPaymentRepository()
+        public void TestSave()
         {
             var entry = AccountFactory.Build();
 
             _repository.Save(entry);
-            Assert.IsTrue(true, "Save data");
+            Assert.IsNotNull(entry.Id);
+        }
+
+        [Test]
+        public void TestFindAccountNotFound()
+        {
+            var entry = _repository.Find(1);
+            Assert.IsNull(entry);
+        }
+
+        [Test]
+        public void TestFindExistentEntity()
+        {
+            var created = AccountFactory.Create();
+            var finded = _repository.Find(created.Id.GetValueOrDefault());
+            Assert.AreEqual(created.Id, finded.Id);
         }
     }
 }

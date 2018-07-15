@@ -90,5 +90,9 @@ namespace FinancialApi.Models.Entity
 
         public bool IsPayment() => Type == null ? false : Type.Equals("payment");
 
+        // optimistic lock
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
     }
 }

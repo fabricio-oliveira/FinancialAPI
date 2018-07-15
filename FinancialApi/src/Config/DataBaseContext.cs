@@ -9,21 +9,14 @@ namespace FinancialApi.Config
         public DataBaseContext(DbContextOptions<DataBaseContext> options)
             : base(options)
         {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (optionsBuilder.IsConfigured)
-                return;
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<Entry>();
+            //modelBuilder.Entity<Entry>();
+            //.Property(c => c.Rowversion).IsRowVersion();
+            //.ValueGeneratedOnAddOrUpdate();
 
             modelBuilder.Entity<Balance>()
                         .HasOne(c => c.Account)
@@ -32,7 +25,6 @@ namespace FinancialApi.Config
                         .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Account>();
-            modelBuilder.Entity<Balance>().Property(p => p.RowVersion).IsRowVersion();
             modelBuilder.Entity<Interest>();
 
         }

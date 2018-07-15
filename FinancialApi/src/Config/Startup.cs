@@ -13,6 +13,7 @@ using FinancialApi.workers;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Hangfire;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Builder.Internal;
 
 namespace FinancialApi.Config
 {
@@ -93,7 +94,7 @@ namespace FinancialApi.Config
         }
 
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory,
                               IServiceProvider serviceProvider)
         {
             //Log
@@ -115,6 +116,14 @@ namespace FinancialApi.Config
             GlobalConfiguration.Configuration.UseActivator(new HangfireActivator(serviceProvider));
             app.UseHangfireServer();
             app.UseHangfireDashboard("/hangfire");
+
+
+            var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
+            using (var serviceScope = serviceScopeFactory.CreateScope())
+            {
+                var dbContext = serviceScope.ServiceProvider.GetService<DataBaseContext>();
+                dbContext.Database.EnsureCreated();
+            }
         }
     }
 }

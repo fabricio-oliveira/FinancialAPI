@@ -18,7 +18,7 @@ namespace FinancialApi.Models.Entity
         }
 
         [Key]
-        public long? ID { get; set; }
+        public long? Id { get; set; }
 
         public string Number { get; set; }
 
