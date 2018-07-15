@@ -10,7 +10,7 @@ namespace FinancialApi.Repositories
     {
         private readonly DataBaseContext _databaseContext;
 
-        public GenericRepository(DataBaseContext databaseContext)
+        protected GenericRepository(DataBaseContext databaseContext)
         {
             this._databaseContext = databaseContext;
         }

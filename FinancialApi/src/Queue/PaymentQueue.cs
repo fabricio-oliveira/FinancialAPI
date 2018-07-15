@@ -1,11 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using FinancialApi.Models.Entity;
-using RabbitMQ.Client.Events;
+﻿using FinancialApi.Models.Entity;
 
 namespace FinancialApi.Queue
 {
-    public class PaymentQueue : GenericQueue<Entry>
+    public class PaymentQueue : GenericQueue<Entry>, IPaymentQueue
     {
         public PaymentQueue(QueueContext context) : base(context, context.PaymentQueueName) { }
     }

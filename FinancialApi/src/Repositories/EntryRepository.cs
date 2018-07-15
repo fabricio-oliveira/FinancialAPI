@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinancialApi.Repositories
 {
-    public class EntryRepository : GenericRepository, IRepository<Entry>
+    public class EntryRepository : GenericRepository, IEntryRepository
     {
         readonly DataBaseContext _context;
 

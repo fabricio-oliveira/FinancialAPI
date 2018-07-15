@@ -72,15 +72,15 @@ namespace FinancialApi.Config
             );
 
             //Queue
-            services.AddSingleton<PaymentQueue>();
-            services.AddSingleton<ReceiptQueue>();
-            services.AddSingleton<ErrorQueue>();
+            services.AddSingleton<IPaymentQueue, PaymentQueue>();
+            services.AddSingleton<IReceiptQueue, ReceiptQueue>();
+            services.AddSingleton<IErrorQueue, ErrorQueue>();
 
             //Repository
-            services.AddTransient<AccountRepository>();
-            services.AddTransient<BalanceRepository>();
+            services.AddTransient<IAccountRepository, AccountRepository>();
+            services.AddTransient<IBalanceRepository, BalanceRepository>();
             services.AddTransient<ChargeRepository>();
-            services.AddTransient<EntryRepository>();
+            services.AddTransient<IEntryRepository, EntryRepository>();
 
             //Service
             services.AddSingleton<IPaymentService, PaymentService>();

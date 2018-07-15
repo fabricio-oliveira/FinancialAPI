@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.EntityFrameworkCore.Storage;
+
 namespace FinancialApi.Repositories
 {
     public interface IRepository<T>
@@ -6,5 +8,8 @@ namespace FinancialApi.Repositories
         T Find(long id);
         void Save(T t);
         void Update(T t);
+        IDbContextTransaction BeginTransaction();
+        void Commit();
+        void Rollback();
     }
 }

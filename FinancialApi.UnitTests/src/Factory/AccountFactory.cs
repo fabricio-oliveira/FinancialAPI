@@ -16,16 +16,16 @@ namespace FinancialApiUnitTests.Factory
 
         public static Account Build(Action<Account> pred = null)
         {
-            var acccount = new Account("00000-1", "000-1", "999.999.9990-90", "corrente");
+            var account = new Account("00000-1", "000-1", "999.999.9990-90", "corrente");
 
-            pred?.Invoke(acccount);
-            return acccount;
+            pred?.Invoke(account);
+            return account;
         }
 
         public static Account Create(Action<Account> pred = null)
         {
             var value = Build(pred);
-            _context.Add(value);
+            _context.Accounts.Add(value);
             _context.SaveChanges();
             return value;
 

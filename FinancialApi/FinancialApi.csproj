@@ -9,6 +9,8 @@
     <Folder Include="src\workers\" />
     <Folder Include="src\Models\DTO\Response\" />
     <Folder Include="src\Validates\" />
+    <Folder Include="src\Repositories\Interfaces\" />
+    <Folder Include="src\Queue\Interfaces\" />
   </ItemGroup>
 
   <ItemGroup>

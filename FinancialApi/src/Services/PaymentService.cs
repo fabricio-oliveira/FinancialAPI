@@ -7,7 +7,6 @@ using FinancialApi.Models.DTO;
 using FinancialApi.Models.Entity;
 using System;
 using Microsoft.EntityFrameworkCore;
-using RabbitMQ.Client.Events;
 
 namespace FinancialApi.Services
 {
@@ -20,21 +19,21 @@ namespace FinancialApi.Services
     public class PaymentService : EntryService, IPaymentService
     {
 
-        private const decimal ESPECIAL_LIMIT = -20.000m;
+        private const decimal ESPECIAL_LIMIT = -20000.00m;
         private const int MAX_RETRY = 3;
 
-        private readonly PaymentQueue _mainQueue;
-        private readonly ErrorQueue _errorQueue;
+        private readonly IPaymentQueue _mainQueue;
+        private readonly IErrorQueue _errorQueue;
 
-        private readonly BalanceRepository _balanceRepository;
-        private readonly AccountRepository _accountRepository;
-        private readonly EntryRepository _entryRepository;
+        private readonly IBalanceRepository _balanceRepository;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IEntryRepository _entryRepository;
 
-        public PaymentService(PaymentQueue mainQueue,
-                              ErrorQueue errorQueue,
-                              BalanceRepository balanceRepository,
-                              AccountRepository accountRepository,
-                              EntryRepository entryRepository)
+        public PaymentService(IPaymentQueue mainQueue,
+                              IErrorQueue errorQueue,
+                              IBalanceRepository balanceRepository,
+                              IAccountRepository accountRepository,
+                              IEntryRepository entryRepository)
         {
             this._mainQueue = mainQueue;
             this._errorQueue = errorQueue;

@@ -7,11 +7,11 @@ using FinancialApi.Utils;
 
 namespace FinancialApi.Repositories
 {
-    public class BalanceRepository: GenericRepository, IRepository<Balance>
+    public class BalanceRepository : GenericRepository, IBalanceRepository
     {
         private DataBaseContext _context;
 
-        public BalanceRepository(DataBaseContext context):base(context)
+        public BalanceRepository(DataBaseContext context) : base(context)
         {
             _context = context;
         }
@@ -30,15 +30,15 @@ namespace FinancialApi.Repositories
 
         public Balance Find(long id)
         {
-           return _context.Balances.Find(id);
+            return _context.Balances.Find(id);
         }
 
         public List<Balance> ListTodayMore30Ahead(Account account)
         {
-            return _context.Balances.Where( x => x.Account == account
-                                           &&    x.Date >= DateTime.Today
-                                           &&    x.Date < DateTime.Today.AddDays(31))
-                                    .OrderBy( x => x.Date)
+            return _context.Balances.Where(x => x.Account == account
+                                          && x.Date >= DateTime.Today
+                                          && x.Date < DateTime.Today.AddDays(31))
+                                    .OrderBy(x => x.Date)
                                     .ToList();
         }
 
@@ -70,7 +70,7 @@ namespace FinancialApi.Repositories
         public Balance LastByOrDefault(Account account)
         {
             var balance = LastBy(account);
-            return  balance ?? new Balance(DateTime.Today.AddDays(-1), null, null, null, 0.0m, 0.0m,account);
+            return balance ?? new Balance(DateTime.Today.AddDays(-1), null, null, null, 0.0m, 0.0m, account);
         }
 
         public Balance LastBy(Account account)

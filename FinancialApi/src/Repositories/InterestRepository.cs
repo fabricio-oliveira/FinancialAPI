@@ -3,11 +3,11 @@ using FinancialApi.Models.Entity;
 
 namespace FinancialApi.Repositories
 {
-    public class ChargeRepository: GenericRepository, IRepository<Interest>
+    public class ChargeRepository : GenericRepository
     {
         private DataBaseContext _context;
 
-        public ChargeRepository(DataBaseContext context):base(context)
+        public ChargeRepository(DataBaseContext context) : base(context)
         {
             _context = context;
         }
@@ -18,14 +18,15 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
-        public void Update(Interest interest){
+        public void Update(Interest interest)
+        {
             _context.Interests.Update(interest);
             _context.SaveChanges();
         }
 
         public Interest Find(long id)
         {
-           return  _context.Interests.Find(id);
+            return _context.Interests.Find(id);
         }
     }
 }

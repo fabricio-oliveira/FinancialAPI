@@ -7,6 +7,8 @@ using System;
 
 namespace FinancialApi.Queue
 {
+
+
     public abstract class GenericQueue<T>
     {
         readonly QueueContext _context;

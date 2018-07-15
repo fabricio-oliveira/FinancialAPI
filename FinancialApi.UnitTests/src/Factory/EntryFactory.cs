@@ -26,7 +26,7 @@ namespace FinancialApiUnitTests.Factory
         public static Entry Create(Action<Entry> pred = null)
         {
             var value = Build(pred);
-            _context.Add(value);
+            _context.Entries.Add(value);
             _context.SaveChanges();
             return value;
 

@@ -38,8 +38,6 @@ namespace FinancialApi.workers
         }
 
 
-
-
         public async Task WrappeReceive(object sender, BasicDeliverEventArgs @event)
         {
             var body = System.Text.Encoding.UTF8.GetString(@event.Body);
@@ -47,7 +45,7 @@ namespace FinancialApi.workers
 
             var result = _receiptService.Receive(entry);
             await Task.Delay(250);
-            Info.WriteLine("teste", result);
+            Console.WriteLine("teste", result);
         }
 
     }

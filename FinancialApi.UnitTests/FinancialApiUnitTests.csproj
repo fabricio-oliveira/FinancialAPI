@@ -28,6 +28,7 @@
     <Folder Include="src\Models\Entity\" />
     <Folder Include="src\Utils\" />
     <Folder Include="src\Factory\" />
+    <Folder Include="src\services\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="src\support\json.cs" />

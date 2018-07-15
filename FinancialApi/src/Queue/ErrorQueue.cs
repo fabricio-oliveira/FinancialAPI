@@ -2,8 +2,8 @@
 
 namespace FinancialApi.Queue
 {
-    public class ErrorQueue :GenericQueue<Entry>
+    public class ErrorQueue : GenericQueue<Entry>, IErrorQueue
     {
-        public ErrorQueue(QueueContext context):base(context, context.ErrorQueueName) {}
+        public ErrorQueue(QueueContext context) : base(context, context.ErrorQueueName) { }
     }
 }

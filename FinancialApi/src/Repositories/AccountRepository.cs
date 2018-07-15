@@ -5,7 +5,7 @@ using FinancialApi.Models.Entity;
 
 namespace FinancialApi.Repositories
 {
-    public class AccountRepository : GenericRepository, IRepository<Account>
+    public class AccountRepository : GenericRepository, IAccountRepository
     {
         private readonly DataBaseContext _context;
 
