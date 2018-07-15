@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -36,6 +37,17 @@ namespace FinancialApi.Models.Entity
 
         //RelationShipx1
         public ICollection<Balance> Balances { get; set; }
+
+
+        public override bool Equals(Object obj)
+        {
+
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+
+            Account a = (Account)obj;
+            return a.Id == Id;
+        }
 
     }
 }

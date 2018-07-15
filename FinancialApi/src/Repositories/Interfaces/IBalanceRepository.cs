@@ -8,5 +8,6 @@ namespace FinancialApi.Repositories
     {
         Balance FindOrCreateBy(Account account, DateTime date);
         Balance LastByOrDefault(Account account);
+        void UpdateDayPosition(Balance balance);
     }
 }

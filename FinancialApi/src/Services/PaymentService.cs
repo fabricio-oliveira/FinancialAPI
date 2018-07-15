@@ -65,29 +65,35 @@ namespace FinancialApi.Services
         {
             using (this._entryRepository.BeginTransaction())
             {
+                //Entry
                 this._entryRepository.Save(entry);
 
+                //Account
                 var account = this._accountRepository.FindOrCreate(entry.DestinationAccount,
                                                                    entry.DestinationBank,
                                                                    entry.TypeAccount,
                                                                    entry.DestinationIdentity);
 
-                var balance = this._balanceRepository.FindOrCreateBy(account, entry.DateToPay.GetValueOrDefault());
+                //Balance
+                var currentBalance = this._balanceRepository.FindOrCreateBy(account, entry.DateToPay.GetValueOrDefault());
 
-                balance.Outputs.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
+
+                currentBalance.Outputs.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
                                                  entry.Value.GetValueOrDefault()));
 
-                Console.WriteLine("xxx" + balance.Outputs.Count);
-
-                balance.Charges.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
+                currentBalance.Charges.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
                                                  entry.FinancialCharges.GetValueOrDefault()));
 
-                this._balanceRepository.Update(balance);
+                this._balanceRepository.Update(currentBalance);
+                this._balanceRepository.UpdateDayPosition(currentBalance);
+
+                //Commit
                 this._entryRepository.Commit();
             }
             //SQL Server has auto rollback when exception as throw
 
         }
+
 
         protected override ErrorsDTO Validate(Entry entry)
         {
