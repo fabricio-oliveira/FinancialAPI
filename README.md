@@ -1,39 +1,22 @@
-# Welcome to ASP.NET Core
+# Aplicação de Lançamentos Financeiros
 
-We've made some big updates in this release, so it’s **important** that you spend a few minutes to learn what’s new.
+Essa API foi concebida seguindo (ou pelo menos tentando) seguir as especificações do [doc dentro do repository](../docs/desafiofinanceiro.pdf) 
 
-You've created a new ASP.NET Core project. [Learn what's new](https://go.microsoft.com/fwlink/?LinkId=518016)
+## Levantando a aplicação
+A API foi dockerizada, por tanto o modo mais fácil de subir a aplicação é com docker e docker-compose. Uma vez com ambos instalados basta digitar o comando na raiz do projeto.
 
-## This application consists of:
+```sh
+docker-compose up --build
 
-*   Sample pages using ASP.NET Core MVC
-*   [Bower](https://go.microsoft.com/fwlink/?LinkId=518004) for managing client-side libraries
-*   Theming using [Bootstrap](https://go.microsoft.com/fwlink/?LinkID=398939)
+```
 
-## How to
 
-*   [Add a Controller and View](https://go.microsoft.com/fwlink/?LinkID=398600)
-*   [Add an appsetting in config and access it in app.](https://go.microsoft.com/fwlink/?LinkID=699562)
-*   [Manage User Secrets using Secret Manager.](https://go.microsoft.com/fwlink/?LinkId=699315)
-*   [Use logging to log a message.](https://go.microsoft.com/fwlink/?LinkId=699316)
-*   [Add packages using NuGet.](https://go.microsoft.com/fwlink/?LinkId=699317)
-*   [Add client packages using Bower.](https://go.microsoft.com/fwlink/?LinkId=699318)
-*   [Target development, staging or production environment.](https://go.microsoft.com/fwlink/?LinkId=699319)
+## Consumindo a aplicação
 
-## Overview
+A API expõem um conjuto de endpoint para serem consumindos do modo que achar mais conveniente. Eu sugiro que use a swaggerUI através da url<http://localhost:8080/swaggerui> que possui as especificação para consumir, juntamente com uma interface iterativa.
 
-*   [Conceptual overview of what is ASP.NET Core](https://go.microsoft.com/fwlink/?LinkId=518008)
-*   [Fundamentals of ASP.NET Core such as Startup and middleware.](https://go.microsoft.com/fwlink/?LinkId=699320)
-*   [Working with Data](https://go.microsoft.com/fwlink/?LinkId=398602)
-*   [Security](https://go.microsoft.com/fwlink/?LinkId=398603)
-*   [Client side development](https://go.microsoft.com/fwlink/?LinkID=699321)
-*   [Develop on different platforms](https://go.microsoft.com/fwlink/?LinkID=699322)
-*   [Read more on the documentation site](https://go.microsoft.com/fwlink/?LinkID=699323)
+## Monitoração
 
-## Run & Deploy
+Como a própria documnetação solicita, essa aplicação foi desenvolvida com o sistema de messageria rabbit mq, e sua fila e consumo poder ser acompanhado pela url <http://localhost:15672>
 
-*   [Run your app](https://go.microsoft.com/fwlink/?LinkID=517851)
-*   [Run tools such as EF migrations and more](https://go.microsoft.com/fwlink/?LinkID=517853)
-*   [Publish to Microsoft Azure Web Apps](https://go.microsoft.com/fwlink/?LinkID=398609)
-
-We would love to hear your [feedback](https://go.microsoft.com/fwlink/?LinkId=518015)
+Outra ferramenta utilizada foi o hangFire. Um gerenciador de jobs utilizado para processar as menssagens recuperadas do rabbiMQ.
