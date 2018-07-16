@@ -3,48 +3,51 @@ using RabbitMQ.Client;
 using FinancialApi.Utils;
 using RabbitMQ.Client.Events;
 using System.Collections.Generic;
-using System;
+using Newtonsoft.Json;
 
 namespace FinancialApi.Queue
 {
 
 
-    public abstract class GenericQueue<T>
+    public abstract class GenericQueue<T> where T : class
     {
-        readonly QueueContext _context;
-        readonly string _queueName;
+        protected readonly QueueContext _context;
         AsyncEventingBasicConsumer _consumer;
 
-        protected GenericQueue(QueueContext context, string queueName)
+        protected GenericQueue(QueueContext context)
         {
-            this._context = context;
-            this._queueName = queueName;
+            _context = context;
         }
+
+        protected abstract string QueueName();
 
         public void SetConsumer(AsyncEventHandler<BasicDeliverEventArgs> consumer)
         {
-            this._consumer = new AsyncEventingBasicConsumer(_context.channel);
-            this._consumer.Received += consumer;
-            this._context.channel.BasicConsume(queue: _queueName,
+            _consumer = new AsyncEventingBasicConsumer(_context.Channel);
+            _consumer.Received += consumer;
+            _context.Channel.BasicConsume(queue: QueueName(),
                                                autoAck: true,
-                                               consumer: this._consumer);
+                                               consumer: _consumer);
         }
 
         public void Enqueue(T t, int? delay = null)
         {
             var body = Encoding.UTF8.GetBytes(t.ToJson());
-            _context.channel.BasicPublish(exchange: "",
-                                          routingKey: _queueName,
+            _context.Channel.BasicPublish(exchange: "",
+                                          routingKey: QueueName(),
                                           basicProperties: Properties(delay),
                                           body: body);
         }
 
         public T Dequeue()
         {
-            var data = _context.channel.BasicGet(_queueName, true);
+            var data = _context.Channel.BasicGet(QueueName(), true);
 
-            var body = data != null ? System.Text.Encoding.UTF8.GetString(data.Body) : null;
-            return Utils.StringUtil.FromJson<T>(body);
+            if (data == null)
+                return null;
+
+            var body = System.Text.Encoding.UTF8.GetString(data.Body);
+            return JsonConvert.DeserializeObject<T>(body);
 
         }
 
@@ -52,7 +55,7 @@ namespace FinancialApi.Queue
         {
             if (val == null) return null;
 
-            var props = _context.channel.CreateBasicProperties();
+            var props = _context.Channel.CreateBasicProperties();
             var headers = new Dictionary<string, object>
             {
                 { "x-delay", val }

@@ -6,11 +6,13 @@ namespace FinancialApi.Models.Entity
     public class Interest
     {
 
-        public Interest(decimal Value,
-                        DateTime Date) : this()
+        public Interest(decimal value,
+                        DateTime date,
+                        Account account) : this()
         {
-            this.Value = Value;
-            this.Date = Date;
+            this.Value = value;
+            this.Date = date;
+            this.Account = account;
         }
 
         public Interest()
@@ -26,6 +28,10 @@ namespace FinancialApi.Models.Entity
         public decimal? Value { get; set; }
 
         public DateTime? Date { get; set; }
+
+        public Account Account { get; set; }
+
+        public long? AccountId { get; set; }
 
         // optimistic lock
         [Timestamp]

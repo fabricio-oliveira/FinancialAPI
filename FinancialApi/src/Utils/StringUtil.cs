@@ -17,7 +17,5 @@ namespace FinancialApi.Utils
                                             NullValueHandling = NullValueHandling.Ignore
                                         });
         }
-
-        public static T FromJson<T>(string json) => JsonConvert.DeserializeObject<T>(json);
     }
 }

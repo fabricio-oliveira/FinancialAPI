@@ -5,7 +5,7 @@ namespace FinancialApi.Repositories
 {
     public interface IRepository<T>
     {
-        T Find(long id);
+        T Find(int id);
         void Save(T t);
         void Update(T t);
         IDbContextTransaction BeginTransaction();

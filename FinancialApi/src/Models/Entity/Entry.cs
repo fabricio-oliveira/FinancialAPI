@@ -65,7 +65,7 @@ namespace FinancialApi.Models.Entity
         [JsonProperty(PropertyName = "encargos")]
         public decimal? FinancialCharges { get; set; }
 
-        [Required(ErrorMessage = "can\'t be blank"), RangeDate(ErrorMessage = "this field needs to be a valid date between now and one year ahead.")]
+        [Required(ErrorMessage = "can\'t be blank"), RangeDate(ErrorMessage = "this field needs to be a valid date between today ({0}) and one year ahead({1}).")]
         [JsonProperty(PropertyName = "data_de_lancamento")]
         public DateTime? DateToPay { get; set; }
 
@@ -86,9 +86,9 @@ namespace FinancialApi.Models.Entity
 
 
         // method check
-        public bool IsReceipt() => Type == null ? false : Type.Equals("recebimento");
+        public bool IsReceipt() => "recebimento".Equals(Type);
 
-        public bool IsPayment() => Type == null ? false : Type.Equals("payment");
+        public bool IsPayment() => "payment".Equals(Type);
 
         // optimistic lock
         [Timestamp]

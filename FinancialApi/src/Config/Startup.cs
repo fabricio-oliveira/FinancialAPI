@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using FinancialApi.Services;
 using FinancialApi.Queue;
 using FinancialApi.Repositories;
@@ -11,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Swagger;
 using FinancialApi.workers;
 using Hangfire;
+using Microsoft.Extensions.Logging;
 
 namespace FinancialApi.Config
 {
@@ -71,6 +71,10 @@ namespace FinancialApi.Config
                 new QueueContext(connectionQueue)
             );
 
+            //Logger
+            ILoggerFactory loggerFactory = new LoggerFactory();
+            services.AddSingleton<ILoggerFactory>(loggerFactory);
+
             //Queue
             services.AddSingleton<IPaymentQueue, PaymentQueue>();
             services.AddSingleton<IReceiptQueue, ReceiptQueue>();
@@ -79,24 +83,23 @@ namespace FinancialApi.Config
             //Repository
             services.AddTransient<IAccountRepository, AccountRepository>();
             services.AddTransient<IBalanceRepository, BalanceRepository>();
-            services.AddTransient<ChargeRepository>();
+            services.AddTransient<IInterestRepository, InterestRepository>();
             services.AddTransient<IEntryRepository, EntryRepository>();
 
             //Service
             services.AddSingleton<IPaymentService, PaymentService>();
             services.AddSingleton<IReceiptService, ReceiptService>();
+            services.AddSingleton<IBalanceService, BalanceService>();
 
-            //Workers
-            services.AddSingleton<ConsolidateEntryWorker>();
         }
 
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory,
                               IServiceProvider serviceProvider)
         {
-            //Log
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            ////Log
+            //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            //loggerFactory.AddDebug();
 
 
             //DotNetServer
@@ -122,16 +125,21 @@ namespace FinancialApi.Config
                 dbContext.Database.EnsureCreated();
             }
 
-            EternalJob(serviceProvider);
+            Jobs(serviceProvider);
         }
 
-        void EternalJob(IServiceProvider serviceProvider)
+        void Jobs(IServiceProvider serviceProvider)
         {
-            var consolidateEntry = new ConsolidateEntryWorker(serviceProvider.GetService<PaymentService>(),
-                                                              serviceProvider.GetService<PaymentQueue>(),
-                                                              serviceProvider.GetService<ReceiptService>(),
-                                                              serviceProvider.GetService<ReceiptQueue>(),
-                                                              serviceProvider.GetService<ErrorQueue>());
+            var consolidateEntryWorker = new ConsolidateEntryWorker(serviceProvider.GetService<IPaymentService>(),
+                                                              serviceProvider.GetService<IPaymentQueue>(),
+                                                              serviceProvider.GetService<IReceiptService>(),
+                                                              serviceProvider.GetService<IReceiptQueue>(),
+                                                              serviceProvider.GetService<IErrorQueue>());
+
+            //var updateBalanceWorker = new UpdateBalanceWorker(serviceProvider.GetService<IBalanceService>(),
+            //serviceProvider.GetService<IReceiptQueue>());
+
+            //BackgroundJob.Schedule(() => consolidateEntryWorker.TestReceive(), TimeSpan.FromSeconds(10));
 
         }
     }

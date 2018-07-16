@@ -1,4 +1,6 @@
-﻿namespace FinancialApi.Queue
+﻿using FinancialApi.Models.Entity;
+
+namespace FinancialApi.Queue
 {
-    public interface IErrorQueue : IQueue { }
+    public interface IErrorQueue : IQueue<Entry> { }
 }

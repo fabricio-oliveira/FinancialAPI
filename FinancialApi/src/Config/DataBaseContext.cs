@@ -14,9 +14,7 @@ namespace FinancialApi.Config
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            //modelBuilder.Entity<Entry>();
-            //.Property(c => c.Rowversion).IsRowVersion();
-            //.ValueGeneratedOnAddOrUpdate();
+            modelBuilder.Entity<Entry>();
 
             modelBuilder.Entity<Balance>()
                         .HasOne(c => c.Account)
@@ -25,7 +23,12 @@ namespace FinancialApi.Config
                         .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Account>();
-            modelBuilder.Entity<Interest>();
+
+            modelBuilder.Entity<Interest>()
+                        .HasOne(i => i.Account)
+                        .WithMany(a => a.Interests)
+                        .HasForeignKey(i => i.AccountId)
+                        .OnDelete(DeleteBehavior.Restrict);
 
         }
 

@@ -5,7 +5,7 @@ namespace FinancialApi
 
     public class QueueContext
     {
-        public IModel channel { get; set; }
+        public IModel Channel { get; set; }
 
         public QueueContext(string StringConection)
         {
@@ -22,27 +22,31 @@ namespace FinancialApi
             ReceiptQueueName = "receipt";
             InterestQueueName = "interst";
 
+            ErrorQueueName = "error";
+
+
             var connection = factory.CreateConnection();
-            channel = connection.CreateModel();
+            Channel = connection.CreateModel();
 
-            channel.QueueDeclare(queue: PaymentQueueName,
+            Channel.QueueDeclare(queue: PaymentQueueName,
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);
 
-            channel.QueueDeclare(queue: ReceiptQueueName,
+            Channel.QueueDeclare(queue: ReceiptQueueName,
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
                                  arguments: null);
 
-            //channel.QueueDeclare(queue: EntryQueueName,
-            //durable: false,
-            //exclusive: false,
-            //autoDelete: false,
-            //arguments: null);
-            channel.QueueDeclare(queue: InterestQueueName,
+            Channel.QueueDeclare(queue: InterestQueueName,
+                                 durable: false,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+
+            Channel.QueueDeclare(queue: ErrorQueueName,
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
@@ -51,8 +55,8 @@ namespace FinancialApi
 
         public string PaymentQueueName { get; }
         public string ReceiptQueueName { get; }
-        public string EntryQueueName { get; }
         public string InterestQueueName { get; }
+
         public string ErrorQueueName { get; }
     }
 }

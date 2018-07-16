@@ -3,10 +3,10 @@ using RabbitMQ.Client.Events;
 
 namespace FinancialApi.Queue
 {
-    public interface IQueue
+    public interface IQueue<T> where T : class
     {
         void Enqueue(Entry t, int? delay = null);
-        Entry Dequeue();
+        T Dequeue();
         void SetConsumer(AsyncEventHandler<BasicDeliverEventArgs> consumer);
     }
 }

@@ -110,5 +110,11 @@ namespace FinancialApi.Models.Entity
         // optimistic lock
         [Timestamp]
         public byte[] RowVersion { get; set; }
+
+
+        public void UpdateDayPostion(decimal yestarday)
+        {
+            this.Total = yestarday == 0m ? 100.0m : this.Total / yestarday;
+        }
     }
 }

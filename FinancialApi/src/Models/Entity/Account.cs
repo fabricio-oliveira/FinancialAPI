@@ -32,12 +32,10 @@ namespace FinancialApi.Models.Entity
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
-        //[Timestamp]
-        //public byte[] RowVersion { get; set; }
-
-        //RelationShipx1
+        //RelationShip
         public ICollection<Balance> Balances { get; set; }
 
+        public ICollection<Interest> Interests { get; set; }
 
         public override bool Equals(Object obj)
         {
@@ -47,6 +45,11 @@ namespace FinancialApi.Models.Entity
 
             Account a = (Account)obj;
             return a.Id == Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)Id.GetValueOrDefault();
         }
 
     }

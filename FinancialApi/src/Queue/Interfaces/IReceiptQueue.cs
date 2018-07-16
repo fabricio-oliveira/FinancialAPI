@@ -1,4 +1,6 @@
-﻿namespace FinancialApi.Queue
+﻿using FinancialApi.Models.Entity;
+
+namespace FinancialApi.Queue
 {
-    public interface IReceiptQueue : IQueue { }
+    public interface IReceiptQueue : IQueue<Entry> { }
 }

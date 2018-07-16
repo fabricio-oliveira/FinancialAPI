@@ -1,9 +1,5 @@
-using System;
-using System.Diagnostics;
 using System.IO;
 using FinancialApi.Config;
-using FinancialApi.workers;
-using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 

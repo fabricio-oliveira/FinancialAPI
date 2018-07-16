@@ -7,33 +7,33 @@ namespace FinancialApi.Repositories
 {
     public class AccountRepository : GenericRepository, IAccountRepository
     {
-        private readonly DataBaseContext _context;
+        private readonly DataBaseContext context;
 
         public AccountRepository(DataBaseContext context) : base(context)
         {
-            this._context = context;
+            this.context = context;
         }
 
         public void Save(Account account)
         {
-            _context.Accounts.Add(account);
-            _context.SaveChanges();
+            context.Accounts.Add(account);
+            context.SaveChanges();
         }
 
         public void Update(Account account)
         {
-            _context.Accounts.Update(account);
-            _context.SaveChanges();
+            context.Accounts.Update(account);
+            context.SaveChanges();
         }
 
-        public Account Find(long id)
+        public Account Find(int id)
         {
-            return _context.Accounts.Find(id);
+            return context.Accounts.Find(id);
         }
 
         public Account FindOrCreate(string number, string bank, string type, string identity)
         {
-            var account = _context.Accounts.Where(x => x.Number == number
+            var account = context.Accounts.Where(x => x.Number == number
                                                   && x.Bank == bank
                                                   && x.Identity == identity
                                                   && x.TypeA == type)
@@ -42,8 +42,8 @@ namespace FinancialApi.Repositories
             if (account == null)
             {
                 account = new Account(number, bank, type, identity);
-                _context.Accounts.Add(account);
-                _context.SaveChanges();
+                context.Accounts.Add(account);
+                context.SaveChanges();
             }
 
             return account;

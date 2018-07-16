@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using FinancialApi.Config;
+using FinancialApi.Models.DTO;
 using FinancialApi.Models.Entity;
-using FinancialApi.Utils;
 
 namespace FinancialApi.Repositories
 {
     public class BalanceRepository : GenericRepository, IBalanceRepository
     {
-        private DataBaseContext _context;
+        readonly DataBaseContext _context;
 
         public BalanceRepository(DataBaseContext context) : base(context)
         {
-            _context = context;
+            this._context = context;
         }
 
         public void Save(Balance balance)
@@ -28,7 +28,7 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
-        public Balance Find(long id)
+        public Balance Find(int id)
         {
             return _context.Balances.Find(id);
         }
@@ -42,25 +42,34 @@ namespace FinancialApi.Repositories
                                     .ToList();
         }
 
-        public Balance FindOrCreateBy(Account account, DateTime date)
+        public Balance Find(Account account, DateTime date)
         {
-            var balance = _context.Balances
+            return _context.Balances
                                    .Where(x => x.Account == account
                                           && x.Date == date)
                                     .FirstOrDefault();
+        }
+
+        public Balance FindOrCreateBy(Account account, DateTime date)
+        {
+            var balance = Find(account, date);
 
             if (balance != null) return balance;
 
             var lastBalance = LastBy(account);
             if (lastBalance != null)
             {
-                balance = new Balance(date, null, null, null, lastBalance.Total, lastBalance.Total, account);
+                balance = new Balance(date, new List<ShortEntryDTO>(),
+                                            new List<ShortEntryDTO>(),
+                                            new List<ShortEntryDTO>(), lastBalance.Total, lastBalance.Total, account);
                 _context.Balances.Add(balance);
                 _context.SaveChanges();
                 return balance;
             }
 
-            balance = new Balance(date, null, null, null, 0, 0, account);
+            balance = new Balance(date, new List<ShortEntryDTO>(),
+                                        new List<ShortEntryDTO>(),
+                                        new List<ShortEntryDTO>(), 0m, 0m, account);
             _context.Balances.Add(balance);
             _context.SaveChanges();
             return balance;
@@ -82,7 +91,6 @@ namespace FinancialApi.Repositories
             return balance;
         }
 
-
         public void UpdateDayPosition(Balance balance)
         {
             var balances = _context.Balances.Where(x => x.Account.Equals(balance.Account)
@@ -90,15 +98,19 @@ namespace FinancialApi.Repositories
                                    .OrderBy(x => x.Date)
                                    .ToArray();
 
-            balances.Skip(1)
-                    .Zip(balances, (c, p) => c.DayPosition = DayPostion(p.Total, c.Total));
+            balances = balances.Skip(1)
+                               .Zip(balances, (c, p) => { c.UpdateDayPostion(p.Total); return c; })
+                               .ToArray();
+
+            _context.UpdateRange(balances);
             _context.SaveChanges();
         }
 
-        private decimal DayPostion(decimal yestarday, decimal today)
-        {
-            return yestarday == 0m ? 100.0m : today / yestarday;
-        }
+        //public void CreateBalaceWithInterest(decimal interest)
+        //{
+
+        //}
+
     }
 }
 

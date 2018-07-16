@@ -1,5 +1,6 @@
+
 using FinancialApi.Config;
-using FinancialApi.Repositories;
+using Microsoft.Extensions.Configuration;
 using FinancialApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,11 +12,12 @@ namespace FinancialApi.IntegrationTests.Confs
 {
     public class Startup
     {
+        public static IConfiguration Configuration { get; set; }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContextPool<DataBaseContext>(
-                optionsBuilder => optionsBuilder.UseInMemoryDatabase("InMemoryDb"),10);
-            
+            services.AddDbContextPool<DataBaseContext>(optionsBuilder => optionsBuilder.UseInMemoryDatabase("InMemoryDb"), 10);
+
             services.AddMvc();
             services.AddSingleton<IPaymentService, PaymentService>();
             services.AddSingleton<IReceiptService, ReceiptService>();
@@ -27,6 +29,6 @@ namespace FinancialApi.IntegrationTests.Confs
         {
             app.UseMvcWithDefaultRoute();
         }
-       
+
     }
 }

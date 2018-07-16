@@ -1,92 +1,103 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using FinancialApi.Models.Entity;
 using FinancialApi.Queue;
 using FinancialApi.Services;
-using Hangfire;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using RabbitMQ.Client.Events;
 
 namespace FinancialApi.workers
 {
     public class ConsolidateEntryWorker
     {
-        private readonly IPaymentQueue _paymentQueue;
-        private readonly IPaymentService _paymentService;
+        readonly IPaymentQueue paymentQueue;
+        readonly IPaymentService paymentService;
 
-        private readonly IErrorQueue _errorQueue;
-        private readonly IReceiptQueue _receiptQueue;
-        private readonly IReceiptService _receiptService;
+        readonly IErrorQueue errorQueue;
+        readonly IReceiptQueue receiptQueue;
+        readonly IReceiptService receiptService;
 
-        private const int MAX_RETRY = 3;
+        const int MAX_RETRY = 3;
 
         public ConsolidateEntryWorker(IPaymentService paymentService, IPaymentQueue paymentQueue,
                                       IReceiptService receiptService, IReceiptQueue receiptQueue,
                                       IErrorQueue errorQueue)
         {
-            this._paymentQueue = paymentQueue;
-            this._paymentService = paymentService;
-            this._paymentQueue.SetConsumer(WrapperPay);
+            this.paymentQueue = paymentQueue;
+            this.paymentService = paymentService;
+            this.paymentQueue.SetConsumer(WrapperPay);
 
-            this._receiptQueue = receiptQueue;
-            this._receiptService = receiptService;
-            this._receiptQueue.SetConsumer(WrappeReceive);
+            this.receiptQueue = receiptQueue;
+            this.receiptService = receiptService;
+            this.receiptQueue.SetConsumer(WrappeReceive);
 
-            this._errorQueue = errorQueue;
+            this.errorQueue = errorQueue;
         }
 
-        public async Task WrapperPay(object sender, BasicDeliverEventArgs @event)
+
+        public async Task TestReceive()
+        {
+            var body = paymentQueue.Dequeue();
+            Console.WriteLine("teste {0}", body);
+            if (body != null)
+                await paymentService.Pay(body);
+
+        }
+
+        public async Task WrapperPay(object _, BasicDeliverEventArgs @event)
         {
             var body = System.Text.Encoding.UTF8.GetString(@event.Body);
-            var entry = Utils.StringUtil.FromJson<Entry>(body);
+            var entry = JsonConvert.DeserializeObject<Entry>(body);
 
             try
             {
-                var result = _paymentService.Pay(entry);
-                await Task.Delay(250);
-                Console.WriteLine("teste", result);
+                var result = await paymentService.Pay(entry);
+                Thread.Sleep(10000);
+                Console.WriteLine("teste {0}", result);
             }
             catch (DbUpdateConcurrencyException)
             {
-                this._paymentQueue.Enqueue(entry, 4000); //4 seconds
+                paymentQueue.Enqueue(entry, 4000); //4 seconds
             }
             catch (Exception e)
             {
                 if (entry.Attempts > MAX_RETRY)
-                    this._errorQueue.Enqueue(entry);
+                    errorQueue.Enqueue(entry);
                 else
                 {
                     entry.Errors = e.Message;
-                    this._receiptQueue.Enqueue(entry, 3 * 60000); //3 minutes
+                    receiptQueue.Enqueue(entry, 3 * 60000); //3 minutes
                 }
             }
 
         }
 
 
-        public async Task WrappeReceive(object sender, BasicDeliverEventArgs @event)
+        public async Task WrappeReceive(object _, BasicDeliverEventArgs @event)
         {
             var body = System.Text.Encoding.UTF8.GetString(@event.Body);
-            var entry = Utils.StringUtil.FromJson<Entry>(body);
+            var entry = JsonConvert.DeserializeObject<Entry>(body);
 
             try
             {
-                var result = _receiptService.Receive(entry);
-                await Task.Delay(250);
-                Console.WriteLine("teste", result);
+                var result = await receiptService.Receive(entry);
+                Thread.Sleep(10000);
+                Console.WriteLine("teste {0}", result);
             }
             catch (DbUpdateConcurrencyException)
             {
-                this._receiptQueue.Enqueue(entry, 4000); //4 seconds
+                receiptQueue.Enqueue(entry, 4000); //4 seconds
             }
             catch (Exception e)
             {
                 if (entry.Attempts > MAX_RETRY)
-                    this._errorQueue.Enqueue(entry);
+                    errorQueue.Enqueue(entry);
                 else
                 {
                     entry.Errors = e.Message;
-                    this._receiptQueue.Enqueue(entry, 3 * 60000); //3 minutes
+                    receiptQueue.Enqueue(entry, 3 * 60000); //3 minutes
                 }
             }
         }

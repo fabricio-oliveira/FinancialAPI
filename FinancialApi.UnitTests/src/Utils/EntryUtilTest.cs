@@ -27,14 +27,14 @@ namespace FinancialApiTests.Utils
 
         public class Model
         {
-            public Model(long id, string ss)
+            public Model(int id, string ss)
             {
                 this.ID = id;
                 this.SomeString = ss;
             }
 
             [JsonProperty(PropertyName = "id")]
-            public long ID { get; set; }
+            public int ID { get; set; }
             [JsonProperty(PropertyName = "some_string")]
             public string SomeString { get; set; }
         }
