@@ -97,10 +97,9 @@ namespace FinancialApi.Config
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory,
                               IServiceProvider serviceProvider)
         {
-            ////Log
-            //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            //loggerFactory.AddDebug();
-
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
+            loggerFactory.AddEventSourceLogger();
 
             //DotNetServer
             app.UseMvc();
@@ -134,7 +133,8 @@ namespace FinancialApi.Config
                                                               serviceProvider.GetService<IPaymentQueue>(),
                                                               serviceProvider.GetService<IReceiptService>(),
                                                               serviceProvider.GetService<IReceiptQueue>(),
-                                                              serviceProvider.GetService<IErrorQueue>());
+                                                              serviceProvider.GetService<IErrorQueue>(),
+                                                                    serviceProvider.GetService<ILogger>());
 
             //var updateBalanceWorker = new UpdateBalanceWorker(serviceProvider.GetService<IBalanceService>(),
             //serviceProvider.GetService<IReceiptQueue>());
