@@ -11,40 +11,40 @@ namespace FinancialApi.Services
 {
     public abstract class EntryService
     {
-        readonly IQueue<Entry> mainQueue;
+        readonly IQueue<Entry> _mainQueue;
 
-        protected readonly IAccountRepository accountRepository;
-        protected readonly IBalanceRepository balanceRepository;
-        protected readonly IEntryRepository entryRepository;
+        protected readonly IAccountRepository _accountRepository;
+        protected readonly IBalanceRepository _balanceRepository;
+        protected readonly IEntryRepository _entryRepository;
 
         protected EntryService(IQueue<Entry> mainQueue,
                                IAccountRepository accountRepository,
                                IBalanceRepository balanceRepository,
                                IEntryRepository entryRepository)
         {
-            this.mainQueue = mainQueue;
-            this.entryRepository = entryRepository;
-            this.accountRepository = accountRepository;
-            this.balanceRepository = balanceRepository;
+            _mainQueue = mainQueue;
+            _entryRepository = entryRepository;
+            _accountRepository = accountRepository;
+            _balanceRepository = balanceRepository;
         }
 
         protected abstract ErrorsDTO Validate(Entry entry);
 
         protected void UpdateBalance(Entry entry)
         {
-            using (this.entryRepository.BeginTransaction())
+            using (this._entryRepository.BeginTransaction())
             {
                 //Entry
-                this.entryRepository.Save(entry);
+                this._entryRepository.Save(entry);
 
                 //Account
-                var account = this.accountRepository.FindOrCreate(entry.DestinationAccount,
+                var account = this._accountRepository.FindOrCreate(entry.DestinationAccount,
                                                                    entry.DestinationBank,
                                                                    entry.TypeAccount,
                                                                    entry.DestinationIdentity);
 
                 //Balance
-                var currentBalance = this.balanceRepository.FindOrCreateBy(account, entry.DateToPay.GetValueOrDefault());
+                var currentBalance = this._balanceRepository.FindOrCreateBy(account, entry.DateToPay.GetValueOrDefault());
 
 
                 var entryDto = new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
@@ -58,11 +58,11 @@ namespace FinancialApi.Services
                 currentBalance.Charges.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
                                                  entry.FinancialCharges.GetValueOrDefault()));
 
-                this.balanceRepository.Update(currentBalance);
-                this.balanceRepository.UpdateDayPosition(currentBalance);
+                this._balanceRepository.Update(currentBalance);
+                this._balanceRepository.UpdateDayPosition(currentBalance);
 
                 //Commit
-                this.entryRepository.Commit();
+                this._entryRepository.Commit();
             }
             //SQL Server has auto rollback when exception as throw
 
@@ -74,7 +74,7 @@ namespace FinancialApi.Services
             var error = Validate(entry);
             if (error.HasErrors()) return await Task.FromResult(error);
 
-            mainQueue.Enqueue(entry);
+            _mainQueue.Enqueue(entry);
             return new OkDTO(entry.UUID);
         }
 

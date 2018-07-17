@@ -8,6 +8,8 @@ namespace FinancialApi.Services
     {
         List<Balance> CashFlow(Account account);
 
+        void GenerateBalanceWithInterest(Account account, DateTime date);
+
     }
 
 }

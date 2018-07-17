@@ -9,8 +9,8 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Swagger;
 using FinancialApi.workers;
-using Hangfire;
 using Microsoft.Extensions.Logging;
+using Hangfire;
 
 namespace FinancialApi.Config
 {
@@ -33,7 +33,7 @@ namespace FinancialApi.Config
         {
             var connectionDatabase = Environment.GetEnvironmentVariable("DATABASE_CONNECTION");
             if (connectionDatabase == null)
-                throw new System.ArgumentException("DATABASE_CONNECTION cannot be null");
+                throw new ArgumentException("DATABASE_CONNECTION cannot be null");
 
             services.AddDbContextPool<DataBaseContext>(options => options.UseSqlServer(connectionDatabase), 20);
             services.AddHangfire(x => x.UseSqlServerStorage(connectionDatabase));
@@ -65,15 +65,11 @@ namespace FinancialApi.Config
 
             var connectionQueue = Environment.GetEnvironmentVariable("QUEUE_CONNECTION");
             if (connectionQueue == null)
-                throw new System.ArgumentException("QUEUE_CONNECTION cannot be null");
+                throw new ArgumentException("QUEUE_CONNECTION cannot be null");
 
             services.AddSingleton(
                 new QueueContext(connectionQueue)
             );
-
-            //Logger
-            ILoggerFactory loggerFactory = new LoggerFactory();
-            services.AddSingleton<ILoggerFactory>(loggerFactory);
 
             //Queue
             services.AddSingleton<IPaymentQueue, PaymentQueue>();
@@ -99,7 +95,6 @@ namespace FinancialApi.Config
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            loggerFactory.AddEventSourceLogger();
 
             //DotNetServer
             app.UseMvc();
@@ -108,11 +103,7 @@ namespace FinancialApi.Config
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Financial API V1"));
 
-            var options = new BackgroundJobServerOptions { WorkerCount = Environment.ProcessorCount * MAX_WORK_PRO_PROCESS };
-            app.UseHangfireServer(options);
-            app.UseHangfireDashboard("/hangfire");
-
-
+            //Create database
             var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
             using (var serviceScope = serviceScopeFactory.CreateScope())
             {
@@ -120,23 +111,30 @@ namespace FinancialApi.Config
                 dbContext.Database.EnsureCreated();
             }
 
+            var options = new BackgroundJobServerOptions { WorkerCount = Environment.ProcessorCount * MAX_WORK_PRO_PROCESS };
+            app.UseHangfireServer(options);
+            app.UseHangfireDashboard("/hangfire");
+
             Jobs(serviceProvider);
         }
 
         void Jobs(IServiceProvider serviceProvider)
         {
             var consolidateEntryWorker = new ConsolidateEntryWorker(serviceProvider.GetService<IPaymentService>(),
-                                                              serviceProvider.GetService<IPaymentQueue>(),
-                                                              serviceProvider.GetService<IReceiptService>(),
-                                                              serviceProvider.GetService<IReceiptQueue>(),
-                                                              serviceProvider.GetService<IErrorQueue>(),
-                                                                    serviceProvider.GetService<ILogger>());
+            serviceProvider.GetService<IPaymentQueue>(),
+            serviceProvider.GetService<IReceiptService>(),
+            serviceProvider.GetService<IReceiptQueue>(),
+            serviceProvider.GetService<IErrorQueue>(),
+            serviceProvider.GetService<ILogger<ConsolidateEntryWorker>>());
+
+            BackgroundJob.Enqueue(() => consolidateEntryWorker.WorkManagerPay());
+            BackgroundJob.Enqueue(() => consolidateEntryWorker.WorkManagerReceipt());
 
 
             var updateBalanceWorker = new UpdateBalanceWorker(serviceProvider.GetService<IBalanceService>(),
-                                                              serviceProvider.GetService<IReceiptQueue>());
+                                                              serviceProvider.GetService<IAccountRepository>());
 
-            BackgroundJob.Schedule(() => updateBalanceWorker.Excute(), TimeSpan.FromSeconds(10));
+            BackgroundJob.Schedule(() => updateBalanceWorker.WorkManagement(), TimeSpan.FromSeconds(10));
 
         }
     }

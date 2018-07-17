@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Threading;
+using FinancialApi.Models.Entity;
 using FinancialApi.Queue;
+using FinancialApi.Repositories;
 using FinancialApi.Services;
 
 
@@ -9,20 +12,23 @@ namespace FinancialApi.workers
     {
 
         readonly IBalanceService _balanceService;
-        readonly IReceiptQueue _receiptQueue;
+        readonly IAccountRepository _accountReposiotry;
 
         public UpdateBalanceWorker(IBalanceService balanceService,
-                                   IReceiptQueue receiptQueue)
+                                   IAccountRepository accountReposiotry)
         {
             _balanceService = balanceService;
-            _receiptQueue = receiptQueue;
+            _accountReposiotry = accountReposiotry;
         }
 
-        public void Excute()
+        public void WorkManagement()
         {
-            var test = _receiptQueue.Dequeue();
+            for (var accounts = _accountReposiotry.List())
+            {
+                var balances = _balanceService.GenerateBalanceWithInterest(Account, DateTime.Today());
 
-            Console.WriteLine("Recorrent Thread {0}", test);
+
+            }
 
         }
 

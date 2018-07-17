@@ -46,12 +46,12 @@ namespace FinancialApi.Services
 
         private bool HasLimit(Entry entry)
         {
-            var account = accountRepository.FindOrCreate(number: entry.DestinationAccount,
+            var account = _accountRepository.FindOrCreate(number: entry.DestinationAccount,
                                                           bank: entry.DestinationBank,
                                                           type: entry.TypeAccount,
                                                           identity: entry.DestinationIdentity);
 
-            var flow = balanceRepository.LastByOrDefault(account);
+            var flow = _balanceRepository.LastByOrDefault(account);
 
 
             return (flow.Total - entry.Value - entry.FinancialCharges) >= ESPECIAL_LIMIT;

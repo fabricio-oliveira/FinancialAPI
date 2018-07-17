@@ -9,42 +9,48 @@ namespace FinancialApi.Services
 {
     public class BalanceService : IBalanceService
     {
-        const decimal TX_INTEREST = 0.83m;
+        const decimal TX_INTEREST = 0.083m;
 
-        readonly IBalanceRepository balanceRepository;
-        readonly IInterestRepository interestRepository;
+        readonly IBalanceRepository _balanceRepository;
+        readonly IInterestRepository _interestRepository;
 
         public BalanceService(IBalanceRepository balanceRepository,
                               IInterestRepository interestRepository)
         {
-            this.balanceRepository = balanceRepository;
-            this.interestRepository = interestRepository;
+            _balanceRepository = balanceRepository;
+            _interestRepository = interestRepository;
         }
 
         public List<Balance> CashFlow(Account account)
         {
-            return balanceRepository.ListTodayMore30Ahead(account);
+            return _balanceRepository.ListTodayMore30Ahead(account);
         }
 
         public void GenerateBalanceWithInterest(Account account, DateTime date)
         {
-            // Find Balance
-            var previuslyBalance = balanceRepository.Find(account, date.AddDays(-1));
+            using (_balanceRepository.BeginTransaction())
+            {
+                // previously Balance
+                var balance = _balanceRepository.Find(account, date.AddDays(-1));
 
-            if (previuslyBalance == null)
-                throw new Exception("Problem find last Balance");
+                if (balance == null)
+                    throw new Exception("Problem find last Balance");
 
-            //Save Interes
-            var interest = previuslyBalance.Total * TX_INTEREST;
+                // new balance 
+                var newBalance = _balanceRepository.FindOrCreateBy(account, date);
 
-            interestRepository.Save(new Interest(interest, date, account));
+                //Save Interes
+                if (balance.Total < 0)
+                {
+                    var interest = balance.Total * TX_INTEREST;
+                    _interestRepository.Save(new Interest(interest, date, account));
+                    newBalance.Charges.Add(new ShortEntryDTO(DateTime.Today, interest));
+                    newBalance.UpdateDayPostion(balance.Total);
+                }
 
-            // Balance
-
-            var newBalance = balanceRepository.FindOrCreateBy(account, date);
-
-            newBalance.Charges.Add(new ShortEntryDTO(DateTime.Today, interest));
-
+                _balanceRepository.Update(newBalance);
+                _balanceRepository.Commit();
+            }
 
         }
 

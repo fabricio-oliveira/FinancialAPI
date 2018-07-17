@@ -5,7 +5,7 @@ services:
     build: FinancialApi/
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - DATABASE_CONNECTION=Server=sql-server;Database=Financial;User=sa;Password=@A1b2?C3d4
+      - DATABASE_CONNECTION=Server=sql-server;Database=Financial;User=sa;Password=@A1b2xC3d4
       - QUEUE_CONNECTION=rabbitmq;usermq;usermq
     ports:
       - "8080:8080"
@@ -20,12 +20,12 @@ services:
     image: microsoft/mssql-server-linux:latest
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=@A1b2?C3d4
+      - SA_PASSWORD=@A1b2xC3d4
     ports:
       - "1433:1433"
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq:alpine
+    image: rabbitmq:3.7.7-management
     environment:
       - RABBITMQ_DEFAULT_USER=usermq
       - RABBITMQ_DEFAULT_PASS=usermq

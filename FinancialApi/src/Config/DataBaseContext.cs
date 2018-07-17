@@ -9,6 +9,7 @@ namespace FinancialApi.Config
         public DataBaseContext(DbContextOptions<DataBaseContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -7,7 +7,7 @@ namespace FinancialApi.Repositories
 {
     public class AccountRepository : GenericRepository, IAccountRepository
     {
-        private readonly DataBaseContext context;
+        readonly DataBaseContext context;
 
         public AccountRepository(DataBaseContext context) : base(context)
         {
@@ -24,6 +24,11 @@ namespace FinancialApi.Repositories
         {
             context.Accounts.Update(account);
             context.SaveChanges();
+        }
+
+        public List<Account> List()
+        {
+            return context.Accounts.ToList();
         }
 
         public Account Find(int id)
@@ -48,5 +53,7 @@ namespace FinancialApi.Repositories
 
             return account;
         }
+
     }
+}
 }

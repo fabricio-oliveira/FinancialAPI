@@ -20,7 +20,7 @@ namespace FinancialApi.workers
 
         readonly IReceiptService _receiptService;
 
-        readonly ILogger _logger;
+        readonly ILogger<ConsolidateEntryWorker> _logger;
 
         const int MAX_RETRY = 3;
         const int DELAY_RETRAY_CONCURRENCY = 4000; // 4 SEG
@@ -28,15 +28,13 @@ namespace FinancialApi.workers
 
         public ConsolidateEntryWorker(IPaymentService paymentService, IPaymentQueue paymentQueue,
                                       IReceiptService receiptService, IReceiptQueue receiptQueue,
-                                      IErrorQueue errorQueue, ILogger logger)
+                                      IErrorQueue errorQueue, ILogger<ConsolidateEntryWorker> logger)
         {
             _paymentQueue = paymentQueue;
             _paymentService = paymentService;
-            BackgroundJob.Enqueue(() => WorkManagerPay());
 
             _receiptQueue = receiptQueue;
             _receiptService = receiptService;
-            BackgroundJob.Enqueue(() => WorkManagerReceipt());
 
             _logger = logger;
             _errorQueue = errorQueue;
@@ -47,7 +45,7 @@ namespace FinancialApi.workers
             while (true)
             {
                 var payment = _paymentQueue.Dequeue();
-                BackgroundJob.Enqueue(() => WrapperPay(payment));
+                if (payment != null) BackgroundJob.Enqueue(() => WrapperPay(payment));
             }
         }
 
@@ -56,18 +54,17 @@ namespace FinancialApi.workers
             while (true)
             {
                 var receipt = _receiptQueue.Dequeue();
-                BackgroundJob.Enqueue(() => WrappeReceive(receipt));
+                if (receipt != null) BackgroundJob.Enqueue(() => WrappeReceive(receipt));
             }
 
         }
 
-
-        public async Task WrapperPay(Entry entry)
+        public void WrapperPay(Entry entry)
         {
             try
             {
                 _logger.LogDebug("Process payment start {0}", entry.UUID);
-                var result = await _paymentService.Pay(entry);
+                var result = _paymentService.Pay(entry);
                 _logger.LogDebug("Process payment finish {0}", entry.UUID);
             }
             catch (DbUpdateConcurrencyException)
@@ -92,13 +89,12 @@ namespace FinancialApi.workers
 
         }
 
-
-        public async Task WrappeReceive(Entry entry)
+        public void WrappeReceive(Entry entry)
         {
             try
             {
                 _logger.LogDebug("Process receipt start {0}", entry.UUID);
-                var result = await _receiptService.Receive(entry);
+                var result = _receiptService.Receive(entry);
                 _logger.LogDebug("Process receipt finish {0}", entry.UUID);
             }
             catch (DbUpdateConcurrencyException)
