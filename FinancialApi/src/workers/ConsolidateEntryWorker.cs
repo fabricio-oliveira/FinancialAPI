@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 using FinancialApi.Models.Entity;
 using FinancialApi.Queue;
 using FinancialApi.Services;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using RabbitMQ.Client.Events;
 
 namespace FinancialApi.workers
 {
@@ -24,88 +23,101 @@ namespace FinancialApi.workers
         readonly ILogger _logger;
 
         const int MAX_RETRY = 3;
+        const int DELAY_RETRAY_CONCURRENCY = 4000; // 4 SEG
+        const int DELAY_RETRAY_OTHER_FAIL = 3 * 60000; // 3 * 60 MIN * SEG
 
         public ConsolidateEntryWorker(IPaymentService paymentService, IPaymentQueue paymentQueue,
                                       IReceiptService receiptService, IReceiptQueue receiptQueue,
                                       IErrorQueue errorQueue, ILogger logger)
         {
-            this._paymentQueue = paymentQueue;
-            this._paymentService = paymentService;
-            this._paymentQueue.SetConsumer(WrapperPay);
+            _paymentQueue = paymentQueue;
+            _paymentService = paymentService;
+            BackgroundJob.Enqueue(() => WorkManagerPay());
 
-            this._receiptQueue = receiptQueue;
-            this._receiptService = receiptService;
-            this._receiptQueue.SetConsumer(WrappeReceive);
+            _receiptQueue = receiptQueue;
+            _receiptService = receiptService;
+            BackgroundJob.Enqueue(() => WorkManagerReceipt());
 
+            _logger = logger;
+            _errorQueue = errorQueue;
+        }
 
-            this._logger = logger;
-            this._errorQueue = errorQueue;
+        public void WorkManagerPay()
+        {
+            while (true)
+            {
+                var payment = _paymentQueue.Dequeue();
+                BackgroundJob.Enqueue(() => WrapperPay(payment));
+            }
+        }
+
+        public void WorkManagerReceipt()
+        {
+            while (true)
+            {
+                var receipt = _receiptQueue.Dequeue();
+                BackgroundJob.Enqueue(() => WrappeReceive(receipt));
+            }
+
         }
 
 
-        //public async Task TestReceive()
-        //{
-        //    var body = _paymentQueue.Dequeue();
-
-
-        //    if (body != null)
-        //        await _paymentService.Pay(body);
-
-        //}
-
-        //BackgroundJob.Enqueue(
-        public async Task WrapperPay(object _, BasicDeliverEventArgs @event)
+        public async Task WrapperPay(Entry entry)
         {
-            var body = System.Text.Encoding.UTF8.GetString(@event.Body);
-            var entry = JsonConvert.DeserializeObject<Entry>(body);
-
             try
             {
+                _logger.LogDebug("Process payment start {0}", entry.UUID);
                 var result = await _paymentService.Pay(entry);
-                Thread.Sleep(10000);
-                _logger.LogInformation("teste {0}", body);
+                _logger.LogDebug("Process payment finish {0}", entry.UUID);
             }
             catch (DbUpdateConcurrencyException)
             {
-                _paymentQueue.Enqueue(entry, 4000); //4 seconds
+                _paymentQueue.Enqueue(entry, DELAY_RETRAY_CONCURRENCY);
+                _logger.LogDebug("Fail concurrency in process payment {0}, reeque msg", entry.UUID);
             }
             catch (Exception e)
             {
                 if (entry.Attempts > MAX_RETRY)
+                {
                     _errorQueue.Enqueue(entry);
+                    _logger.LogDebug("Max Fail in process payment {0}, add error queue", entry.UUID);
+                }
                 else
                 {
                     entry.Errors = e.Message;
-                    _receiptQueue.Enqueue(entry, 3 * 60000); //3 minutes
+                    _receiptQueue.Enqueue(entry, DELAY_RETRAY_OTHER_FAIL); //3 minutes
+                    _logger.LogDebug("Unexpected Fail in process payment {0}, requeue Payment", entry.UUID);
                 }
             }
 
         }
 
 
-        public async Task WrappeReceive(object _, BasicDeliverEventArgs @event)
+        public async Task WrappeReceive(Entry entry)
         {
-            var body = System.Text.Encoding.UTF8.GetString(@event.Body);
-            var entry = JsonConvert.DeserializeObject<Entry>(body);
-
             try
             {
+                _logger.LogDebug("Process receipt start {0}", entry.UUID);
                 var result = await _receiptService.Receive(entry);
-                Thread.Sleep(10000);
-                _logger.LogInformation("teste {0}", body);
+                _logger.LogDebug("Process receipt finish {0}", entry.UUID);
             }
             catch (DbUpdateConcurrencyException)
             {
-                _receiptQueue.Enqueue(entry, 4000); //4 seconds
+                _receiptQueue.Enqueue(entry, DELAY_RETRAY_CONCURRENCY);
+                _logger.LogDebug("Fail concurrency in process receipt {0}, reeque msg", entry.UUID);
             }
             catch (Exception e)
             {
                 if (entry.Attempts > MAX_RETRY)
+                {
                     _errorQueue.Enqueue(entry);
+                    _logger.LogDebug("Max Fail in process receipt {0}, add error queue", entry.UUID);
+                }
                 else
                 {
                     entry.Errors = e.Message;
-                    _receiptQueue.Enqueue(entry, 3 * 60000); //3 minutes
+                    _receiptQueue.Enqueue(entry, DELAY_RETRAY_OTHER_FAIL);
+                    _logger.LogDebug("Unexpected Fail in process payment {0}, requeue Payment", entry.UUID);
                 }
             }
         }

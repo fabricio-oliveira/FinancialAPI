@@ -7,6 +7,5 @@ namespace FinancialApi.Queue
     {
         void Enqueue(Entry t, int? delay = null);
         T Dequeue();
-        void SetConsumer(AsyncEventHandler<BasicDeliverEventArgs> consumer);
     }
 }

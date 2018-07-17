@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using RabbitMQ.Client;
 using FinancialApi.Utils;
-using RabbitMQ.Client.Events;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -12,7 +11,6 @@ namespace FinancialApi.Queue
     public abstract class GenericQueue<T> where T : class
     {
         protected readonly QueueContext _context;
-        AsyncEventingBasicConsumer _consumer;
 
         protected GenericQueue(QueueContext context)
         {
@@ -20,15 +18,6 @@ namespace FinancialApi.Queue
         }
 
         protected abstract string QueueName();
-
-        public void SetConsumer(AsyncEventHandler<BasicDeliverEventArgs> consumer)
-        {
-            _consumer = new AsyncEventingBasicConsumer(_context.Channel);
-            _consumer.Received += consumer;
-            _context.Channel.BasicConsume(queue: QueueName(),
-                                               autoAck: true,
-                                               consumer: _consumer);
-        }
 
         public void Enqueue(T t, int? delay = null)
         {
