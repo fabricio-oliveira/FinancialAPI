@@ -106,11 +106,6 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
-        //public void CreateBalaceWithInterest(decimal interest)
-        //{
-
-        //}
-
     }
 }
 

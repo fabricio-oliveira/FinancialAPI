@@ -26,7 +26,7 @@ namespace FinancialApi.workers
             for (var accounts = _accountReposiotry.List())
             {
                 var balances = _balanceService.GenerateBalanceWithInterest(Account, DateTime.Today());
-
+                x
 
             }
 

@@ -58,11 +58,11 @@ namespace FinancialApi.Services
                 currentBalance.Charges.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
                                                  entry.FinancialCharges.GetValueOrDefault()));
 
-                this._balanceRepository.Update(currentBalance);
-                this._balanceRepository.UpdateDayPosition(currentBalance);
+                _balanceRepository.Update(currentBalance);
+                _balanceRepository.UpdateDayPosition(currentBalance);
 
                 //Commit
-                this._entryRepository.Commit();
+                _entryRepository.Commit();
             }
             //SQL Server has auto rollback when exception as throw
 
