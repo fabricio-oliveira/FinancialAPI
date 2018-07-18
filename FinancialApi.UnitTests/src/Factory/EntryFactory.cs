@@ -7,10 +7,9 @@ namespace FinancialApiUnitTests.Factory
 {
     public static class EntryFactory
     {
-        static readonly DataBaseContext _context;
-        static EntryFactory()
+        static DataBaseContext Context()
         {
-            _context = DbHelper.Connection();
+            return DatabaseHelper.Connection();
         }
 
         public static Entry Build(Action<Entry> pred = null)
@@ -26,8 +25,8 @@ namespace FinancialApiUnitTests.Factory
         public static Entry Create(Action<Entry> pred = null)
         {
             var value = Build(pred);
-            _context.Entries.Add(value);
-            _context.SaveChanges();
+            Context().Entries.Add(value);
+            Context().SaveChanges();
             return value;
 
         }

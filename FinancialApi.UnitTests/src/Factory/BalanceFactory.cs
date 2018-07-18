@@ -10,11 +10,9 @@ namespace FinancialApiUnitTests.Factory
 {
     public static class BalanceFactory
     {
-        static readonly DataBaseContext _context;
-
-        static BalanceFactory()
+        static DataBaseContext Context()
         {
-            _context = DbHelper.Connection();
+            return DatabaseHelper.Connection();
         }
 
         public static Balance Build(Action<Balance> pred = null)
@@ -32,8 +30,8 @@ namespace FinancialApiUnitTests.Factory
         public static Balance Create(Action<Balance> pred = null)
         {
             var value = Build(pred);
-            _context.Balances.Add(value);
-            _context.SaveChanges();
+            Context().Balances.Add(value);
+            Context().SaveChanges();
             return value;
 
         }

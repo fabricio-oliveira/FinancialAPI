@@ -6,26 +6,34 @@ using Microsoft.EntityFrameworkCore;
 namespace FinancialApi.UnitTests
 {
 
-    public static class DbHelper
+    public static class DatabaseHelper
     {
         static DataBaseContext _context = null;
-        public static DataBaseContext Connection()
+        static SqliteConnection _connection = null;
+       
+       public static DataBaseContext Connection()
         {
             if (_context != null)
                 return _context;
 
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
+            _connection = new SqliteConnection("DataSource=:memory:");
+            _connection.Open();
 
             var options = new DbContextOptionsBuilder<DataBaseContext>()
-                .UseSqlite(connection)
+                .UseSqlite(_connection)
                 .Options;
 
             _context = new DataBaseContext(options);
-            _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
 
             return _context;
+        
+        
+        }
+        public static void CleanData()
+        {
+           _connection.Close();
+           _context = null;
         }
 
     }
