@@ -38,11 +38,10 @@ namespace FinancialApi.Repositories
 
         public Account FindOrCreate(string number, string bank, string type, string identity)
         {
-            var account = _context.Accounts.Where(x => x.Number.Equals(number)
+            var account = _context.Accounts.SingleOrDefault(x => x.Number.Equals(number)
                                                  && x.Bank.Equals(bank)
                                                  && x.Identity.Equals(identity)
-                                                 && x.Type.Equals(type))
-                                           .SingleOrDefault();
+                                                 && x.Type.Equals(type));
 
             if (account == null)
             {
