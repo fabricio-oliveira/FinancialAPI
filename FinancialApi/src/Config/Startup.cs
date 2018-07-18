@@ -108,6 +108,7 @@ namespace FinancialApi.Config
             using (var serviceScope = serviceScopeFactory.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetService<DataBaseContext>();
+                dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
             }
 
@@ -121,11 +122,11 @@ namespace FinancialApi.Config
         void Jobs(IServiceProvider serviceProvider)
         {
             var consolidateEntryWorker = new ConsolidateEntryWorker(serviceProvider.GetService<IPaymentService>(),
-            serviceProvider.GetService<IPaymentQueue>(),
-            serviceProvider.GetService<IReceiptService>(),
-            serviceProvider.GetService<IReceiptQueue>(),
-            serviceProvider.GetService<IErrorQueue>(),
-            serviceProvider.GetService<ILogger<ConsolidateEntryWorker>>());
+                                                                    serviceProvider.GetService<IPaymentQueue>(),
+                                                                    serviceProvider.GetService<IReceiptService>(),
+                                                                    serviceProvider.GetService<IReceiptQueue>(),
+                                                                    serviceProvider.GetService<IErrorQueue>(),
+                                                                    serviceProvider.GetService<ILogger<ConsolidateEntryWorker>>());
 
             BackgroundJob.Enqueue(() => consolidateEntryWorker.WorkManagerPay());
             BackgroundJob.Enqueue(() => consolidateEntryWorker.WorkManagerReceipt());
@@ -134,8 +135,7 @@ namespace FinancialApi.Config
             var updateBalanceWorker = new UpdateBalanceWorker(serviceProvider.GetService<IBalanceService>(),
                                                               serviceProvider.GetService<IAccountRepository>());
 
-            BackgroundJob.Schedule(() => updateBalanceWorker.WorkManagement(), TimeSpan.FromSeconds(10));
-
+            RecurringJob.AddOrUpdate(() => updateBalanceWorker.WorkManagement(), Cron.MinuteInterval(1));
         }
     }
 }

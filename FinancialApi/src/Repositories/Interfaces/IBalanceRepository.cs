@@ -12,5 +12,7 @@ namespace FinancialApi.Repositories
         Balance LastByOrDefault(Account account);
         void UpdateDayPosition(Balance balance);
         List<Balance> ListTodayMore30Ahead(Account account);
+
+        List<Balance> ToProcess(DateTime date, List<Account> account);
     }
 }

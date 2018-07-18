@@ -14,7 +14,7 @@ namespace FinancialApi.Models.Entity
         {
             this.Number = number;
             this.Bank = bank;
-            this.TypeA = type;
+            this.Type = type;
             this.Identity = identity;
         }
 
@@ -25,7 +25,7 @@ namespace FinancialApi.Models.Entity
 
         public string Bank { get; set; }
 
-        public string TypeA { get; set; }
+        public string Type { get; set; }
 
         public string Identity { get; set; }
 

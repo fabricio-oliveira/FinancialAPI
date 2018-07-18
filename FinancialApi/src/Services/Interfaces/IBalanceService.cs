@@ -7,8 +7,8 @@ namespace FinancialApi.Services
     public interface IBalanceService
     {
         List<Balance> CashFlow(Account account);
-
-        void GenerateBalanceWithInterest(Account account, DateTime date);
+        List<Balance> ToProcess(DateTime date);
+        void GenerateBalanceWithInterest(Balance balance, DateTime date);
 
     }
 

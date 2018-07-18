@@ -1,32 +1,38 @@
-﻿using FinancialApi.Config;
+﻿using System.Linq;
+using FinancialApi.Config;
 using FinancialApi.Models.Entity;
 
 namespace FinancialApi.Repositories
 {
     public class InterestRepository : GenericRepository, IInterestRepository
     {
-        readonly DataBaseContext context;
+        readonly DataBaseContext _context;
 
         public InterestRepository(DataBaseContext context) : base(context)
         {
-            this.context = context;
+            _context = context;
         }
 
         public void Save(Interest interest)
         {
-            context.Interests.Add(interest);
-            context.SaveChanges();
+            _context.Interests.Add(interest);
+            _context.SaveChanges();
         }
 
         public void Update(Interest interest)
         {
-            context.Interests.Update(interest);
-            context.SaveChanges();
+            _context.Interests.Update(interest);
+            _context.SaveChanges();
         }
 
-        public Interest Find(int id)
+        public Interest Find(long id)
         {
-            return context.Interests.Find(id);
+            return _context.Interests.Find(id);
+        }
+
+        public long Count()
+        {
+            return _context.Interests.Count();
         }
     }
 }

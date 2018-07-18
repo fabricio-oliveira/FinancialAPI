@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
 using FinancialApi.Models.Entity;
-using FinancialApi.Queue;
 using FinancialApi.Repositories;
 using FinancialApi.Services;
-
+using Hangfire;
 
 namespace FinancialApi.workers
 {
@@ -13,6 +12,7 @@ namespace FinancialApi.workers
 
         readonly IBalanceService _balanceService;
         readonly IAccountRepository _accountReposiotry;
+        const int _maxBatch = 100;
 
         public UpdateBalanceWorker(IBalanceService balanceService,
                                    IAccountRepository accountReposiotry)
@@ -23,11 +23,23 @@ namespace FinancialApi.workers
 
         public void WorkManagement()
         {
-            for (var accounts = _accountReposiotry.List())
-            {
-                var balances = _balanceService.GenerateBalanceWithInterest(Account, DateTime.Today());
-                x
+            var day = DateTime.Today.AddDays(-1);
+            var balancesToProcess = _balanceService.ToProcess(day);
 
+            for (int i = 0; i < balancesToProcess.Count; i += _maxBatch)
+            {
+                BackgroundJob.Enqueue(() => BatchToProcess(balancesToProcess.GetRange(i, Math.Min(_maxBatch,
+                                                                                                  balancesToProcess.Count - i)),
+                                                           day));
+            }
+        }
+
+
+        public void BatchToProcess(List<Balance> balances, DateTime date)
+        {
+            foreach (Balance balance in balances)
+            {
+                _balanceService.GenerateBalanceWithInterest(balance, date);
             }
 
         }

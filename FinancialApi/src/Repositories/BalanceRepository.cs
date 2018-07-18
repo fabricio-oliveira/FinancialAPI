@@ -4,6 +4,8 @@ using System.Linq;
 using FinancialApi.Config;
 using FinancialApi.Models.DTO;
 using FinancialApi.Models.Entity;
+using FinancialApi.Utils;
+
 
 namespace FinancialApi.Repositories
 {
@@ -13,7 +15,12 @@ namespace FinancialApi.Repositories
 
         public BalanceRepository(DataBaseContext context) : base(context)
         {
-            this._context = context;
+            _context = context;
+        }
+
+        public long Count()
+        {
+            return _context.Balances.Count();
         }
 
         public void Save(Balance balance)
@@ -28,7 +35,7 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
-        public Balance Find(int id)
+        public Balance Find(long id)
         {
             return _context.Balances.Find(id);
         }
@@ -91,6 +98,25 @@ namespace FinancialApi.Repositories
             return balance;
         }
 
+        public List<Balance> ToProcess(DateTime date, List<Account> accounts)
+        {
+
+            var accountIds = accounts.Select(x => x.Id);
+
+            var balancesExistent = _context.Balances
+                                           .Where(x => x.Date.IsSameDate(date) &&
+                                                  accountIds.Contains(x.AccountId) &&
+                                                  !x.Closed);
+
+            var IdsAccountBalanceExistent = balancesExistent.Select(y => y.Id.ToString());
+
+            var balancesToCreate = accounts.Where(x => !IdsAccountBalanceExistent.Contains(x.Id.ToString()))
+                                             .Select(x => FindOrCreateBy(x, date));
+
+
+            return balancesExistent.Concat(balancesToCreate).ToList();
+        }
+
         public void UpdateDayPosition(Balance balance)
         {
             var balances = _context.Balances.Where(x => x.Account.Equals(balance.Account)
@@ -105,7 +131,6 @@ namespace FinancialApi.Repositories
             _context.UpdateRange(balances);
             _context.SaveChanges();
         }
-
     }
 }
 

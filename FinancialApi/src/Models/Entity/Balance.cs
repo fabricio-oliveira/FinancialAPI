@@ -105,6 +105,10 @@ namespace FinancialApi.Models.Entity
         public Account Account { get; set; }
 
         [JsonIgnore]
+        [Column("Closed")]
+        public bool Closed { get; set; }
+
+        [JsonIgnore]
         public long? AccountId { get; set; }
 
         // optimistic lock

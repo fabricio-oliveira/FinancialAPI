@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FinancialApi.Config;
 using FinancialApi.Models.Entity;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,10 @@ namespace FinancialApi.Repositories
             _context = context;
         }
 
+        public long Count()
+        {
+            return _context.Entries.Count();
+        }
 
         public void Save(Entry entry)
         {
@@ -27,7 +32,7 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
-        public Entry Find(int id)
+        public Entry Find(long id)
         {
             return _context.Entries.Find(id);
         }

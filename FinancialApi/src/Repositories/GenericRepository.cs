@@ -17,7 +17,7 @@ namespace FinancialApi.Repositories
 
         public IDbContextTransaction BeginTransaction()
         {
-            return this._databaseContext.Database.BeginTransaction();
+            return _databaseContext.Database.BeginTransaction();
         }
 
         public void Commit()

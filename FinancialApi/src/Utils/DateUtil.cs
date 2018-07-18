@@ -10,10 +10,10 @@ namespace FinancialApi.Utils
             return obj.ToString(format);
         }
 
-        public static bool IsSameDay(this DateTime obj, DateTime other)
+        public static bool IsSameDate(this DateTime obj, DateTime other)
         {
             return obj.ToString(format).Equals(other.ToString(format));
         }
-       
+
     }
 }

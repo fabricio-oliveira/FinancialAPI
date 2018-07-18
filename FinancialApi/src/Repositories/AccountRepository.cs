@@ -7,53 +7,56 @@ namespace FinancialApi.Repositories
 {
     public class AccountRepository : GenericRepository, IAccountRepository
     {
-        readonly DataBaseContext context;
+        readonly DataBaseContext _context;
 
         public AccountRepository(DataBaseContext context) : base(context)
         {
-            this.context = context;
+            _context = context;
         }
 
         public void Save(Account account)
         {
-            context.Accounts.Add(account);
-            context.SaveChanges();
+            _context.Accounts.Add(account);
+            _context.SaveChanges();
         }
 
         public void Update(Account account)
         {
-            context.Accounts.Update(account);
-            context.SaveChanges();
+            _context.Accounts.Update(account);
+            _context.SaveChanges();
         }
 
         public List<Account> List()
         {
-            return context.Accounts.ToList();
+            return _context.Accounts.ToList();
         }
 
-        public Account Find(int id)
+        public Account Find(long id)
         {
-            return context.Accounts.Find(id);
+            return _context.Accounts.Find(id);
         }
 
         public Account FindOrCreate(string number, string bank, string type, string identity)
         {
-            var account = context.Accounts.Where(x => x.Number == number
-                                                  && x.Bank == bank
-                                                  && x.Identity == identity
-                                                  && x.TypeA == type)
-                                                 .FirstOrDefault();
+            var account = _context.Accounts.Where(x => x.Number.Equals(number)
+                                                 && x.Bank.Equals(bank)
+                                                 && x.Identity.Equals(identity)
+                                                 && x.Type.Equals(type))
+                                           .SingleOrDefault();
 
             if (account == null)
             {
                 account = new Account(number, bank, type, identity);
-                context.Accounts.Add(account);
-                context.SaveChanges();
+                _context.Accounts.Add(account);
+                _context.SaveChanges();
             }
 
             return account;
         }
 
+        public long Count()
+        {
+            return _context.Accounts.Count();
+        }
     }
-}
 }
