@@ -35,16 +35,13 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
-        public Balance Find(long id)
-        {
-            return _context.Balances.Find(id);
-        }
+        public Balance Find(long? id) => _context.Balances.Find(id);
 
         public List<Balance> ListTodayMore30Ahead(Account account)
         {
             return _context.Balances.Where(x => x.Account == account
                                           && x.Date >= DateTime.Today
-                                          && x.Date < DateTime.Today.AddDays(31))
+                                          && x.Date < DateTime.Today.AddDays(30))
                                     .OrderBy(x => x.Date)
                                     .ToList();
         }

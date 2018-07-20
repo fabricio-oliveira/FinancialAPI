@@ -49,6 +49,18 @@ namespace FinancialApi.UnitTests.repositories
             Assert.AreEqual(created.Id, finded.Id);
         }
 
+        [Test]
+        public void TestUpdateAccount()
+        {
+            var created = AccountFactory.Create();
+            created.Identity = "0002-9";
+            _repository.Update(created);
+            var finded = _repository.Find(created.Id);
+            Assert.AreEqual(_repository.Count(), 1);
+            Assert.AreEqual(created.Id, created.Id);
+        }
+
+
 
         [Test]
         public void TestFindOrCreateNotExistAccount()
@@ -57,7 +69,6 @@ namespace FinancialApi.UnitTests.repositories
            var finded = _repository.FindOrCreate(created.Number, created.Bank, created.Type, created.Identity);
            Assert.IsNotNull(finded.Id);
            Assert.AreEqual(_repository.Count(), 1);
-
         }
 
 

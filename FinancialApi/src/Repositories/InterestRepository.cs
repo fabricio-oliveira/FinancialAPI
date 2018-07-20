@@ -8,10 +8,7 @@ namespace FinancialApi.Repositories
     {
         readonly DataBaseContext _context;
 
-        public InterestRepository(DataBaseContext context) : base(context)
-        {
-            _context = context;
-        }
+        public InterestRepository(DataBaseContext context) : base(context) => _context = context;
 
         public void Save(Interest interest)
         {
@@ -25,10 +22,7 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
-        public Interest Find(long id)
-        {
-            return _context.Interests.Find(id);
-        }
+        public Interest Find(long? id) => _context.Interests.Find(id);
 
         public long Count()
         {

@@ -9,10 +9,7 @@ namespace FinancialApi.Repositories
     {
         readonly DataBaseContext _context;
 
-        public AccountRepository(DataBaseContext context) : base(context)
-        {
-            _context = context;
-        }
+        public AccountRepository(DataBaseContext context) : base(context) => _context = context;
 
         public void Save(Account account)
         {
@@ -26,15 +23,9 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
-        public List<Account> List()
-        {
-            return _context.Accounts.ToList();
-        }
+        public List<Account> List() => _context.Accounts.ToList();
 
-        public Account Find(long id)
-        {
-            return _context.Accounts.Find(id);
-        }
+        public Account Find(long? id) => _context.Accounts.Find(id);
 
         public Account FindOrCreate(string number, string bank, string type, string identity)
         {
