@@ -133,9 +133,6 @@ namespace FinancialApiUnitTests.src.services
             _mockEntryRepository.Setup(m => m.BeginTransaction()).Verifiable();
             _mockEntryRepository.Setup(m => m.Commit()).Verifiable();
 
-
-
-
             //test
             var val = _service.Pay(entry);
 
@@ -147,6 +144,45 @@ namespace FinancialApiUnitTests.src.services
             Assert.AreEqual(1, balance.Outputs.Count);
             Assert.AreEqual(1, balance.Charges.Count);
             Assert.AreEqual(0, balance.Inputs.Count);
+
+        }
+
+        [TestCase("100.00", "0.00", "-20000.00")]
+        public void TestPayFail(decimal entryVal, decimal charges, decimal saldo)
+        {
+            //Input
+            var entry = EntryFactory.Build(x =>
+            {
+                x.Type = "payment";
+                x.Value = entryVal;
+                x.FinancialCharges = charges;
+            });
+
+            //behavior
+            var account = AccountFactory.Build();
+            _mockAccountRepository.Setup(m => m.FindOrCreate(It.IsAny<string>(),
+                                                             It.IsAny<string>(),
+                                                             It.IsAny<string>(),
+                                                             It.IsAny<string>()))
+                                  .Returns(account);
+
+            var balance = BalanceFactory.Build(x => x.Total = saldo);
+            _mockBalanceRepository.Setup(m => m.FindOrCreateBy(account, It.IsAny<DateTime>()))
+                                  .Returns(balance);
+
+            _mockBalanceRepository.Setup(m => m.LastByOrDefault(It.IsAny<Account>()))
+                                  .Returns(balance);
+
+            _mockEntryRepository.Setup(m => m.BeginTransaction()).Verifiable();
+            _mockEntryRepository.Setup(m => m.Commit()).Verifiable();
+
+            //test
+            var val = _service.Pay(entry);
+
+            //assert
+            Assert.IsInstanceOf<ErrorsDTO>(val.Result);
+            Assert.AreSame("Account don't have especial limit", ((ErrorsDTO)val.Result).Details["valor_do_lancamento"][0]);
+            _mockPaymentQueue.Verify(x => x.Enqueue(entry, null), Times.Never());
 
         }
 

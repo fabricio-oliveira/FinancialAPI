@@ -46,8 +46,10 @@ namespace FinancialApi.Services
                 {
                     var interest = balance.Total * TX_INTEREST;
                     _interestRepository.Save(new Interest(interest, date, balance.Account));
+                    balance.Total += interest;
                     balance.Charges.Add(new ShortEntryDTO(DateTime.Today, interest));
-                    balance.UpdateDayPostion(balance.Total);
+
+                    balance.UpdateDayPostionNewEntry(balance.Total + interest);
                 }
 
                 balance.Closed = true;

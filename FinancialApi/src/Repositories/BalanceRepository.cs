@@ -35,7 +35,7 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
-        public Balance Find(long id)
+        public Balance Find(long? id)
         {
             return _context.Balances.Find(id);
         }
@@ -68,7 +68,7 @@ namespace FinancialApi.Repositories
             {
                 balance = new Balance(date, new List<ShortEntryDTO>(),
                                             new List<ShortEntryDTO>(),
-                                            new List<ShortEntryDTO>(), lastBalance.Total, lastBalance.Total, account);
+                                            new List<ShortEntryDTO>(), lastBalance.Total, 0m, account);
                 _context.Balances.Add(balance);
                 _context.SaveChanges();
                 return balance;
@@ -125,7 +125,7 @@ namespace FinancialApi.Repositories
                                    .ToArray();
 
             balances = balances.Skip(1)
-                               .Zip(balances, (c, p) => { c.UpdateDayPostion(p.Total); return c; })
+                               .Zip(balances, (c, p) => { c.UpdateDayPostionNewDay(p.Total); return c; })
                                .ToArray();
 
             _context.UpdateRange(balances);

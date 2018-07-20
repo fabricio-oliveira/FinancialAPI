@@ -16,8 +16,8 @@ namespace FinancialApi.Services
 
 
         public ReceiptService(IReceiptQueue mainQueue,
-                              IAccountRepository accountRepository,
                               IBalanceRepository balanceRepository,
+                              IAccountRepository accountRepository,
                               IEntryRepository entryRepository)
             : base(mainQueue,
                    accountRepository,

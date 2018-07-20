@@ -31,7 +31,7 @@ namespace FinancialApi.Repositories
             return _context.Accounts.ToList();
         }
 
-        public Account Find(long id)
+        public Account Find(long? id)
         {
             return _context.Accounts.Find(id);
         }
