@@ -35,14 +35,7 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
-<<<<<<< HEAD
         public Balance Find(long? id) => _context.Balances.Find(id);
-=======
-        public Balance Find(long? id)
-        {
-            return _context.Balances.Find(id);
-        }
->>>>>>> 0c62ff5d5e8d523918c08c5c5617e23bf795b704
 
         public List<Balance> ListTodayMore30Ahead(Account account)
         {

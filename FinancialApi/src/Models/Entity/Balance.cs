@@ -41,7 +41,7 @@ namespace FinancialApi.Models.Entity
 
         [Column("day_position")]
         [JsonProperty(PropertyName = "posicao_do_dia")]
-        public decimal DayPosition { get; set; }
+        public decimal? DayPosition { get; set; }
 
         [Column(TypeName = "nvarchar(max)")]
         [JsonProperty(PropertyName = "entradas")]
@@ -118,18 +118,26 @@ namespace FinancialApi.Models.Entity
 
         public void UpdateDayPostionNewDay(decimal yestarday)
         {
-            if (Total == 0m && yestarday == 0m)
-                DayPosition = 0.0m;
+            if (Total == 0m && yestarday == 0)
+            {
+                DayPosition = 0.0m; // 0 to any value I aproximadament
+            }
             else if (yestarday == 0m)
-                DayPosition = 1.0m; // 0 to any value I will considere 100%
+            {
+                DayPosition = null; // 0 to any value I aproximadament
+            }
             else
+            {
                 DayPosition = -1 * (1 - Total / yestarday);
+            }
         }
 
         public void UpdateDayPostionNewEntry(decimal newEntry)
         {
-            if (DayPosition == 0m) DayPosition = 1m;
-            DayPosition = Total == 0m ? 1.0m : (Total + newEntry) * DayPosition / Total;
+            if (DayPosition != null)
+            { 
+                DayPosition =  (Total + newEntry) * DayPosition / Total;
+            }
         }
     }
 }

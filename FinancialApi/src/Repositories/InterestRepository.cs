@@ -22,14 +22,7 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
-<<<<<<< HEAD
         public Interest Find(long? id) => _context.Interests.Find(id);
-=======
-        public Interest Find(long? id)
-        {
-            return _context.Interests.Find(id);
-        }
->>>>>>> 0c62ff5d5e8d523918c08c5c5617e23bf795b704
 
         public long Count()
         {
