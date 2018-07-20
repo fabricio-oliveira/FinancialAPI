@@ -32,5 +32,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="src\support\json.cs" />
+    <Compile Remove="src\Models\Entity\EntityTest.cs" />
   </ItemGroup>
 </Project>

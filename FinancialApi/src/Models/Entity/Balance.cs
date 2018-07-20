@@ -116,9 +116,20 @@ namespace FinancialApi.Models.Entity
         public byte[] RowVersion { get; set; }
 
 
-        public void UpdateDayPostion(decimal yestarday)
+        public void UpdateDayPostionNewDay(decimal yestarday)
         {
-            this.Total = yestarday == 0m ? 100.0m : this.Total / yestarday;
+            if (Total == 0m && yestarday == 0m)
+                DayPosition = 0.0m;
+            else if (yestarday == 0m)
+                DayPosition = 1.0m; // 0 to any value I will considere 100%
+            else
+                DayPosition = -1 * (1 - Total / yestarday);
+        }
+
+        public void UpdateDayPostionNewEntry(decimal newEntry)
+        {
+            if (DayPosition == 0m) DayPosition = 1m;
+            DayPosition = Total == 0m ? 1.0m : (Total + newEntry) * DayPosition / Total;
         }
     }
 }

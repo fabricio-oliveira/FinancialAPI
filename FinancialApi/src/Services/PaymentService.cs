@@ -3,7 +3,6 @@ using FinancialApi.Queue;
 using FinancialApi.Repositories;
 using FinancialApi.Utils;
 using FinancialApi.Models.DTO.Response;
-using FinancialApi.Models.DTO;
 using FinancialApi.Models.Entity;
 
 namespace FinancialApi.Services
@@ -11,7 +10,7 @@ namespace FinancialApi.Services
     public class PaymentService : EntryService, IPaymentService
     {
 
-        private const decimal ESPECIAL_LIMIT = -20000.00m;
+        const decimal ESPECIAL_LIMIT = -20000.00m;
 
         public PaymentService(IPaymentQueue mainQueue,
                               IBalanceRepository balanceRepository,
@@ -44,7 +43,7 @@ namespace FinancialApi.Services
         }
 
 
-        private bool HasLimit(Entry entry)
+        bool HasLimit(Entry entry)
         {
             var account = _accountRepository.FindOrCreate(number: entry.DestinationAccount,
                                                           bank: entry.DestinationBank,

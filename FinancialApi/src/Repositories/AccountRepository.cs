@@ -25,7 +25,14 @@ namespace FinancialApi.Repositories
 
         public List<Account> List() => _context.Accounts.ToList();
 
+<<<<<<< HEAD
         public Account Find(long? id) => _context.Accounts.Find(id);
+=======
+        public Account Find(long? id)
+        {
+            return _context.Accounts.Find(id);
+        }
+>>>>>>> 0c62ff5d5e8d523918c08c5c5617e23bf795b704
 
         public Account FindOrCreate(string number, string bank, string type, string identity)
         {

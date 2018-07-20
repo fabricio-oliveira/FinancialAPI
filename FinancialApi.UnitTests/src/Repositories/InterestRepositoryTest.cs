@@ -7,15 +7,15 @@ using NUnit.Framework;
 namespace FinancialApi.UnitTests.repositories
 {
     [TestFixture]
-    public class EntryRepositoryTest
+    public class InterestRepositoryTest
     {
-        private EntryRepository _repository = null;
+        InterestRepository _repository = null;
 
         [SetUp]
         public void Setup()
         {
             var context = DatabaseHelper.Connection();
-            _repository = new EntryRepository(context);
+            _repository = new InterestRepository(context);
         }
 
         [TearDown]
@@ -29,17 +29,19 @@ namespace FinancialApi.UnitTests.repositories
         [TestCase(12)]
         public void TestCount(int count)
         {
+            var account = AccountFactory.Create();
             for (int i = 0; i < count; i++)
-                EntryFactory.Create();
+                InterestFactory.Create(x => x.Account = account);
 
             Assert.AreEqual(count, _repository.Count());
         }
 
+        [Test]
         public void Update()
         {
-            var created = EntryFactory.Create();
+            var created = InterestFactory.Create();
             created.Value = 300.00m;
-            _repository.Save(created);
+            _repository.Update(created);
 
             var finded = _repository.Find(created.Id);
 
@@ -49,16 +51,16 @@ namespace FinancialApi.UnitTests.repositories
         [Test]
         public void TestSave()
         {
-            var entry = EntryFactory.Build();
+            var interest = InterestFactory.Build();
 
-            _repository.Save(entry);
-            Assert.IsNotNull(entry.Id);
+            _repository.Save(interest);
+            Assert.IsNotNull(interest.Id);
         }
 
         [Test]
         public void TestUpdatedEntityd()
         {
-            var created = EntryFactory.Create();
+            var created = InterestFactory.Create();
 
             //update value
             created.Value += 2;
@@ -72,14 +74,14 @@ namespace FinancialApi.UnitTests.repositories
         [Test]
         public void TestFindEntityNotFound()
         {
-            var entry = _repository.Find(1);
-            Assert.IsNull(entry);
+            var interest = _repository.Find(1);
+            Assert.IsNull(interest);
         }
 
         [Test]
         public void TestFindExistentEntity()
         {
-            var created = EntryFactory.Create();
+            var created = InterestFactory.Create();
             var finded = _repository.Find(created.Id);
             Assert.AreEqual(created.Id, finded.Id);
         }

@@ -35,7 +35,14 @@ namespace FinancialApi.Repositories
             _context.SaveChanges();
         }
 
+<<<<<<< HEAD
         public Balance Find(long? id) => _context.Balances.Find(id);
+=======
+        public Balance Find(long? id)
+        {
+            return _context.Balances.Find(id);
+        }
+>>>>>>> 0c62ff5d5e8d523918c08c5c5617e23bf795b704
 
         public List<Balance> ListTodayMore30Ahead(Account account)
         {
@@ -65,7 +72,7 @@ namespace FinancialApi.Repositories
             {
                 balance = new Balance(date, new List<ShortEntryDTO>(),
                                             new List<ShortEntryDTO>(),
-                                            new List<ShortEntryDTO>(), lastBalance.Total, lastBalance.Total, account);
+                                            new List<ShortEntryDTO>(), lastBalance.Total, 0m, account);
                 _context.Balances.Add(balance);
                 _context.SaveChanges();
                 return balance;
@@ -122,7 +129,7 @@ namespace FinancialApi.Repositories
                                    .ToArray();
 
             balances = balances.Skip(1)
-                               .Zip(balances, (c, p) => { c.UpdateDayPostion(p.Total); return c; })
+                               .Zip(balances, (c, p) => { c.UpdateDayPostionNewDay(p.Total); return c; })
                                .ToArray();
 
             _context.UpdateRange(balances);

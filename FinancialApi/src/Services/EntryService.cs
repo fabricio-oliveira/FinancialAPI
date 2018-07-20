@@ -5,7 +5,6 @@ using FinancialApi.Models.DTO.Response;
 using FinancialApi.Models.Entity;
 using FinancialApi.Queue;
 using FinancialApi.Repositories;
-using FinancialApi.Utils;
 
 namespace FinancialApi.Services
 {
@@ -32,7 +31,7 @@ namespace FinancialApi.Services
 
         protected void UpdateBalance(Entry entry)
         {
-            using (this._entryRepository.BeginTransaction())
+            using (_entryRepository.BeginTransaction())
             {
                 //Entry
                 this._entryRepository.Save(entry);
