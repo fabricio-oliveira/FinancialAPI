@@ -11,6 +11,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using FinancialApi.workers;
 using Microsoft.Extensions.Logging;
 using Hangfire;
+using FinancialApi.src.Config;
 
 namespace FinancialApi.Config
 {
@@ -60,6 +61,7 @@ namespace FinancialApi.Config
                                     Url = "https://github.com/fabricio.oliveira"
                                 }
                             });
+               //options.SchemaFilter<SwaggerSchemaFilter>();
            });
 
 
@@ -100,6 +102,7 @@ namespace FinancialApi.Config
             app.UseMvc();
 
             //Swagger
+
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Financial API V1"));
 

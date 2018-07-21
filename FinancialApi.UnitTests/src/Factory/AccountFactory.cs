@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using FinancialApi.Config;
 using FinancialApi.Models.Entity;
 using FinancialApi.UnitTests;
@@ -28,5 +30,24 @@ namespace FinancialApiUnitTests.Factory
             return value;
 
         }
+
+        public static List<Account> CreateList(int size, Action<Account> pred = null)
+        {
+            var accounts = new List<Account>();
+            for (int i = 0; i < size; i++)
+            {
+                if (pred == null) pred = (Account a) => { };
+
+                pred += (Account a) => a.Number = Regex.Replace(a.Number, "(\\d{5})-(\\d{1})", i.ToString("00000") + "-($2)");
+                var account = Build(pred);
+                accounts.Add(account);
+                Context().Accounts.Add(account);
+            }
+
+            Context().SaveChanges();
+            return accounts;
+
+        }
     }
+
 }

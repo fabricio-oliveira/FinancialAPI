@@ -35,5 +35,24 @@ namespace FinancialApiUnitTests.Factory
             return value;
 
         }
+
+        public static List<Balance> CreateList(int size, Action<Balance> pred = null)
+        {
+            var balances = new List<Balance>();
+            var accounts = AccountFactory.CreateList(size);
+            for (int i = 0; i < size; i++)
+            {
+                if (pred == null) pred = (Balance a) => { };
+
+                pred += (Balance a) => a.Account = accounts[i];
+                var balance = Build(pred);
+                balances.Add(balance);
+                Context().Balances.Add(balance);
+            }
+
+            Context().SaveChanges();
+            return balances;
+
+        }
     }
 }

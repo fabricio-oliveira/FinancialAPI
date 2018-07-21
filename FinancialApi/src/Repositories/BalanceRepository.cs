@@ -103,13 +103,14 @@ namespace FinancialApi.Repositories
             var balancesExistent = _context.Balances
                                            .Where(x => x.Date.IsSameDate(date) &&
                                                   accountIds.Contains(x.AccountId) &&
-                                                  !x.Closed);
+                                                  !x.Closed)
+                                           .ToList();
 
             var IdsAccountBalanceExistent = balancesExistent.Select(y => y.Id.ToString());
 
             var balancesToCreate = accounts.Where(x => !IdsAccountBalanceExistent.Contains(x.Id.ToString()))
-                                             .Select(x => FindOrCreateBy(x, date));
-
+                                             .Select(x => FindOrCreateBy(x, date))
+                                             .ToList();
 
             return balancesExistent.Concat(balancesToCreate).ToList();
         }

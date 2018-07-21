@@ -30,14 +30,15 @@ namespace FinancialApi.Repositories
 
         public Account FindOrCreate(string number, string bank, string type, string identity)
         {
-            var account = _context.Accounts.SingleOrDefault(x => x.Number.Equals(number)
+            var account = _context.Accounts.Where(x => x.Number.Equals(number)
                                                  && x.Bank.Equals(bank)
                                                  && x.Identity.Equals(identity)
-                                                 && x.Type.Equals(type));
+                                                 && x.Type.Equals(type))
+                                            .SingleOrDefault();
 
             if (account == null)
             {
-                account = new Account(number, bank, type, identity);
+                account = new Account(number, bank, identity, type);
                 _context.Accounts.Add(account);
                 _context.SaveChanges();
             }
