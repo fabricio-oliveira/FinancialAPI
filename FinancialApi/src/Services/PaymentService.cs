@@ -4,6 +4,7 @@ using FinancialApi.Repositories;
 using FinancialApi.Utils;
 using FinancialApi.Models.DTO.Response;
 using FinancialApi.Models.Entity;
+using System;
 
 namespace FinancialApi.Services
 {
@@ -50,7 +51,7 @@ namespace FinancialApi.Services
                                                           type: entry.TypeAccount,
                                                           identity: entry.DestinationIdentity);
 
-            var flow = _balanceRepository.LastByOrDefault(account);
+            var flow = _balanceRepository.LastByOrDefault(account, DateTime.Today);
 
 
             return (flow.Total - entry.Value - entry.FinancialCharges) >= ESPECIAL_LIMIT;

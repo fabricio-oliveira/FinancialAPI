@@ -37,7 +37,7 @@ namespace FinancialApiUnitTests.src.services
             var account = AccountFactory.Build();
 
             //behavior
-            _mockAccountRepository.Setup(m => m.FindAs(account.Number, account.Bank, account.Type, account.Identity))
+            _mockAccountRepository.Setup(m => m.FindBy(account.Number, account.Bank, account.Type, account.Identity))
                                   .Returns(account);
 
             var balances = new List<Balance>();

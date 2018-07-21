@@ -28,7 +28,7 @@ namespace FinancialApi.Services
 
         public List<Balance> CashFlow(Account request)
         {
-            var account = _accountRepository.FindAs(request.Number, request.Bank, request.Type, request.Identity);
+            var account = _accountRepository.FindBy(request.Number, request.Bank, request.Type, request.Identity);
 
             if (account == null)
             {

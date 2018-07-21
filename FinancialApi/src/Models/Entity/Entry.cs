@@ -88,7 +88,7 @@ namespace FinancialApi.Models.Entity
         // method check
         public bool IsReceipt() => "recebimento".Equals(Type);
 
-        public bool IsPayment() => "payment".Equals(Type);
+        public bool IsPayment() => "pagamento".Equals(Type);
 
         // optimistic lock
         [Timestamp]

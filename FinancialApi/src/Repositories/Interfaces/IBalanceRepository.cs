@@ -9,10 +9,11 @@ namespace FinancialApi.Repositories
     {
         Balance FindOrCreateBy(Account account, DateTime date);
         Balance Find(Account account, DateTime date);
-        Balance LastByOrDefault(Account account);
-        void UpdateDayPosition(Balance balance);
-        List<Balance> ListTodayMore30Ahead(long? accountId);
 
+        Balance LastByOrDefault(Account account, DateTime date);
+        void UpdateDayPosition(Balance balance);
+
+        List<Balance> ListTodayMore30Ahead(long? accountId);
         List<Balance> ToProcess(DateTime date, List<Account> account);
     }
 }

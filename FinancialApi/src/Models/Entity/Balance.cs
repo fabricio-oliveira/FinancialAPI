@@ -16,7 +16,7 @@ namespace FinancialApi.Models.Entity
 
 
         public Balance(DateTime date, ICollection<ShortEntryDTO> inputs, ICollection<ShortEntryDTO> outputs,
-                       ICollection<ShortEntryDTO> charges, decimal total, decimal dayPosition,
+                       ICollection<ShortEntryDTO> charges, decimal total, decimal? dayPosition,
                         Account account)
         {
             this.Date = date;
@@ -43,49 +43,64 @@ namespace FinancialApi.Models.Entity
         [JsonProperty(PropertyName = "posicao_do_dia")]
         public decimal? DayPosition { get; set; }
 
-        [Column(TypeName = "nvarchar(max)")]
-        [JsonProperty(PropertyName = "entradas")]
-        internal string _Inputs
+
+        //InPuts
+        [Column("inputs", TypeName = "nvarchar(max)")]
+        [JsonIgnore]
+        public string _Inputs
         {
             get { return Inputs == null ? null : JsonConvert.SerializeObject(Inputs); }
             set
             {
                 if (value == null)
                     Inputs = null;
-
-                Inputs = JsonConvert.DeserializeObject<List<ShortEntryDTO>>(value);
+                else
+                    Inputs = JsonConvert.DeserializeObject<List<ShortEntryDTO>>(value);
             }
         }
 
-        [Column(TypeName = "nvarchar(max)")]
-        [JsonProperty(PropertyName = "saidas")]
-        internal string _Outputs
+        [JsonProperty(PropertyName = "entradas")]
+        internal List<ShortEntryDTO> FormatInput => _Inputs == null ? new List<ShortEntryDTO>() : JsonConvert.DeserializeObject<List<ShortEntryDTO>>(_Inputs);
+
+
+        //Outputs
+        [Column("outputs", TypeName = "nvarchar(max)")]
+        [JsonIgnore]
+        public string _Outputs
         {
             get { return Outputs == null ? null : JsonConvert.SerializeObject(Outputs); }
             set
             {
                 if (value == null)
                     Outputs = null;
-
-                Outputs = JsonConvert.DeserializeObject<List<ShortEntryDTO>>(value);
+                else
+                {
+                    Outputs = JsonConvert.DeserializeObject<List<ShortEntryDTO>>(value);
+                }
             }
-
         }
 
-        [Column(TypeName = "nvarchar(max)")]
-        [JsonProperty(PropertyName = "encargos")]
-        internal string _Charges
+        [JsonProperty(PropertyName = "saidas")]
+        internal List<ShortEntryDTO> FormatOutput => _Inputs == null ? new List<ShortEntryDTO>() : JsonConvert.DeserializeObject<List<ShortEntryDTO>>(_Outputs);
+
+
+        //charges
+        [Column("charges", TypeName = "nvarchar(max)")]
+        [JsonIgnore]
+        public string _Charges
         {
             get { return Charges == null ? null : JsonConvert.SerializeObject(Charges); }
             set
             {
                 if (value == null)
                     Charges = null;
-
-                Charges = JsonConvert.DeserializeObject<List<ShortEntryDTO>>(value);
+                else
+                    Charges = JsonConvert.DeserializeObject<List<ShortEntryDTO>>(value);
             }
         }
 
+        [JsonProperty(PropertyName = "encargos")]
+        internal List<ShortEntryDTO> FormatCharges => _Charges == null ? new List<ShortEntryDTO>() : JsonConvert.DeserializeObject<List<ShortEntryDTO>>(_Charges);
         //RelationShips
 
         //hasMany
@@ -101,16 +116,16 @@ namespace FinancialApi.Models.Entity
 
         //Belongs
         [JsonIgnore]
-        [ForeignKey("AccountId")]
         [Required]
+        [ForeignKey("AccountId")]
         public Account Account { get; set; }
+
+        [JsonIgnore]
+        public long? AccountId { get; set; }
 
         [JsonIgnore]
         [Column("Closed")]
         public bool Closed { get; set; }
-
-        [JsonIgnore]
-        public long? AccountId { get; set; }
 
         // optimistic lock
         [Timestamp]

@@ -111,7 +111,6 @@ namespace FinancialApi.Config
             using (var serviceScope = serviceScopeFactory.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetService<DataBaseContext>();
-                dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
             }
 
@@ -136,7 +135,7 @@ namespace FinancialApi.Config
 
 
             var updateBalanceWorker = new UpdateBalanceWorker(serviceProvider.GetService<IBalanceService>(),
-                                                              serviceProvider.GetService<IAccountRepository>());
+            serviceProvider.GetService<IAccountRepository>());
 
             RecurringJob.AddOrUpdate(() => updateBalanceWorker.WorkManagement(), Cron.MinuteInterval(1));
         }

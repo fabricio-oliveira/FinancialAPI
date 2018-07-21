@@ -37,28 +37,38 @@ namespace FinancialApi.Services
                 this._entryRepository.Save(entry);
 
                 //Account
-                var account = this._accountRepository.FindOrCreateBy(entry.DestinationAccount,
+                var account = _accountRepository.FindOrCreateBy(entry.DestinationAccount,
                                                                    entry.DestinationBank,
                                                                    entry.TypeAccount,
                                                                    entry.DestinationIdentity);
 
                 //Balance
-                var currentBalance = this._balanceRepository.FindOrCreateBy(account, entry.DateToPay.GetValueOrDefault());
+                var currentBalance = _balanceRepository.FindOrCreateBy(account, entry.DateToPay.GetValueOrDefault());
 
 
                 var entryDto = new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
                                                  entry.Value.GetValueOrDefault());
                 if (entry.IsPayment())
+                {
                     currentBalance.Outputs.Add(entryDto);
+                    currentBalance.Total -= entry.Value.GetValueOrDefault(0);
+                }
                 else
+                {
                     currentBalance.Inputs.Add(entryDto);
+                    currentBalance.Total += entry.Value.GetValueOrDefault(0);
+
+                }
 
 
-                currentBalance.Charges.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
-                                                 entry.FinancialCharges.GetValueOrDefault()));
+                if (entry.FinancialCharges > 0)
+                    currentBalance.Charges.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
+                                                     entry.FinancialCharges.GetValueOrDefault(0)));
 
-                _balanceRepository.Update(currentBalance);
+                currentBalance.Total -= entry.FinancialCharges.GetValueOrDefault(0);
+
                 _balanceRepository.UpdateDayPosition(currentBalance);
+                _balanceRepository.Update(currentBalance);
 
                 //Commit
                 _entryRepository.Commit();

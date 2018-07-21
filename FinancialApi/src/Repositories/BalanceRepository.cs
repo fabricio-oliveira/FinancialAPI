@@ -61,7 +61,7 @@ namespace FinancialApi.Repositories
 
             if (balance != null) return balance;
 
-            var lastBalance = LastBy(account);
+            var lastBalance = LastBy(account, date);
             if (lastBalance != null)
             {
                 balance = new Balance(date, new List<ShortEntryDTO>(),
@@ -80,20 +80,19 @@ namespace FinancialApi.Repositories
             return balance;
         }
 
-        public Balance LastByOrDefault(Account account)
+        public Balance LastByOrDefault(Account account, DateTime date)
         {
-            var balance = LastBy(account);
-            return balance ?? new Balance(DateTime.Today.AddDays(-1), null, null, null, 0.0m, 100.0m, account);
+            var balance = LastBy(account, date);
+            return balance ?? new Balance(date, null, null, null, 0.0m, 0.0m, account);
         }
 
-        public Balance LastBy(Account account)
+        public Balance LastBy(Account account, DateTime date)
         {
-            var balance = _context.Balances
-                                   .Where(x => x.Account == account)
-                                   .OrderByDescending(x => x.Date)
-                                   .FirstOrDefault();
-
-            return balance;
+            return _context.Balances
+                                  .Where(x => x.Account.Id == account.Id &&
+                                         x.Date < date)
+                                  .OrderByDescending(x => x.Date)
+                                  .FirstOrDefault();
         }
 
         public List<Balance> ToProcess(DateTime date, List<Account> accounts)
@@ -105,8 +104,7 @@ namespace FinancialApi.Repositories
 
             var balancesExistent = _context.Balances
                                            .Where(x => x.Date.IsSameDate(date) &&
-                                                  accountIds.Contains(x.AccountId) &&
-                                                  !x.Closed)
+                                                  accountIds.Contains(x.AccountId))
                                            .ToList();
 
             var IdsAccountBalanceExistent = balancesExistent.Select(y => y.AccountId.ToString());
@@ -115,8 +113,9 @@ namespace FinancialApi.Repositories
                                              .Select(x => FindOrCreateBy(x, date))
                                              .ToList();
 
-            return balancesExistent.Concat(balancesToCreate).ToList();
+            return balancesExistent.Concat(balancesToCreate).Where(x => !x.Closed).ToList();
         }
+
 
         public void UpdateDayPosition(Balance balance)
         {

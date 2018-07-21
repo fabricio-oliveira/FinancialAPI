@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using FinancialApi.Models.Entity;
 using FinancialApi.Repositories;
 using FinancialApi.Services;
@@ -23,27 +24,13 @@ namespace FinancialApi.workers
 
         public void WorkManagement()
         {
-            var day = DateTime.Today.AddDays(-1);
-            var balancesToProcess = _balanceService.ToProcess(day);
+            var yesterday = DateTime.Today.AddDays(-1);
+            var balancesToProcess = _balanceService.ToProcess(yesterday);
 
-            for (int i = 0; i < balancesToProcess.Count; i += _maxBatch)
-            {
-                BackgroundJob.Enqueue(() => BatchToProcess(balancesToProcess.GetRange(i, Math.Min(_maxBatch,
-                                                                                                  balancesToProcess.Count - i)),
-                                                           day));
-            }
-        }
-
-
-        public void BatchToProcess(List<Balance> balances, DateTime date)
-        {
-            foreach (Balance balance in balances)
-            {
-                _balanceService.GenerateBalanceWithInterest(balance, date);
-            }
+            foreach (Balance balance in balancesToProcess)
+                _balanceService.GenerateBalanceWithInterest(balance, yesterday);
 
         }
-
 
     }
 }
