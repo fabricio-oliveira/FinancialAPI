@@ -45,7 +45,7 @@ namespace FinancialApi.Services
 
         bool HasLimit(Entry entry)
         {
-            var account = _accountRepository.FindOrCreate(number: entry.DestinationAccount,
+            var account = _accountRepository.FindOrCreateBy(number: entry.DestinationAccount,
                                                           bank: entry.DestinationBank,
                                                           type: entry.TypeAccount,
                                                           identity: entry.DestinationIdentity);

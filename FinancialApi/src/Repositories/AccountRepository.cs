@@ -28,13 +28,9 @@ namespace FinancialApi.Repositories
 
         public Account Find(long? id) => _context.Accounts.Find(id);
 
-        public Account FindOrCreate(string number, string bank, string type, string identity)
+        public Account FindOrCreateBy(string number, string bank, string type, string identity)
         {
-            var account = _context.Accounts.Where(x => x.Number.Equals(number)
-                                                 && x.Bank.Equals(bank)
-                                                 && x.Identity.Equals(identity)
-                                                 && x.Type.Equals(type))
-                                            .SingleOrDefault();
+            var account = FindAs(number, bank, type, identity);
 
             if (account == null)
             {
@@ -46,6 +42,16 @@ namespace FinancialApi.Repositories
             return account;
         }
 
+
+        public Account FindAs(string number, string bank, string type, string identity)
+        {
+            return _context.Accounts.Where(x => x.Number.Equals(number)
+                                                 && x.Bank.Equals(bank)
+                                                 && x.Identity.Equals(identity)
+                                                 && x.Type.Equals(type))
+                                            .SingleOrDefault();
+
+        }
         public long Count()
         {
             return _context.Accounts.Count();

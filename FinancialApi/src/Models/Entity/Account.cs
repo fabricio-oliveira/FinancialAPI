@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace FinancialApi.Models.Entity
 {
@@ -12,10 +13,10 @@ namespace FinancialApi.Models.Entity
 
         public Account(string number, string bank, string identity, string type)
         {
-            this.Number = number;
-            this.Bank = bank;
-            this.Type = type;
-            this.Identity = identity;
+            Number = number;
+            Bank = bank;
+            Type = type;
+            Identity = identity;
         }
 
         [Key]
@@ -30,6 +31,7 @@ namespace FinancialApi.Models.Entity
         public string Identity { get; set; }
 
         [Timestamp]
+        [JsonIgnore]
         public byte[] RowVersion { get; set; }
 
         //RelationShip
@@ -44,7 +46,11 @@ namespace FinancialApi.Models.Entity
                 return false;
 
             Account a = (Account)obj;
-            return a.Id == Id;
+
+            if (a.Id != null)
+                return a.Id == Id;
+
+            return a.Bank == Bank && a.Number == Number && a.Identity == Identity && a.Type == Type;
         }
 
         public override int GetHashCode()

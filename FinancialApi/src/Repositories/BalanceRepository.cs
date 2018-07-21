@@ -37,13 +37,14 @@ namespace FinancialApi.Repositories
 
         public Balance Find(long? id) => _context.Balances.Find(id);
 
-        public List<Balance> ListTodayMore30Ahead(Account account)
+        public List<Balance> ListTodayMore30Ahead(long? accountId)
         {
-            return _context.Balances.Where(x => x.Account == account
-                                          && x.Date >= DateTime.Today
-                                          && x.Date < DateTime.Today.AddDays(30))
+            var lista = _context.Balances.Where(x => x.AccountId == accountId
+                                         && x.Date >= DateTime.Today
+                                         && x.Date < DateTime.Today.AddDays(30))
                                     .OrderBy(x => x.Date)
                                     .ToList();
+            return lista;
         }
 
         public Balance Find(Account account, DateTime date)
@@ -97,6 +98,8 @@ namespace FinancialApi.Repositories
 
         public List<Balance> ToProcess(DateTime date, List<Account> accounts)
         {
+            if (accounts.Count == 0)
+                return new List<Balance>();
 
             var accountIds = accounts.Select(x => x.Id);
 
@@ -106,7 +109,7 @@ namespace FinancialApi.Repositories
                                                   !x.Closed)
                                            .ToList();
 
-            var IdsAccountBalanceExistent = balancesExistent.Select(y => y.Id.ToString());
+            var IdsAccountBalanceExistent = balancesExistent.Select(y => y.AccountId.ToString());
 
             var balancesToCreate = accounts.Where(x => !IdsAccountBalanceExistent.Contains(x.Id.ToString()))
                                              .Select(x => FindOrCreateBy(x, date))

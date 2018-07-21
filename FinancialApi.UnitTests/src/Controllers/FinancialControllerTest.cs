@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FinancialApi.Controllers;
 using FinancialApi.Models.DTO.Response;
@@ -13,13 +14,18 @@ namespace FinancialApi.UnitTests.Controllers
     public class FinancialControllerTest
     {
 
-        private FinancialController MockController(IBaseDTO payResult = null, IBaseDTO receiveResult = null)
+        private FinancialController MockController(IBaseDTO payResult = null,
+                                                   IBaseDTO receiveResult = null,
+                                                   List<Balance> balancesResult = null)
         {
             if (payResult == null)
                 payResult = new OkDTO("x");
 
             if (receiveResult == null)
                 receiveResult = new OkDTO("y");
+
+            if (balancesResult == null)
+                balancesResult = new List<Balance>();
 
             // Mock
             var mockPaymentService = new Mock<IPaymentService>();
@@ -29,8 +35,13 @@ namespace FinancialApi.UnitTests.Controllers
             var mockReceiptService = new Mock<IReceiptService>();
             mockReceiptService.Setup(service => service.EnqueueToReceive(It.IsAny<Entry>())).Returns(Task.FromResult<IBaseDTO>(receiveResult));
 
+            var mockBalanceService = new Mock<IBalanceService>();
+            mockBalanceService.Setup(service => service.CashFlow(It.IsAny<Account>())).Returns(balancesResult);
+
+
             return new FinancialController(mockPaymentService.Object,
-                                                     mockReceiptService.Object);
+                                           mockReceiptService.Object,
+                                           mockBalanceService.Object);
         }
 
         // Payment

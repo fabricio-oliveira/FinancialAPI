@@ -28,6 +28,7 @@ namespace FinancialApi.Config
                         .IsUnique();
 
 
+
             modelBuilder.Entity<Account>()
             .HasIndex(p => new { p.Number, p.Bank, p.Type, p.Identity })
             .IsUnique();

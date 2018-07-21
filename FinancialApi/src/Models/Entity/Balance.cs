@@ -102,6 +102,7 @@ namespace FinancialApi.Models.Entity
         //Belongs
         [JsonIgnore]
         [ForeignKey("AccountId")]
+        [Required]
         public Account Account { get; set; }
 
         [JsonIgnore]
@@ -113,6 +114,7 @@ namespace FinancialApi.Models.Entity
 
         // optimistic lock
         [Timestamp]
+        [JsonIgnore]
         public byte[] RowVersion { get; set; }
 
 
@@ -135,8 +137,8 @@ namespace FinancialApi.Models.Entity
         public void UpdateDayPostionNewEntry(decimal newEntry)
         {
             if (DayPosition != null)
-            { 
-                DayPosition =  (Total + newEntry) * DayPosition / Total;
+            {
+                DayPosition = (Total + newEntry) * DayPosition / Total;
             }
         }
     }

@@ -47,7 +47,7 @@ namespace FinancialApiUnitTests.src.services
 
             //behavior
             var account = AccountFactory.Build();
-            _mockAccountRepository.Setup(m => m.FindOrCreate(It.IsAny<string>(),
+            _mockAccountRepository.Setup(m => m.FindOrCreateBy(It.IsAny<string>(),
                                                              It.IsAny<string>(),
                                                              It.IsAny<string>(),
                                                              It.IsAny<string>()))
@@ -85,7 +85,7 @@ namespace FinancialApiUnitTests.src.services
 
             //behavior
             var account = AccountFactory.Build();
-            _mockAccountRepository.Setup(m => m.FindOrCreate(It.IsAny<string>(),
+            _mockAccountRepository.Setup(m => m.FindOrCreateBy(It.IsAny<string>(),
                                                              It.IsAny<string>(),
                                                              It.IsAny<string>(),
                                                              It.IsAny<string>()))

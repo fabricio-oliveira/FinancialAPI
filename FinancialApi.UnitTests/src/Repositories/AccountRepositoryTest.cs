@@ -66,7 +66,7 @@ namespace FinancialApi.UnitTests.repositories
         public void TestFindOrCreateNotExistAccount()
         {
            var created = AccountFactory.Build();
-           var finded = _repository.FindOrCreate(created.Number, created.Bank, created.Type, created.Identity);
+           var finded = _repository.FindOrCreateBy(created.Number, created.Bank, created.Type, created.Identity);
            Assert.IsNotNull(finded.Id);
            Assert.AreEqual(_repository.Count(), 1);
         }
@@ -76,7 +76,7 @@ namespace FinancialApi.UnitTests.repositories
         public void TestFindOrCreateExistAccount()
         {
            var created = AccountFactory.Create();
-           var finded = _repository.FindOrCreate(created.Number, created.Bank, created.Type, created.Identity);
+           var finded = _repository.FindOrCreateBy(created.Number, created.Bank, created.Type, created.Identity);
            Assert.IsNotNull(finded.Id);
            Assert.AreEqual(_repository.Count(), 1);
 

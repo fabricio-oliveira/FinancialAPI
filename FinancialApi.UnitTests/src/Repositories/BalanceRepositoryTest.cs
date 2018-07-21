@@ -84,7 +84,7 @@ namespace FinancialApi.UnitTests.repositories
                    x.Account = account;
                });
             }
-            var balances = _repository.ListTodayMore30Ahead(account);
+            var balances = _repository.ListTodayMore30Ahead(account.Id);
 
             //check
             Assert.AreEqual(output, balances.Count);

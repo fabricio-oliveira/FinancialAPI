@@ -31,15 +31,17 @@ namespace FinancialApiUnitTests.src.services
         }
 
         [Test]
-        public void TestCashFlowCheck()
+        public void TestCashFlowWhenHasAccount()
         {
             //Input
             var account = AccountFactory.Build();
 
             //behavior
-            var balances = new List<Balance>();
+            _mockAccountRepository.Setup(m => m.FindAs(account.Number, account.Bank, account.Type, account.Identity))
+                                  .Returns(account);
 
-            _mockBalanceRepository.Setup(m => m.ListTodayMore30Ahead(account))
+            var balances = new List<Balance>();
+            _mockBalanceRepository.Setup(m => m.ListTodayMore30Ahead(account.Id))
                                       .Returns(balances);
 
 
@@ -50,7 +52,7 @@ namespace FinancialApiUnitTests.src.services
             //assert
             Assert.IsInstanceOf<List<Balance>>(val);
             Assert.AreEqual(balances, val);
-            _mockBalanceRepository.Verify(x => x.ListTodayMore30Ahead(account), Times.Once());
+            _mockBalanceRepository.Verify(x => x.ListTodayMore30Ahead(account.Id), Times.Once());
         }
 
         [Test]

@@ -37,7 +37,7 @@ namespace FinancialApi.Services
                 this._entryRepository.Save(entry);
 
                 //Account
-                var account = this._accountRepository.FindOrCreate(entry.DestinationAccount,
+                var account = this._accountRepository.FindOrCreateBy(entry.DestinationAccount,
                                                                    entry.DestinationBank,
                                                                    entry.TypeAccount,
                                                                    entry.DestinationIdentity);

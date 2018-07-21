@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FinancialApi.Models.DTO;
+using FinancialApi.Models.DTO.Response;
 using FinancialApi.Models.Entity;
 using FinancialApi.Repositories;
 
@@ -25,9 +26,16 @@ namespace FinancialApi.Services
             _accountRepository = accountRepository;
         }
 
-        public List<Balance> CashFlow(Account account)
+        public List<Balance> CashFlow(Account request)
         {
-            return _balanceRepository.ListTodayMore30Ahead(account);
+            var account = _accountRepository.FindAs(request.Number, request.Bank, request.Type, request.Identity);
+
+            if (account == null)
+            {
+                return null;
+            }
+
+            return _balanceRepository.ListTodayMore30Ahead(account.Id);
         }
 
         public List<Balance> ToProcess(DateTime date)
@@ -58,6 +66,5 @@ namespace FinancialApi.Services
             }
 
         }
-
     }
 }

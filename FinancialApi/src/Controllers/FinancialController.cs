@@ -13,14 +13,17 @@ namespace FinancialApi.Controllers
     [Route("api/v1/financial")]
     public class FinancialController : Controller
     {
-        private readonly IPaymentService _paymentService;
-        private readonly IReceiptService _receiptService;
+        readonly IPaymentService _paymentService;
+        readonly IReceiptService _receiptService;
+        readonly IBalanceService _balanceService;
 
         public FinancialController(IPaymentService paymentService,
-                                   IReceiptService receiptService)
+                                   IReceiptService receiptService,
+                                   IBalanceService balanceService)
         {
-            this._paymentService = paymentService;
-            this._receiptService = receiptService;
+            _paymentService = paymentService;
+            _receiptService = receiptService;
+            _balanceService = balanceService;
         }
 
         // Post entry
@@ -50,9 +53,19 @@ namespace FinancialApi.Controllers
 
 
         [HttpGet("cash_flow")]
-        public IEnumerable<Entry> CashFlow([FromQuery] Account account)
+        public IActionResult CashFlow([FromQuery] Account account)
         {
-            throw new NotImplementedException("Need implementation payment");
+
+            var result = _balanceService.CashFlow(account);
+
+            if (result == null)
+            {
+                var error = new ErrorsDTO();
+                error.Add("account", "not found");
+                return new NotFoundObjectResult(error);
+            }
+
+            return new OkObjectResult(result);
         }
 
 
