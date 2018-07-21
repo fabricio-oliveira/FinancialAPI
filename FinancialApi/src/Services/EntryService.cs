@@ -73,7 +73,6 @@ namespace FinancialApi.Services
                 //Commit
                 _entryRepository.Commit();
             }
-            //SQL Server has auto rollback when exception as throw
 
         }
 
