@@ -51,13 +51,22 @@ namespace FinancialApi.Services
 
 
                 if (entry.IsPayment())
+                {
                     currentBalance.Outputs.Add(entryDto);
+                    currentBalance.Total -= entryDto.Value;
+                }
                 else
+                {
                     currentBalance.Inputs.Add(entryDto);
+                    currentBalance.Total += entryDto.Value;
+                }
 
                 if (entry.FinancialCharges > 0.00m)
+                {
                     currentBalance.Charges.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
-                                                     entry.FinancialCharges.GetValueOrDefault(0)));
+                                                                 entry.FinancialCharges.GetValueOrDefault(0)));
+                    currentBalance.Total -= entry.FinancialCharges.GetValueOrDefault();
+                }
 
                 _balanceRepository.Update(currentBalance);
                 _balanceRepository.UpdateCurrentAndFutureBalance(entry.DateToExecute.GetValueOrDefault(), account.Id.GetValueOrDefault());

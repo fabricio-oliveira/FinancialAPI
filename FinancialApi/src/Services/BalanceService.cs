@@ -60,7 +60,7 @@ namespace FinancialApi.Services
                 }
 
                 var yesterday = _balanceRepository.LastByOrDefault(balance.Account, date.AddDays(-1));
-                balance.UpdateDayPostionNewDay(yesterday.Total);
+                balance.UpdateDayPosition(yesterday.Total);
 
                 balance.Closed = true;
                 _balanceRepository.Update(balance);

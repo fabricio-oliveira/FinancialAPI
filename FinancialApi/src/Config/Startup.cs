@@ -109,7 +109,6 @@ namespace FinancialApi.Config
             using (var serviceScope = serviceScopeFactory.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetService<DataBaseContext>();
-                dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
             }
 

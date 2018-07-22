@@ -126,7 +126,7 @@ namespace FinancialApi.Models.Entity
         [JsonIgnore]
         public byte[] RowVersion { get; set; }
 
-        public void UpdateDayPostionNewDay(decimal yestarday)
+        public void UpdateDayPosition(decimal yestarday)
         {
             if (Total == 0m && yestarday == 0)
             {

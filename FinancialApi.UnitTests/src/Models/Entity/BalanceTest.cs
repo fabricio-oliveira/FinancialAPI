@@ -25,7 +25,7 @@ namespace FinancialApi.UnitTests.Models.Entity
 
 
             //test
-            balance.UpdateDayPostionNewDay(yestarday);
+            balance.UpdateDayPosition(yestarday);
 
             //assert
             Assert.AreEqual(DayPositionToday, balance.DayPosition);

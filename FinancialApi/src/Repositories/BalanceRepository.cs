@@ -51,7 +51,7 @@ namespace FinancialApi.Repositories
                                                       (c, p) =>
                                                             {
                                                                 c.Total = p.Total + c.Inputs.Sum(x => x.Value) - c.Outputs.Sum(x => x.Value) - c.Charges.Sum(x => x.Value);
-                                                                c.UpdateDayPostionNewDay(p.Total);
+                                                                c.UpdateDayPosition(p.Total);
                                                                 return c;
                                                             })
                                             .ToArray();

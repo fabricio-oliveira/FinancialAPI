@@ -53,12 +53,9 @@ O segundo projeto, o ** FinanacialApi.UnitTests ** foi desenvolvido em dotnet co
 * Microsoft.NET.Test.Sdk" Version="15.7.2"
 * coverlet.msbuild" Version="2.1.0"
 
-O Terceiro projeto, o ** FinanacialApi.IntegrationTests ** foi desenvolvido em dotnet core 2.1 com a seguinte stack de ferramentas.
-
-* Microsoft.AspNetCore.Mvc.Testing Version="2.1.1"
-* Microsoft.EntityFrameworkCore.Sqlite Version="2.1.1"
-* Microsoft.EntityFrameworkCore.Sqlite.Core Version="2.1.1"
-* NUnit Version="3.10.1"
-* NUnit3TestAdapter Version="3.10.0"
-* RabbitMQ.Fakes.DotNetCore Version="0.9.1"
-
+## Pendências
+* O projeto de teste integrado foi removido por não ter sido completado a tempo
+* As confs do swagger está incompleto, exibindo alguns atributos indevidamente
+* Algumas formatações do json não foram realizadas
+* Algumas otimizações do dotnet no processamneto async não foram concluidas
+* Alguns controles de jobs no Hangfire tambêm não foram realidadas
