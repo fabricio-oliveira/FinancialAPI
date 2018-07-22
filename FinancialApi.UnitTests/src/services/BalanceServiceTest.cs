@@ -90,6 +90,12 @@ namespace FinancialApiUnitTests.src.services
         public void TestGenerateBalanceWithInterestWithPositiveTotal()
         {
             //Input
+            var previsulyBalance = BalanceFactory.Create(x =>
+            {
+                x.Total = -10.00m;
+                x.Charges = new List<ShortEntryDTO>();
+            });
+
             var balance = BalanceFactory.Create(x =>
             {
                 x.Total = 30.00m;
@@ -107,6 +113,8 @@ namespace FinancialApiUnitTests.src.services
             _mockBalanceRepository.Setup(m => m.Update(balance))
                                   .Verifiable();
 
+            _mockBalanceRepository.Setup(m => m.LastByOrDefault(balance.Account, It.IsAny<DateTime>()))
+                                 .Returns(previsulyBalance);
 
             //test
             _service.GenerateBalanceWithInterest(balance, date);
@@ -126,6 +134,12 @@ namespace FinancialApiUnitTests.src.services
         public void TestGenerateBalanceWithInterestWithNegativeTotal()
         {
             //Input
+            var previsulyBalance = BalanceFactory.Create(x =>
+            {
+                x.Total = -10.00m;
+                x.Charges = new List<ShortEntryDTO>();
+            });
+
             var balance = BalanceFactory.Create(x =>
             {
                 x.Total = -10.00m;
@@ -142,6 +156,8 @@ namespace FinancialApiUnitTests.src.services
                                   .Verifiable();
             _mockBalanceRepository.Setup(m => m.Update(balance))
                                   .Verifiable();
+            _mockBalanceRepository.Setup(m => m.LastByOrDefault(balance.Account, It.IsAny<DateTime>()))
+                                  .Returns(previsulyBalance);
 
             _mockInterestRepository.Setup(m => m.Save(It.IsAny<Interest>()));
 
@@ -152,7 +168,6 @@ namespace FinancialApiUnitTests.src.services
 
             //assert
             Assert.AreEqual(balance.Closed, true);
-            //Assert.AreEqual(-10.83m, balance.Total);
 
             _mockBalanceRepository.Verify(x => x.BeginTransaction(), Times.Once());
             _mockBalanceRepository.Verify(x => x.Commit(), Times.Once());

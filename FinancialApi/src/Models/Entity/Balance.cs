@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 using FinancialApi.Models.DTO;
+using System.Linq;
 
 namespace FinancialApi.Models.Entity
 {
@@ -35,17 +36,17 @@ namespace FinancialApi.Models.Entity
         [JsonProperty(PropertyName = "data")]
         public DateTime Date { get; set; }
 
-        [Column("total")]
+        [Column("total", TypeName = "numeric(10,2)")]
         [JsonProperty(PropertyName = "total")]
         public decimal Total { get; set; }
 
-        [Column("day_position")]
+        [Column("day_position", TypeName = "numeric(5,2)")]
         [JsonProperty(PropertyName = "posicao_do_dia")]
         public decimal? DayPosition { get; set; }
 
 
         //InPuts
-        [Column("inputs", TypeName = "nvarchar(max)")]
+        [Column("inputs", TypeName = "nvarchar(4000)")]
         [JsonIgnore]
         public string _Inputs
         {
@@ -59,12 +60,8 @@ namespace FinancialApi.Models.Entity
             }
         }
 
-        [JsonProperty(PropertyName = "entradas")]
-        internal List<ShortEntryDTO> FormatInput => _Inputs == null ? new List<ShortEntryDTO>() : JsonConvert.DeserializeObject<List<ShortEntryDTO>>(_Inputs);
-
-
         //Outputs
-        [Column("outputs", TypeName = "nvarchar(max)")]
+        [Column("outputs", TypeName = "nvarchar(4000)")]
         [JsonIgnore]
         public string _Outputs
         {
@@ -80,12 +77,8 @@ namespace FinancialApi.Models.Entity
             }
         }
 
-        [JsonProperty(PropertyName = "saidas")]
-        internal List<ShortEntryDTO> FormatOutput => _Inputs == null ? new List<ShortEntryDTO>() : JsonConvert.DeserializeObject<List<ShortEntryDTO>>(_Outputs);
-
-
         //charges
-        [Column("charges", TypeName = "nvarchar(max)")]
+        [Column("charges", TypeName = "nvarchar(4000)")]
         [JsonIgnore]
         public string _Charges
         {
@@ -99,18 +92,19 @@ namespace FinancialApi.Models.Entity
             }
         }
 
-        [JsonProperty(PropertyName = "encargos")]
-        internal List<ShortEntryDTO> FormatCharges => _Charges == null ? new List<ShortEntryDTO>() : JsonConvert.DeserializeObject<List<ShortEntryDTO>>(_Charges);
         //RelationShips
 
         //hasMany
         [NotMapped]
+        [JsonProperty(PropertyName = "entradas")]
         public ICollection<ShortEntryDTO> Inputs { get; set; }
 
         [NotMapped]
+        [JsonProperty(PropertyName = "saidas")]
         public ICollection<ShortEntryDTO> Outputs { get; set; }
 
         [NotMapped]
+        [JsonProperty(PropertyName = "encargos")]
         public ICollection<ShortEntryDTO> Charges { get; set; }
 
 
@@ -132,7 +126,6 @@ namespace FinancialApi.Models.Entity
         [JsonIgnore]
         public byte[] RowVersion { get; set; }
 
-
         public void UpdateDayPostionNewDay(decimal yestarday)
         {
             if (Total == 0m && yestarday == 0)
@@ -145,15 +138,7 @@ namespace FinancialApi.Models.Entity
             }
             else
             {
-                DayPosition = -1 * (1 - Total / yestarday);
-            }
-        }
-
-        public void UpdateDayPostionNewEntry(decimal newEntry)
-        {
-            if (DayPosition != null)
-            {
-                DayPosition = (Total + newEntry) * DayPosition / Total;
+                DayPosition = (Total / yestarday - 1);
             }
         }
     }

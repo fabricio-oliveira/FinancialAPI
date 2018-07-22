@@ -52,13 +52,15 @@ namespace FinancialApi.Services
                 //Save Interes
                 if (balance.Total < 0)
                 {
-                    var interest = balance.Total * TX_INTEREST;
+                    var interest = balance.Total * TX_INTEREST * (-1);
                     _interestRepository.Save(new Interest(interest, date, balance.Account));
+
                     balance.Total += interest;
                     balance.Charges.Add(new ShortEntryDTO(DateTime.Today, interest));
-
-                    balance.UpdateDayPostionNewEntry(balance.Total + interest);
                 }
+
+                var yesterday = _balanceRepository.LastByOrDefault(balance.Account, date.AddDays(-1));
+                balance.UpdateDayPostionNewDay(yesterday.Total);
 
                 balance.Closed = true;
                 _balanceRepository.Update(balance);

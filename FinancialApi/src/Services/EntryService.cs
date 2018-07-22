@@ -43,39 +43,30 @@ namespace FinancialApi.Services
                                                                    entry.DestinationIdentity);
 
                 //Balance
-                var currentBalance = _balanceRepository.FindOrCreateBy(account, entry.DateToPay.GetValueOrDefault());
+                var currentBalance = _balanceRepository.FindOrCreateBy(account, entry.DateToExecute.GetValueOrDefault());
 
 
                 var entryDto = new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
                                                  entry.Value.GetValueOrDefault());
+
+
                 if (entry.IsPayment())
-                {
                     currentBalance.Outputs.Add(entryDto);
-                    currentBalance.Total -= entry.Value.GetValueOrDefault(0);
-                }
                 else
-                {
                     currentBalance.Inputs.Add(entryDto);
-                    currentBalance.Total += entry.Value.GetValueOrDefault(0);
 
-                }
-
-
-                if (entry.FinancialCharges > 0)
+                if (entry.FinancialCharges > 0.00m)
                     currentBalance.Charges.Add(new ShortEntryDTO(entry.DateEntry.GetValueOrDefault(),
                                                      entry.FinancialCharges.GetValueOrDefault(0)));
 
-                currentBalance.Total -= entry.FinancialCharges.GetValueOrDefault(0);
-
-                _balanceRepository.UpdateDayPosition(currentBalance);
                 _balanceRepository.Update(currentBalance);
+                _balanceRepository.UpdateCurrentAndFutureBalance(entry.DateToExecute.GetValueOrDefault(), account.Id.GetValueOrDefault());
 
                 //Commit
                 _entryRepository.Commit();
             }
 
         }
-
 
         protected async Task<IBaseDTO> EnqueueToEntry(Entry entry)
         {

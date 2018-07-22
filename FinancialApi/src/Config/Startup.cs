@@ -11,7 +11,6 @@ using Swashbuckle.AspNetCore.Swagger;
 using FinancialApi.workers;
 using Microsoft.Extensions.Logging;
 using Hangfire;
-using FinancialApi.src.Config;
 
 namespace FinancialApi.Config
 {
@@ -61,7 +60,6 @@ namespace FinancialApi.Config
                                     Url = "https://github.com/fabricio.oliveira"
                                 }
                             });
-               //options.SchemaFilter<SwaggerSchemaFilter>();
            });
 
 
@@ -111,6 +109,7 @@ namespace FinancialApi.Config
             using (var serviceScope = serviceScopeFactory.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetService<DataBaseContext>();
+                dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
             }
 

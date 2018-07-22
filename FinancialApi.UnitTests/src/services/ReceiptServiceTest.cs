@@ -54,7 +54,7 @@ namespace FinancialApiUnitTests.src.services
                                   .Returns(account);
 
             var balance = BalanceFactory.Build(x => x.Total = saldo);
-            _mockBalanceRepository.Setup(m => m.LastByOrDefault(It.IsAny<Account>()))
+            _mockBalanceRepository.Setup(m => m.LastByOrDefault(It.IsAny<Account>(), It.IsAny<DateTime>()))
                                   .Returns(balance);
 
             _mockReceiptQueue.Setup(m => m.Enqueue(entry, null)).Verifiable();
@@ -72,13 +72,13 @@ namespace FinancialApiUnitTests.src.services
         }
 
 
-        [TestCase("100.00", "0.00", "300.00")]
+        [TestCase("100.00", "0.01", "300.00")]
         public void TestReceiptSucessul(decimal entryVal, decimal charges, decimal saldo)
         {
             //Input
             var entry = EntryFactory.Build(x =>
             {
-                x.Type = "receipt";
+                x.Type = "recebimento";
                 x.Value = entryVal;
                 x.FinancialCharges = charges;
             });
@@ -95,7 +95,7 @@ namespace FinancialApiUnitTests.src.services
             _mockBalanceRepository.Setup(m => m.FindOrCreateBy(account, It.IsAny<DateTime>()))
                                   .Returns(balance);
 
-            _mockBalanceRepository.Setup(m => m.LastByOrDefault(It.IsAny<Account>()))
+            _mockBalanceRepository.Setup(m => m.LastByOrDefault(It.IsAny<Account>(), It.IsAny<DateTime>()))
                                   .Returns(balance);
 
             _mockEntryRepository.Setup(m => m.BeginTransaction()).Verifiable();

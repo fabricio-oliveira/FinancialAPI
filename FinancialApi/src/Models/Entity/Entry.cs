@@ -20,7 +20,7 @@ namespace FinancialApi.Models.Entity
             this.DestinationIdentity = destinationIdentity;
             this.Value = value;
             this.FinancialCharges = financialCharges;
-            this.DateToPay = dateToPay;
+            this.DateToExecute = dateToPay;
             this.Type = type;
         }
 
@@ -59,15 +59,17 @@ namespace FinancialApi.Models.Entity
 
         [Required(ErrorMessage = "can\'t be blank"), RegularExpression(@"^\d+(\.(\d{2}))?$", ErrorMessage = "This field accept numeric values $xxx.xx or xxxx.xx")]
         [JsonProperty(PropertyName = "valor_do_lancamento")]
+        [Column(TypeName = "numeric(10,2)")]
         public decimal? Value { get; set; }
 
         [Required(ErrorMessage = "can\'t be blank"), RegularExpression(@"^\$?\d+(\.(\d{2}))?$", ErrorMessage = "This field accept numeric values $xxxx.xx or xxxx.xx")]
         [JsonProperty(PropertyName = "encargos")]
+        [Column(TypeName = "numeric(10,2)")]
         public decimal? FinancialCharges { get; set; }
 
         [Required(ErrorMessage = "can\'t be blank"), RangeDate(ErrorMessage = "this field needs to be a valid date between today ({0}) and one year ahead({1}).")]
         [JsonProperty(PropertyName = "data_de_lancamento")]
-        public DateTime? DateToPay { get; set; }
+        public DateTime? DateToExecute { get; set; }
 
         [Required(ErrorMessage = "cant\' be blank"), RegularExpression(@"^(pagamento|recebimento)$", ErrorMessage = @"This field accept values 'pagamento' or 'recebimento'")]
         [JsonProperty(PropertyName = "tipo_da_lancamento")]

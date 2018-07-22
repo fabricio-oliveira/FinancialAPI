@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinancialApi.Models.Entity
 {
@@ -25,6 +26,7 @@ namespace FinancialApi.Models.Entity
 
         public string UUID { get; set; }
 
+        [Column(TypeName = "numeric(10,2)")]
         public decimal? Value { get; set; }
 
         public DateTime? Date { get; set; }

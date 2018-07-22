@@ -54,7 +54,7 @@ namespace FinancialApiUnitTests.src.services
                                   .Returns(account);
 
             var balance = BalanceFactory.Build(x => x.Total = saldo);
-            _mockBalanceRepository.Setup(m => m.LastByOrDefault(It.IsAny<Account>()))
+            _mockBalanceRepository.Setup(m => m.LastByOrDefault(It.IsAny<Account>(), It.IsAny<DateTime>()))
                                   .Returns(balance);
 
             _mockPaymentQueue.Setup(m => m.Enqueue(entry, null)).Verifiable();
@@ -89,7 +89,7 @@ namespace FinancialApiUnitTests.src.services
                                   .Returns(account);
 
             var balance = BalanceFactory.Build(x => x.Total = saldo);
-            _mockBalanceRepository.Setup(m => m.LastByOrDefault(It.IsAny<Account>()))
+            _mockBalanceRepository.Setup(m => m.LastByOrDefault(It.IsAny<Account>(), It.IsAny<DateTime>()))
                                   .Returns(balance);
 
             _mockPaymentQueue.Setup(m => m.Enqueue(entry, null)).Verifiable();
@@ -104,13 +104,13 @@ namespace FinancialApiUnitTests.src.services
         }
 
 
-        [TestCase("100.00", "0.00", "300.00")]
+        [TestCase("100.00", "0.01", "300.00")]
         public void TestPaySucessul(decimal entryVal, decimal charges, decimal saldo)
         {
             //Input
             var entry = EntryFactory.Build(x =>
             {
-                x.Type = "payment";
+                x.Type = "pagamento";
                 x.Value = entryVal;
                 x.FinancialCharges = charges;
             });
@@ -127,7 +127,7 @@ namespace FinancialApiUnitTests.src.services
             _mockBalanceRepository.Setup(m => m.FindOrCreateBy(account, It.IsAny<DateTime>()))
                                   .Returns(balance);
 
-            _mockBalanceRepository.Setup(m => m.LastByOrDefault(It.IsAny<Account>()))
+            _mockBalanceRepository.Setup(m => m.LastByOrDefault(It.IsAny<Account>(), It.IsAny<DateTime>()))
                                   .Returns(balance);
 
             _mockEntryRepository.Setup(m => m.BeginTransaction()).Verifiable();
@@ -141,13 +141,14 @@ namespace FinancialApiUnitTests.src.services
             Assert.AreEqual(entry.UUID, ((OkDTO)val.Result).UUID);
             _mockEntryRepository.Verify(x => x.Save(entry), Times.Once());
             _mockBalanceRepository.Verify(x => x.Update(balance), Times.Once());
+
             Assert.AreEqual(1, balance.Outputs.Count);
             Assert.AreEqual(1, balance.Charges.Count);
             Assert.AreEqual(0, balance.Inputs.Count);
 
         }
 
-        [TestCase("100.00", "0.00", "-20000.00")]
+        [TestCase("100.00", "0.01", "-20000.00")]
         public void TestPayFail(decimal entryVal, decimal charges, decimal saldo)
         {
             //Input
@@ -170,7 +171,7 @@ namespace FinancialApiUnitTests.src.services
             _mockBalanceRepository.Setup(m => m.FindOrCreateBy(account, It.IsAny<DateTime>()))
                                   .Returns(balance);
 
-            _mockBalanceRepository.Setup(m => m.LastByOrDefault(It.IsAny<Account>()))
+            _mockBalanceRepository.Setup(m => m.LastByOrDefault(It.IsAny<Account>(), It.IsAny<DateTime>()))
                                   .Returns(balance);
 
             _mockEntryRepository.Setup(m => m.BeginTransaction()).Verifiable();

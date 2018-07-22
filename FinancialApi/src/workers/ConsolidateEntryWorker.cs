@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using FinancialApi.Models.Entity;
 using FinancialApi.Queue;
 using FinancialApi.Services;

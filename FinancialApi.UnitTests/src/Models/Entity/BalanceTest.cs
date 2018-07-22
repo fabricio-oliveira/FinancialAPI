@@ -28,27 +28,7 @@ namespace FinancialApi.UnitTests.Models.Entity
             balance.UpdateDayPostionNewDay(yestarday);
 
             //assert
-            Assert.AreEqual(balance.DayPosition,DayPositionToday);
-        }
-
-        [TestCase("100.00", "10", "1.00","1.10")]
-        public void UpdateDayPostionNewEntryTest(decimal total,
-                                              decimal newEntry,
-                                              decimal DayPositionAfter,
-                                              decimal DayPositionBefore)
-        {
-            //behavior
-            var balance = BalanceFactory.Build(x =>
-            {
-                x.Total = total;
-                x.DayPosition = DayPositionAfter;
-            });
-
-            //test
-            balance.UpdateDayPostionNewEntry(newEntry);
-
-            //assert
-            Assert.AreEqual(DayPositionBefore, balance.DayPosition);
+            Assert.AreEqual(DayPositionToday, balance.DayPosition);
         }
 
     }

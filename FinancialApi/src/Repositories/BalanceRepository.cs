@@ -37,6 +37,30 @@ namespace FinancialApi.Repositories
 
         public Balance Find(long? id) => _context.Balances.Find(id);
 
+
+
+        public void UpdateCurrentAndFutureBalance(DateTime date, long accountId)
+        {
+
+            var balancesToUpdate = _context.Balances.Where(x => x.Date >= date.AddDays(-1) && x.AccountId == accountId)
+                                            .OrderBy(x => x.Date)
+                                            .ToList();
+
+            var balancesUpdated = balancesToUpdate.Skip(1)
+                                                  .Zip(balancesToUpdate,
+                                                      (c, p) =>
+                                                            {
+                                                                c.Total = p.Total + c.Inputs.Sum(x => x.Value) - c.Outputs.Sum(x => x.Value) - c.Charges.Sum(x => x.Value);
+                                                                c.UpdateDayPostionNewDay(p.Total);
+                                                                return c;
+                                                            })
+                                            .ToArray();
+
+            _context.UpdateRange(balancesUpdated);
+            _context.SaveChanges();
+
+        }
+
         public List<Balance> ListTodayMore30Ahead(long? accountId)
         {
             var lista = _context.Balances.Where(x => x.AccountId == accountId
@@ -47,7 +71,7 @@ namespace FinancialApi.Repositories
             return lista;
         }
 
-        public Balance Find(Account account, DateTime date)
+        public Balance FindBy(Account account, DateTime date)
         {
             return _context.Balances
                                    .Where(x => x.Account == account
@@ -57,7 +81,7 @@ namespace FinancialApi.Repositories
 
         public Balance FindOrCreateBy(Account account, DateTime date)
         {
-            var balance = Find(account, date);
+            var balance = FindBy(account, date);
 
             if (balance != null) return balance;
 
@@ -74,16 +98,19 @@ namespace FinancialApi.Repositories
 
             balance = new Balance(date, new List<ShortEntryDTO>(),
                                         new List<ShortEntryDTO>(),
-                                        new List<ShortEntryDTO>(), 0m, 0m, account);
+                                        new List<ShortEntryDTO>(), 0m, null, account);
             _context.Balances.Add(balance);
             _context.SaveChanges();
+
             return balance;
         }
 
         public Balance LastByOrDefault(Account account, DateTime date)
         {
             var balance = LastBy(account, date);
-            return balance ?? new Balance(date, null, null, null, 0.0m, 0.0m, account);
+            return balance ?? new Balance(date, new List<ShortEntryDTO>(),
+                                                new List<ShortEntryDTO>(),
+                                                new List<ShortEntryDTO>(), 0.0m, 0.0m, account);
         }
 
         public Balance LastBy(Account account, DateTime date)
@@ -114,22 +141,6 @@ namespace FinancialApi.Repositories
                                              .ToList();
 
             return balancesExistent.Concat(balancesToCreate).Where(x => !x.Closed).ToList();
-        }
-
-
-        public void UpdateDayPosition(Balance balance)
-        {
-            var balances = _context.Balances.Where(x => x.Account.Equals(balance.Account)
-                                                   && x.Date >= balance.Date.AddDays(-1))
-                                   .OrderBy(x => x.Date)
-                                   .ToArray();
-
-            balances = balances.Skip(1)
-                               .Zip(balances, (c, p) => { c.UpdateDayPostionNewDay(p.Total); return c; })
-                               .ToArray();
-
-            _context.UpdateRange(balances);
-            _context.SaveChanges();
         }
     }
 }
